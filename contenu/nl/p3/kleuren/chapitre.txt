@@ -1,0 +1,23 @@
+titre: Kleuren
+# BROUILLON. Les traductions françaises sont de Claude : à relire.
+# Dans votre message vous avez écrit « rose » ; j'ai mis « roze » (orthographe de votre PDF).
+# Les images sont à ajouter : une image par mot dans le dossier images/ (voir le cahier des charges).
+
+[mots]
+# id | mot | français (pas affiché quand il y a une couleur) | couleur
+rood | rood | rouge | couleur:red
+oranje | oranje | orange | couleur:orange
+roze | roze | rose | couleur:pink
+geel | geel | jaune | couleur:yellow
+zwart | zwart | noir | couleur:black
+groen | groen | vert | couleur:green
+paars | paars | mauve | couleur:purple
+blauw | blauw | bleu | couleur:blue
+wit | wit | blanc | couleur:white
+grijs | grijs | gris | couleur:gray
+bruin | bruin | brun | couleur:brown
+
+[phrases]
+# id | phrase | français | réponse à masquer (facultatif) | autres propositions (facultatif)
+lievelingskleur-vraag | Wat is je lievelingskleur? | Quelle est ta couleur préférée ?
+lievelingskleur-antwoord | Mijn lievelingskleur is ... | Ma couleur préférée est ...

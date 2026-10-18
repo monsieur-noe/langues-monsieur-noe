@@ -1,0 +1,17 @@
+titre: Vervoermiddelen
+# BROUILLON. Les traductions françaises sont de Claude : à relire.
+# Une phrase de ce chapitre manque dans les audios reçus : à compléter si vous en avez.
+# Les dessins (images/<id>.svg) sont de Claude. Pour en changer un, dépose un fichier du même nom.
+
+[mots]
+# id | mot (avec l'article pour un nom) | français | image (facultatif)
+vliegtuig | het vliegtuig | l'avion | vliegtuig.svg
+te-voet | te voet | à pied | te-voet.svg
+bus | de bus | le bus | bus.svg
+trein | de trein | le train | trein.svg
+fiets | de fiets | le vélo | fiets.svg
+taxi | de taxi | le taxi | taxi.svg
+boot | de boot | le bateau | boot.svg
+auto | de auto | la voiture | auto.svg
+metro | de metro | le métro | metro.svg
+motor | de motor | la moto | motor.svg

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Chapitre · Les langues avec Monsieur Noé</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/page-chapitre.js"></script>
+</head>
+<body id="page">
+  <!-- Pictogrammes de l'interface, réutilisés par <use href="#nom">. -->
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="gauche" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="droite" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="haut-parleur" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18.3 6.3a8 8 0 0 1 0 11.4"/></symbol>
+    <symbol id="tourner" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4.5h-4.5"/></symbol>
+    <symbol id="lecture" viewBox="0 0 24 24"><path d="M7 4.5v15L19 12z"/></symbol>
+    <symbol id="pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></symbol>
+    <symbol id="recul" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></symbol>
+    <symbol id="bulle" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-4.5 3.5V16H4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
+    <symbol id="image" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M4 17.5l5-4.5 4 3.5 3-2.5 4.5 3.5"/></symbol>
+    <symbol id="oeil" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3.2"/></symbol>
+    <symbol id="crayon" viewBox="0 0 24 24"><path d="M4 20l1.2-4.8L16 4.4l3.6 3.6L8.8 18.8z"/><path d="M13.8 6.6l3.6 3.6"/></symbol>
+    <symbol id="etoile" viewBox="0 0 24 24"><path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 17.1 6.6 20l1.1-6.1-4.5-4.3 6.1-.8z"/></symbol>
+    <symbol id="coche" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+    <symbol id="croix" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="sourire" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 14.5c1 1.6 2.4 2.4 4 2.4s3-.8 4-2.4"/><path d="M9 9.5v.5M15 9.5v.5"/></symbol>
+    <symbol id="cle" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3.5M21 12v2.5"/></symbol>
+    <symbol id="famille"viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20c0-3.6 2.5-6 5.5-6s5.5 2.4 5.5 6M14.5 15.2c.8-.7 1.6-1 2.5-1 2.6 0 4.5 2 4.5 5"/></symbol>
+    <symbol id="bouclier" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.8-3.4 8-8 9-4.6-1-8-4.2-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  </svg>
+
+  <header class="marque bandeau">
+    <a class="retour" id="retour" href="index.html" aria-label="Retour aux chapitres"><svg class="ic" aria-hidden="true"><use href="#gauche"/></svg></a>
+    <h1 id="titre">Chapitre</h1>
+  </header>
+
+  <main class="corps">
+    <div id="message"></div>
+    <div id="contenu" hidden>
+      <nav class="segments" id="onglets" aria-label="Rubriques du chapitre"></nav>
+      <section class="fiche" id="rubrique"></section>
+      <details class="conseil" id="conseil" hidden>
+        <summary><svg class="ic" aria-hidden="true"><use href="#famille"/></svg>Conseil pour les parents</summary>
+        <p id="note-parents"></p>
+      </details>
+      <p class="quizlet" id="quizlet" hidden></p>
+    </div>
+    <noscript><p class="message">Ce site a besoin de JavaScript. Active-le dans ton navigateur.</p></noscript>
+  </main>
+
+  <footer class="pied">
+    <a href="pages/parents.html"><svg class="ic" aria-hidden="true"><use href="#famille"/></svg>Pour les parents</a>
+    <a href="pages/confidentialite.html"><svg class="ic" aria-hidden="true"><use href="#bouclier"/></svg>Confidentialité</a>
+  </footer>
+</body>
+</html>

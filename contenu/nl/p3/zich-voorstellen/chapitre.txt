@@ -1,0 +1,26 @@
+titre: Zich voorstellen
+# BROUILLON : seuls les nombres, les dictées et la piste « Savoir se présenter » sont là. Le reste du chapitre est à compléter.
+
+[mots]
+# id | mot | français | image (facultatif)
+nul | nul | zéro | texte:0
+een | een | un | texte:1
+twee | twee | deux | texte:2
+drie | drie | trois | texte:3
+vier | vier | quatre | texte:4
+vijf | vijf | cinq | texte:5
+zes | zes | six | texte:6
+zeven | zeven | sept | texte:7
+acht | acht | huit | texte:8
+negen | negen | neuf | texte:9
+tien | tien | dix | texte:10
+
+[pistes]
+# id | titre | texte (facultatif) | français (facultatif)
+savoir-se-presenter | Savoir se présenter
+
+[dictees]
+# id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)
+dictee-1 | Dictée 1 | 58321 / 04796 / 72164 / 39608 / 81537
+dictee-2 | Dictée 2 | 26490 / 73815 / 05183 / 94627 / 31075
+dictee-3 | Dictée 3 | 62941 / 08532 / 47196 / 15380 / 82754

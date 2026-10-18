@@ -1,0 +1,50 @@
+# CHAPITRE MODÈLE : copie ce dossier pour créer un nouveau chapitre.
+#
+# Règles :
+# - Les lignes qui commencent par # sont des commentaires : le site les ignore.
+# - Les lignes vides sont ignorées.
+# - Les colonnes sont séparées par « | ».
+# - Un identifiant (id) : minuscules, chiffres et tirets, sans accent ni espace.
+#   Il est unique dans le chapitre et ne change plus une fois publié.
+# - Le son d'un mot, d'une phrase ou d'une dictée : audio/<id>.m4a
+# - L'image d'un mot : images/<id>.png (à ajouter quand tu l'as).
+
+# Le titre du chapitre (obligatoire) :
+titre: Titre du chapitre
+
+# Le lien Quizlet (facultatif ; enlève le # pour l'activer) :
+# quizlet: https://quizlet.com/...
+
+# Un conseil pour les parents (facultatif ; enlève le # pour l'activer) :
+# note_parents: Écrivez ici votre conseil.
+
+[mots]
+# id | mot (avec l'article pour un nom : de, het) | français | indice (facultatif)
+# Exemples :
+# pet | de pet | la casquette
+# hemd | het hemd | la chemise | hemd.svg
+# zeven | zeven | sept | texte:7
+# rood | rood | rouge | couleur:red
+# L'indice (4e colonne) est ce que montre l'autre face de la carte :
+#   hemd.svg      une image du dossier images/ (sans 4e colonne : images/<id>.png, si elle existe)
+#   texte:7       « 7 » écrit en très grand
+#   couleur:red   un carré rouge. Couleurs : red, orange, pink, yellow, black, green,
+#                 purple, blue, white, gray, brown, ou un code comme couleur:#C62828
+# Sans indice, l'autre face montre le français. Avec un indice, le français n'est
+# pas affiché : tu peux laisser la 3e colonne vide (rood | rood | | couleur:red).
+
+[phrases]
+# id | phrase | français | mot à masquer (facultatif) | autres propositions (facultatif)
+# Exemple :
+# p1 | Ik draag een rode pet. | Je porte une casquette rouge. | rode
+
+[pistes]
+# id | titre | texte (facultatif) | français (facultatif)
+# Un enregistrement joué en entier, comme modèle d'écoute.
+# Exemple :
+# savoir-se-presenter | Savoir se présenter
+
+[dictees]
+# id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)
+# Exemple :
+# dictee-1 | Dictée 1 | Ik heet Lina. / Ik ben acht jaar.

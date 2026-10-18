@@ -1,0 +1,465 @@
+/* Feuille de style unique du site : l'allure « Épuré ».
+   Les couleurs et réglages sont réunis en haut (variables) pour pouvoir les changer à un seul endroit. */
+
+@font-face {
+  font-family: Andika;
+  src: url("../polices/Andika-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: Andika;
+  src: url("../polices/Andika-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --fond: #f3f5fa;
+  --surface: #fff;
+  --encre: #13203b;
+  --gris: #4f5a72;
+  --trait: #dce1ec;
+  --doux: #e4e8f1;
+  /* Couleurs des chapitres et des langues (texte blanc lisible sur chacune). */
+  --c0: #0f766e;
+  --c1: #be185d;
+  --c2: #4338ca;
+  --c3: #b45309;
+  --c4: #15803d;
+  --nl: #c2410c;
+  --en: #2563eb;
+  --acc: var(--encre);
+  /* Animations : courtes et douces (cahier, section 8). */
+  --duree: .2s;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ombre: 0 1px 2px rgba(19, 32, 59, .06), 0 2px 8px rgba(19, 32, 59, .06);
+  --ombre-haute: 0 4px 10px rgba(19, 32, 59, .08), 0 14px 30px rgba(19, 32, 59, .12);
+  --largeur: 40rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body, h1, h2, h3, p, ul, ol { margin: 0; }
+[hidden] { display: none !important; } /* un élément masqué reste masqué, quel que soit son style */
+
+body {
+  font-family: Andika, "Trebuchet MS", Verdana, sans-serif;
+  font-size: 1.25rem; /* 20 px : texte courant minimum */
+  line-height: 1.4;
+  color: var(--encre);
+  background: var(--fond);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+::selection { background: #ffe08a; color: var(--encre); }
+:focus-visible { outline: 3px solid var(--en); outline-offset: 3px; border-radius: 8px; }
+a { color: inherit; text-underline-offset: 3px; }
+
+.ic {
+  width: 1.625rem; height: 1.625rem; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ---------- En-tête et colonne ---------- */
+
+.marque {
+  background: var(--surface);
+  border-bottom: 1px solid var(--trait);
+  padding: .9rem max(1.25rem, calc((100% - var(--largeur)) / 2));
+}
+.marque > a { display: inline-flex; align-items: center; gap: .65rem; min-height: 3.5rem; font-weight: 700; text-decoration: none; }
+.logo { width: 2.5rem; height: 2.5rem; border-radius: .75rem; display: grid; place-items: center; background: var(--encre); color: var(--surface); }
+
+.corps { width: 100%; max-width: calc(var(--largeur) + 2.5rem); margin: 0 auto; padding: 1.75rem 1.25rem 1rem; flex: 1; }
+h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
+
+.fil { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.1rem; color: var(--gris); }
+.retour {
+  width: 3.5rem; height: 3.5rem; flex: none;
+  display: grid; place-items: center;
+  background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1rem;
+  text-decoration: none;
+  transition: transform var(--duree) var(--ease), border-color var(--duree);
+}
+.retour:hover { transform: translateX(-3px); border-color: var(--encre); }
+
+/* Ligne de bienvenue (écran 1) : salutations côte à côte, à la ligne sur petit écran. */
+.bienvenue { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; margin-bottom: .6rem; font-size: 1.375rem; font-weight: 700; color: var(--gris); }
+.salut { display: inline-flex; align-items: center; gap: .45rem; }
+.drapeau { height: .9em; border-radius: 2px; box-shadow: 0 0 0 1px var(--trait); flex: none; }
+.drapeau-gb { width: 1.8em; }
+.drapeau-nl { width: 1.35em; }
+.titre .drapeau { margin-left: .5rem; vertical-align: -.08em; }
+
+/* ---------- Cartes de choix (langue, année, chapitre) ---------- */
+
+.liste { list-style: none; padding: 0; margin-top: 1.4rem; display: flex; flex-direction: column; gap: .75rem; }
+.choix {
+  display: flex; align-items: center; gap: .9rem;
+  min-height: 5.25rem;
+  padding: .9rem .9rem .9rem 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--trait);
+  border-radius: 1.25rem;
+  box-shadow: var(--ombre);
+  text-decoration: none;
+  transition: transform var(--duree) var(--ease), box-shadow var(--duree) var(--ease), border-color var(--duree) var(--ease);
+}
+a.choix:hover { transform: translateY(-3px); box-shadow: var(--ombre-haute); border-color: var(--acc); }
+a.choix:active { transform: scale(.985); box-shadow: var(--ombre); }
+.choix .titre { min-width: 0; font-size: 1.375rem; font-weight: 700; line-height: 1.15; hyphens: auto; overflow-wrap: anywhere; }
+.fleche {
+  margin-left: auto; flex: none;
+  width: 2.75rem; height: 2.75rem; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--fond);
+  transition: transform var(--duree) var(--ease), background-color var(--duree), color var(--duree);
+}
+a.choix:hover .fleche { transform: translateX(4px); background: var(--acc); color: var(--surface); }
+.num {
+  flex: none;
+  width: 3.25rem; height: 3.25rem; border-radius: 1rem;
+  display: grid; place-items: center;
+  background: var(--acc); color: var(--surface);
+  font-size: 1.375rem; font-weight: 700;
+  transition: transform var(--duree) var(--ease);
+}
+img.num { object-fit: contain; background: var(--surface); border: 1.5px solid var(--trait); }
+a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
+.bulle {
+  position: relative; flex: none;
+  padding: .3rem .75rem; border-radius: .9rem;
+  background: var(--acc); color: var(--surface);
+  font-weight: 700;
+}
+.bulle::after {
+  content: ""; position: absolute; left: .9rem; bottom: -.4rem;
+  border: .45rem solid transparent; border-top-color: var(--acc); border-bottom: 0; border-left-width: .15rem;
+}
+.choix.off { color: var(--gris); background: transparent; border-style: dashed; box-shadow: none; --acc: #6b7487; }
+.pastille { margin-left: auto; flex: none; padding: .2rem .75rem; border: 1.5px solid var(--trait); border-radius: 999px; }
+
+.langue-nl { --acc: var(--nl); }
+.langue-en { --acc: var(--en); }
+.couleur-0 { --acc: var(--c0); }
+.couleur-1 { --acc: var(--c1); }
+.couleur-2 { --acc: var(--c2); }
+.couleur-3 { --acc: var(--c3); }
+.couleur-4 { --acc: var(--c4); }
+
+/* ---------- Page de chapitre ---------- */
+
+.bandeau { display: flex; align-items: center; gap: .9rem; }
+.bandeau h1 { font-size: 1.875rem; }
+.bandeau h1::after { content: ""; display: block; width: 2.5rem; height: 4px; margin-top: .3rem; border-radius: 2px; background: var(--acc); }
+
+.segments { display: grid; grid-template-columns: repeat(3, 1fr); gap: .25rem; padding: .3rem; background: var(--doux); border-radius: 1.15rem; }
+.seg {
+  min-height: 4.25rem; padding: .35rem .2rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem;
+  border-radius: .9rem;
+  color: var(--gris); font-size: 1.25rem; line-height: 1.1; text-align: center; text-decoration: none;
+  transition: color var(--duree), background-color var(--duree) var(--ease), box-shadow var(--duree) var(--ease);
+}
+.seg:hover { color: var(--encre); background: rgba(255, 255, 255, .55); }
+.seg[aria-current] { color: var(--encre); background: var(--surface); box-shadow: var(--ombre); font-weight: 700; }
+.seg[aria-current] .ic { color: var(--acc); }
+
+.fiche {
+  margin-top: 1rem;
+  padding: 1.25rem 1rem;
+  background: var(--surface);
+  border: 1.5px solid var(--trait);
+  border-radius: 1.5rem;
+  box-shadow: var(--ombre-haute);
+}
+.bientot-ici { display: flex; align-items: center; gap: .75rem; min-height: 8rem; color: var(--gris); }
+.bientot-ici .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
+
+/* ---------- Je découvre : cartes, phrases, pistes ---------- */
+
+.zone-carte { display: flex; justify-content: center; }
+/* La carte se retourne en 3D ; les deux faces sont empilées dans la même case. */
+.sens { margin-bottom: .75rem; grid-template-columns: repeat(2, 1fr); }
+.sens .seg { min-height: 3.5rem; flex-direction: row; gap: .4rem; }
+.carte {
+  position: relative; width: 100%; max-width: 22rem;
+  display: grid; text-align: center; cursor: pointer;
+  perspective: 60rem;
+}
+.face {
+  grid-area: 1 / 1;
+  min-height: 14rem; padding: 1rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1.5rem; box-shadow: var(--ombre);
+  -webkit-backface-visibility: hidden; /* iOS 15.0 à 15.3 */
+  backface-visibility: hidden;
+  transition: transform .4s var(--ease);
+}
+.arriere { transform: rotateY(180deg); border-color: var(--acc); }
+.retournee .avant { transform: rotateY(-180deg); }
+.retournee .arriere { transform: rotateY(0); }
+.carte:hover .face { border-color: var(--acc); }
+.tuile, .image, .carre { width: 9.5rem; height: 9.5rem; max-width: 100%; border-radius: 1.25rem; }
+.tuile {
+  display: grid; place-items: center; padding: .75rem;
+  background: var(--acc); color: var(--surface);
+  font-size: 2rem; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere;
+}
+.tuile.court { font-size: 6rem; }
+.image { object-fit: contain; }
+/* Carré de couleur : bordure foncée pour que le blanc et le jaune restent visibles. */
+.carre {
+  display: grid; place-items: center; padding: .75rem;
+  background: var(--fond);
+  border: 3px solid var(--encre);
+}
+.mot { font-size: 2rem; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
+.francais { font-size: 2.25rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.coin {
+  position: absolute; top: .25rem; right: .25rem;
+  width: 3.5rem; height: 3.5rem; display: grid; place-items: center;
+  color: var(--gris); background: none; border: 0; border-radius: 1rem; cursor: pointer;
+}
+
+/* ---------- Lecteur audio unique (js/audio.js) ---------- */
+
+.lecteur-audio { display: flex; align-items: center; justify-content: center; gap: .6rem; width: 100%; max-width: 15rem; }
+.lecteur-audio.large { max-width: none; flex-wrap: wrap; margin-top: .6rem; }
+/* Bouton lecture / pause : 64 px (cartes : 64 px minimum ; ailleurs : 56 px). */
+.lire {
+  width: 4rem; height: 4rem; flex: none;
+  display: grid; place-items: center;
+  background: var(--acc); color: var(--surface);
+  border: 0; border-radius: 50%; box-shadow: var(--ombre); cursor: pointer;
+  transition: transform var(--duree) var(--ease);
+}
+.lire .ic { width: 2rem; height: 2rem; }
+.lire:hover { transform: scale(1.06); }
+.lire:active { transform: scale(.94); }
+/* Barre : zone tactile de 56 px de haut, trait fin ; la partie déjà écoutée prend la couleur du chapitre. */
+.barre {
+  flex: 1 1 8rem; min-width: 6rem; height: 3.5rem; margin: 0;
+  background: none; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.barre::-webkit-slider-runnable-track { height: .5rem; border-radius: 1rem; background: linear-gradient(to right, var(--acc) var(--progres, 0%), var(--doux) 0); }
+.barre::-moz-range-track { height: .5rem; border-radius: 1rem; background: linear-gradient(to right, var(--acc) var(--progres, 0%), var(--doux) 0); }
+.barre::-webkit-slider-thumb { -webkit-appearance: none; width: 1.5rem; height: 1.5rem; margin-top: -.5rem; border-radius: 50%; background: var(--surface); border: 3px solid var(--acc); }
+.barre::-moz-range-thumb { width: 1.5rem; height: 1.5rem; box-sizing: border-box; border-radius: 50%; background: var(--surface); border: 3px solid var(--acc); }
+.barre:disabled { cursor: default; opacity: .5; }
+.horloge { color: var(--gris); font-variant-numeric: tabular-nums; }
+.recul {
+  min-height: 3.5rem; padding: .4rem 1rem; margin-left: auto;
+  display: inline-flex; align-items: center; gap: .4rem;
+  font: inherit; font-weight: 700; color: var(--encre);
+  background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1rem; cursor: pointer;
+}
+
+.navigation { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .75rem; }
+.defile {
+  width: 4rem; height: 4rem; flex: none;
+  display: grid; place-items: center;
+  background: var(--surface); color: var(--encre);
+  border: 1.5px solid var(--trait); border-radius: 1.25rem; cursor: pointer;
+  transition: border-color var(--duree), transform var(--duree) var(--ease);
+}
+.defile:hover:not(:disabled) { border-color: var(--acc); }
+.defile:active:not(:disabled) { transform: scale(.94); }
+.defile:disabled { opacity: .35; cursor: default; }
+.defile .ic { width: 2rem; height: 2rem; }
+.compteur { min-width: 4.5rem; text-align: center; color: var(--gris); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.bloc { margin-top: 2rem; padding-top: 1.25rem; border-top: 1.5px solid var(--trait); }
+.bloc h2 { font-size: 1.5rem; margin-bottom: .75rem; }
+.phrases { list-style: none; padding: 0; display: flex; flex-direction: column; gap: .75rem; }
+.phrases li, .piste { padding: .75rem; border: 1.5px solid var(--trait); border-radius: 1.15rem; }
+.piste + .piste { margin-top: .75rem; }
+.piste h3 { font-size: 1.375rem; }
+.ligne { display: flex; flex-direction: column; gap: .4rem; }
+.ligne p { font-size: 1.375rem; font-weight: 700; }
+.traduction summary {
+  min-height: 3.5rem; display: inline-flex; align-items: center; gap: .5rem;
+  color: var(--gris); cursor: pointer; list-style: none;
+}
+.traduction summary::-webkit-details-marker { display: none; }
+.traduction[open] summary { color: var(--encre); }
+.traduction p + p, .traduction .fr { margin-top: .4rem; color: var(--gris); }
+
+.conseil { margin-top: 1.25rem; background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1.25rem; }
+.conseil summary {
+  min-height: 3.5rem; padding: .5rem 1rem;
+  display: flex; align-items: center; gap: .6rem;
+  font-weight: 700; cursor: pointer; list-style: none;
+}
+.conseil summary::-webkit-details-marker { display: none; }
+.conseil summary::after { content: "+"; margin-left: auto; font-size: 1.75rem; line-height: 1; }
+.conseil[open] summary::after { content: "−"; }
+.conseil p { padding: 0 1rem 1rem; }
+
+.quizlet { margin-top: 1.25rem; }
+.quizlet a { display: inline-flex; align-items: center; min-height: 3.5rem; }
+
+/* ---------- Je m'entraîne, Je vérifie (js/exercices.js) ---------- */
+
+.zone-exercice { min-height: 20rem; }
+.exercice, .bilan { display: flex; flex-direction: column; align-items: center; gap: .9rem; text-align: center; }
+.tete-ex { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; }
+.tete-ex .compteur { min-width: 0; flex: none; }
+/* Énoncé un peu plus petit que sur les cartes : les réponses doivent tenir à l'écran d'un téléphone. */
+.enonce .tuile, .enonce .image, .enonce .carre { width: 7.5rem; height: 7.5rem; }
+.enonce .tuile.court { font-size: 4.5rem; }
+.consigne { display: flex; align-items: center; gap: .6rem; font-size: 1.375rem; line-height: 1.25; text-align: left; }
+.consigne .ic { color: var(--acc); width: 2rem; height: 2rem; }
+.enonce { display: flex; justify-content: center; width: 100%; }
+.pile { display: flex; flex-direction: column; align-items: center; gap: .6rem; width: 100%; }
+.phrase { font-size: 1.5rem; font-weight: 700; }
+/* Le blanc du texte à trous et l'article de « de ou het » : un trait à remplir, puis le mot en couleur. */
+.trou { display: inline-block; min-width: 3.5rem; border-bottom: 3px solid var(--encre); color: var(--gris); }
+.trou.rempli { color: var(--acc); border-bottom-color: var(--acc); }
+
+.reponses { display: grid; gap: .75rem; width: 100%; max-width: 24rem; }
+.reponses.n2 { grid-template-columns: repeat(2, 1fr); }
+.reponses.visuels { grid-template-columns: repeat(3, 1fr); max-width: 30rem; }
+.reponses.visuels.n4, .reponses.visuels.n2 { grid-template-columns: repeat(2, 1fr); max-width: 22rem; }
+.reponse {
+  position: relative; min-height: 4rem; padding: .6rem;
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  font: inherit; color: var(--encre);
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1.25rem; box-shadow: var(--ombre); cursor: pointer;
+  transition: border-color var(--duree), transform var(--duree) var(--ease);
+}
+.reponse:hover:not(:disabled) { border-color: var(--acc); }
+.reponse:active:not(:disabled) { transform: scale(.97); }
+.reponse:disabled { cursor: default; }
+.reponse:disabled:not(.juste):not(.faux) { opacity: .5; }
+.reponse .mot { font-size: 1.625rem; }
+.reponses.visuels .reponse { padding: .4rem; }
+.reponse .tuile, .reponse .image, .reponse .carre { width: 100%; height: auto; aspect-ratio: 1; }
+.reponse .tuile { font-size: 1.25rem; }
+.reponse .tuile.court { font-size: 2.75rem; }
+/* Juste ou faux : jamais la couleur seule, toujours une coche ou une croix (cahier 8). */
+.reponse.juste { border-color: var(--c4); background: #ecfdf3; }
+.reponse.faux { border-color: var(--c1); border-style: dashed; }
+.marque-ex {
+  position: absolute; top: -.6rem; right: -.6rem;
+  width: 2.25rem; height: 2.25rem; display: grid; place-items: center;
+  border-radius: 50%; color: var(--surface); background: var(--c4);
+}
+.faux .marque-ex { background: var(--c1); }
+.marque-ex .ic { width: 1.4rem; height: 1.4rem; stroke-width: 3; }
+.retour-ex { min-height: 2rem; display: flex; align-items: center; gap: .5rem; font-size: 1.375rem; font-weight: 700; }
+.retour-ex:empty { display: none; }
+.retour-ex .ic { color: var(--acc); width: 2rem; height: 2rem; }
+
+.action {
+  min-height: 3.5rem; padding: .5rem 1.4rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font: inherit; font-weight: 700; color: var(--surface);
+  background: var(--acc); border: 0; border-radius: 1.15rem; box-shadow: var(--ombre); cursor: pointer;
+  transition: transform var(--duree) var(--ease);
+}
+.action:active { transform: scale(.96); }
+
+.bilan h2 { display: flex; align-items: center; gap: .5rem; font-size: 1.75rem; }
+.etoiles { display: flex; gap: .4rem; }
+.etoiles .ic { width: 3.25rem; height: 3.25rem; color: var(--gris); }
+.etoiles .pleine .ic { color: #b45309; fill: #fbbf24; }
+.bilan h3 { font-size: 1.375rem; }
+.a-revoir { list-style: none; padding: 0; width: 100%; display: flex; flex-direction: column; gap: .75rem; }
+.a-revoir li { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem; padding: .75rem; border: 1.5px solid var(--trait); border-radius: 1.15rem; }
+.a-revoir .tuile, .a-revoir .image, .a-revoir .carre { width: 4.5rem; height: 4.5rem; }
+.a-revoir .tuile { font-size: 1rem; }
+.a-revoir .tuile.court { font-size: 2.25rem; }
+.a-revoir .mot { font-size: 1.5rem; }
+
+/* Mot secret du jour (bilan de « Je vérifie ») : encadré pointillé, comme un ticket à recopier. */
+.mot-secret {
+  width: 100%; max-width: 22rem; padding: .75rem 1rem;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  border: 2px dashed var(--acc); border-radius: 1.15rem;
+}
+.mot-secret .consigne-dictee { margin-top: 0; color: var(--encre); font-weight: 700; }
+.mot-secret .mot { font-size: 2rem; color: var(--acc); }
+.consigne-dictee {display: flex; align-items: center; gap: .5rem; margin-top: .4rem; color: var(--gris); }
+.consigne-dictee .ic { color: var(--acc); }
+
+/* ---------- Page de contrôle (enseignant) ---------- */
+
+.aide { margin-top: .5rem; color: var(--gris); }
+.legende { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .6rem; }
+.controle-chapitre h2 { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .5rem; font-size: 1.5rem; }
+.sous-titre { font-size: 1.25rem; font-weight: 400; color: var(--gris); }
+.compteurs { margin-top: .5rem; color: var(--gris); }
+.constats { list-style: none; padding: 0; margin-top: 1rem; }
+.constat { display: flex; align-items: flex-start; gap: .6rem; padding: .6rem 0; border-top: 1.5px solid var(--trait); }
+.constat ul { margin-top: .3rem; padding-left: 1.25rem; overflow-wrap: anywhere; }
+.constat li + li { margin-top: .3rem; }
+/* La pastille porte un signe (✔ ⚠ ✖) en plus de la couleur : jamais la couleur seule. */
+.etat {
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 2rem; height: 2rem; border-radius: 50%; font-weight: 700; color: #fff;
+}
+.etat.ok { background: var(--c4); }
+.etat.attention { background: var(--c3); }
+.etat.erreur { background: #b91c1c; }
+.quizlet-copie { margin-top: 1rem; }
+.secrets { margin-top: 1rem; padding-top: .6rem; border-top: 1.5px solid var(--trait); }
+.secrets ul { margin-top: .3rem; padding-left: 1.25rem; }
+.action:disabled { opacity: .5; cursor: default; }
+.info-quizlet { margin-top: .5rem; }
+.info-quizlet textarea { display: block; width: 100%; margin-top: .5rem; font: inherit; font-size: 1rem; }
+
+/* ---------- Pages de texte (parents, confidentialité) ---------- */
+
+.prose h2 { margin-top: 1.75rem; font-size: 1.5rem; }
+.prose p, .prose ul { margin-top: .6rem; max-width: 36rem; }
+.prose ul { padding-left: 1.25rem; }
+.prose li + li { margin-top: .5rem; }
+.prose a { overflow-wrap: anywhere; }
+
+/* ---------- Messages, pied de page ---------- */
+
+.message { margin-top: 1.5rem; }
+.message > a { display: inline-flex; align-items: center; min-height: 3.5rem; } /* lien seul (« Retour à l'accueil ») : zone de 56 px */
+.erreurs {
+  margin-top: 1.5rem; padding: 1rem;
+  background: #fff4e5; border: 1.5px solid var(--c3); border-radius: 1rem;
+}
+.erreurs ul { margin-top: .5rem; padding-left: 1.25rem; }
+.erreurs li + li { margin-top: .4rem; }
+
+.pied {
+  width: 100%; max-width: calc(var(--largeur) + 2.5rem); margin: 0 auto;
+  padding: 1rem 1.25rem 1.5rem;
+  display: flex; flex-wrap: wrap; gap: .25rem 1.25rem;
+  color: var(--gris);
+}
+.pied a { display: inline-flex; align-items: center; gap: .4rem; min-height: 3.5rem; }
+.pied .ic { width: 1.5rem; height: 1.5rem; }
+.pied a[aria-current] { color: var(--encre); font-weight: 700; text-decoration: none; } /* la page où l'on est */
+
+/* Téléphones étroits : cartes plus compactes pour que les longs titres (Vervoermiddelen) tiennent. */
+@media (max-width: 24rem) {
+  .choix { gap: .65rem; padding: .75rem; }
+  .num { width: 2.75rem; height: 2.75rem; font-size: 1.25rem; }
+  .fleche { width: 2.5rem; height: 2.5rem; }
+  .choix .titre { font-size: 1.25rem; }
+  .bulle { padding: .25rem .55rem; }
+  .choix.off { flex-wrap: wrap; } /* « Bientôt » passe sous le nom plutôt que de le couper */
+}
+
+/* Petits écrans (320 px) : un peu moins de marges. */
+@media (max-width: 22rem) {
+  .corps, .pied { padding-left: 1rem; padding-right: 1rem; }
+  h1 { font-size: 1.75rem; }
+  .fleche { display: none; } /* la carte entière reste cliquable ; place gagnée pour « Vervoermiddelen » */
+  /* raccourci : 18 px pour les noms de rubriques sous 352 px de large (sinon « m’entraîne » déborde) ; à revoir si un enfant peine à lire. */
+  .seg { font-size: 1.125rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

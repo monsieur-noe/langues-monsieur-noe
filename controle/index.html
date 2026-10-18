@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Page de contrôle · Les langues avec Monsieur Noé</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="module" src="../js/page-controle.js"></script>
+</head>
+<body>
+  <!-- Page réservée à l'enseignant : aucun lien du site n'y mène. Adresse : …/controle/ -->
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="bulle" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="gauche" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  </svg>
+
+  <header class="marque">
+    <a href="../index.html"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#bulle"/></svg></span>Les langues avec Monsieur Noé</a>
+  </header>
+  <main class="corps">
+    <div class="fil"><a class="retour" href="../index.html" aria-label="Retour à l'accueil"><svg class="ic" aria-hidden="true"><use href="#gauche"/></svg></a></div>
+    <h1>Page de contrôle</h1>
+    <p class="aide">Après une modification sur GitHub, attends environ 5 minutes, puis recharge cette page.</p>
+    <p class="aide legende">
+      <span class="etat ok" aria-hidden="true">✔</span> tout va bien
+      <span class="etat attention" aria-hidden="true">⚠</span> à vérifier
+      <span class="etat erreur" aria-hidden="true">✖</span> à corriger
+    </p>
+    <div id="resultats" aria-live="polite"><p class="aide">Vérification en cours…</p></div>
+    <noscript><p class="message">Cette page a besoin de JavaScript. Active-le dans ton navigateur.</p></noscript>
+  </main>
+</body>
+</html>

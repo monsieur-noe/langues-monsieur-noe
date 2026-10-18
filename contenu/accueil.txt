@@ -1,0 +1,6 @@
+# Ligne de bienvenue de l'écran d'accueil.
+# Les salutations sont séparées par « | ».
+# Un drapeau britannique s'affiche devant la 1re, un drapeau néerlandais devant la 2e,
+# aucun devant la 3e : tu peux changer les mots, les drapeaux suivent leur place.
+
+Hello! | Hallo! | Bonjour!
