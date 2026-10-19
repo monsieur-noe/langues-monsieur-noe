@@ -1,6 +1,5 @@
 titre: Vervoermiddelen
-# BROUILLON. Les traductions françaises sont de Claude : à relire.
-# Une phrase de ce chapitre manque dans les audios reçus : à compléter si vous en avez.
+# Traductions françaises de Claude, validées par l'enseignant le 2026-10-19.
 # Les dessins (images/<id>.svg) sont de Claude. Pour en changer un, dépose un fichier du même nom.
 
 [mots]
@@ -15,3 +14,8 @@ boot | de boot | le bateau | boot.svg
 auto | de auto | la voiture | auto.svg
 metro | de metro | le métro | metro.svg
 motor | de motor | la moto | motor.svg
+
+[phrases]
+# id | phrase | français | réponse à masquer (facultatif) | autres propositions (facultatif)
+hoe-ga-je-naar-school | Hoe ga je naar school? | Comment vas-tu à l'école ?
+ik-ga-naar-school | Ik ga ... naar school. | Je vais à l'école en vélo / à pied.

@@ -17,7 +17,7 @@ tien | tien | dix | texte:10
 
 [pistes]
 # id | titre | texte (facultatif) | français (facultatif)
-savoir-se-presenter | Savoir se présenter
+savoir-se-presenter | Savoir se présenter | Hallo! Ik ben Thomas en ik ben 8 jaar oud. Ik woon in Charleroi. Ik ben een jongen (of meisje) en ik zit in het derde leerjaar.
 
 [dictees]
 # id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)

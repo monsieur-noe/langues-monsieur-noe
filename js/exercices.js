@@ -4,6 +4,7 @@ import { el, icone } from './outils.js';
 import { creerLecteur, arreter } from './audio.js';
 import { chercherFichiers, visuel } from './cartes.js';
 import { positionReponse } from './donnees.js';
+import { avatar, chargerAvatar } from './avatar.js';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -187,6 +188,9 @@ function question(q, ctx, verifie, rang, total, fin) {
   const consigneSon = `contenu/${langue}/consignes/${q.variante}.m4a`;
   const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone(ic), texte);
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
+  // Un seul avatar, montré seulement après une réponse, à côté du message (décision du 2026-10-19).
+  const av = avatar('neutre');
+  const message = el('div', { class: 'message-ex' }, retour);
   const suite = el('button', { type: 'button', class: 'action', hidden: '' }, rang === total ? 'Terminer' : 'Suivant', icone('droite'));
   const boutons = choix.map(({ noeud, juste }) => {
     const b = el('button', { type: 'button', class: 'reponse' }, noeud);
@@ -194,13 +198,13 @@ function question(q, ctx, verifie, rang, total, fin) {
     return b;
   });
   const marquer = (b, juste) => { b.classList.add(juste ? 'juste' : 'faux'); b.prepend(el('span', { class: 'marque-ex' }, icone(juste ? 'coche' : 'croix'))); };
-  const dire = (ic2, txt) => retour.replaceChildren(icone(ic2), txt);
+  const dire = (ic2, txt, pose) => { retour.replaceChildren(icone(ic2), txt); av.pose(pose); message.prepend(av); };
 
   let essais = 0;
-  function terminer(juste, message, ic2) {
+  function terminer(juste, texte, ic2, pose) {
     for (const b of boutons) b.disabled = true;
     if (!juste) marquer(boutons.find((b) => b.juste), true);
-    dire(ic2, message);
+    dire(ic2, texte, pose);
     apres();
     if (lecteur) {
       if (!lecteurDansEnonce) retour.after(lecteur);
@@ -213,14 +217,14 @@ function question(q, ctx, verifie, rang, total, fin) {
   for (const b of boutons) {
     b.addEventListener('click', () => {
       marquer(b, b.juste);
-      if (b.juste) return terminer(true, 'Bravo !', 'sourire');
+      if (b.juste) return terminer(true, 'Bravo !', 'sourire', 'content');
       // Un bouton bloqué perd le focus : au clavier, on passe à la réponse suivante au lieu de repartir en haut.
       boutons.find((x) => !x.disabled && x !== b)?.focus();
       b.disabled = true;
-      if (verifie) return terminer(false, 'Pas grave, continue !', 'bulle');
+      if (verifie) return terminer(false, 'Pas grave, continue !', 'bulle', 'encourage');
       essais += 1;
-      if (essais < 2) return dire('tourner', 'Essaie encore !');
-      terminer(false, 'Voici la bonne réponse.', 'bulle');
+      if (essais < 2) return dire('tourner', 'Essaie encore !', 'reflechit');
+      terminer(false, 'Voici la bonne réponse.', 'bulle', 'explique');
     });
   }
 
@@ -230,7 +234,7 @@ function question(q, ctx, verifie, rang, total, fin) {
     el('div', { class: 'enonce' }, enonce),
     // Images en grille ; mots les uns sous les autres (« de » et « het » côte à côte).
     el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}` }, ...boutons),
-    retour, suite);
+    message, suite);
   zone.titre = titre;
   return zone;
 }
@@ -261,12 +265,14 @@ function boutonRecommencer(relancer) {
 function bilanVerifie(zone, total, rates, ctx, relancer) {
   const nb = etoiles(total - rates.length, total);
   const titre = el('h2', { tabindex: '-1' }, ['', 'Continue, tu progresses !', 'Bien joué !', 'Bravo !'][nb]);
+  // Une seule pose sur le bilan, selon les étoiles (décision du 2026-10-19).
+  const av = avatar(['', 'encourage', 'content', 'bravo'][nb]);
   const ratees = [...new Set(rates)].map((x) => el('li', {},
     x.ind && aUnVisuel(x) ? visuel(x, x.ind, ctx.langue) : '',
     el('span', { class: 'mot', lang: ctx.langue }, x.mot || x.phrase),
     x.son ? creerLecteur(`${ctx.dossier}audio/${x.id}.m4a`, { nom: x.mot || x.phrase }) : ''));
   zone.replaceChildren(el('div', { class: 'bilan' },
-    titre,
+    el('div', { class: 'tete-bilan' }, av, titre),
     el('p', { class: 'etoiles', role: 'img', 'aria-label': `${nb} étoile${nb > 1 ? 's' : ''} sur 3` },
       ...[1, 2, 3].map((k) => el('span', { class: k <= nb ? 'pleine' : '' }, icone('etoile')))),
     el('p', {}, `${total - rates.length} bonne${total - rates.length > 1 ? 's' : ''} réponse${total - rates.length > 1 ? 's' : ''} sur ${total}`),
@@ -282,7 +288,7 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
 
 function bilanEntraine(zone, relancer) {
   const titre = el('h2', { tabindex: '-1' }, icone('sourire'), 'C\'est fini, bravo !');
-  zone.replaceChildren(el('div', { class: 'bilan' }, titre, boutonRecommencer(relancer)));
+  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar('bravo'), titre), boutonRecommencer(relancer)));
   titre.focus();
 }
 
@@ -312,7 +318,7 @@ function choixExercice(deHet) {
 
 export async function afficherExercices(conteneur, donnees, dossier, langue, annee, verifie, exercice) {
   const consignes = Object.keys(CONSIGNES).map((v) => `contenu/${langue}/consignes/${v}.m4a`);
-  const { presents, indices } = await chercherFichiers(donnees, dossier, consignes);
+  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, consignes), chargerAvatar()]);
   const aSon = (x) => presents.has(`${dossier}audio/${x.id}.m4a`);
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));

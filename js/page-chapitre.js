@@ -4,6 +4,7 @@ import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './don
 import { parametre, couleur, el, icone, encadreErreurs } from './outils.js';
 import { afficherDecouvre } from './cartes.js';
 import { afficherExercices } from './exercices.js';
+import { avatar, chargerAvatar } from './avatar.js';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
@@ -40,6 +41,8 @@ function afficherExtras(donnees) {
   if (donnees.note_parents) {
     document.getElementById('note-parents').textContent = donnees.note_parents;
     document.getElementById('conseil').hidden = false;
+    // L'avatar « explique » n'apparaît que quand le conseil est ouvert (cahier 7.8).
+    chargerAvatar().then(() => document.getElementById('note-parents').before(avatar('explique')));
   }
   // Seul un lien https vers Quizlet est accepté (pas d'adresse piégée dans le fichier texte).
   if (/^https:\/\/([a-z0-9-]+\.)?quizlet\.com\//i.test(donnees.quizlet)) {
