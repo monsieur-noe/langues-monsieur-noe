@@ -178,6 +178,9 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
   border-radius: 1.5rem;
   box-shadow: var(--ombre-haute);
 }
+/* Quatre rubriques (avec « Je joue ») : deux lignes de deux sur téléphone, une ligne dès la tablette. */
+.segments.quatre { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 40rem) { .segments.quatre { grid-template-columns: repeat(4, 1fr); } }
 .bientot-ici { display: flex; align-items: center; gap: .75rem; min-height: 8rem; color: var(--gris); }
 .bientot-ici .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
 
@@ -475,3 +478,86 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------- Je joue ---------- */
+
+.num .ic { width: 1.9rem; height: 1.9rem; }
+.retour-jeux {
+  display: inline-flex; align-items: center; gap: .4rem;
+  min-height: 3.5rem; padding: 0 1rem 0 .6rem; margin-bottom: .75rem;
+  border: 1.5px solid var(--trait); border-radius: 1rem;
+  font-weight: 700; text-decoration: none;
+}
+.retour-jeux:hover { border-color: var(--encre); }
+/* Juist of fout : deux grands boutons, pictogramme au-dessus du texte. */
+.juist .reponse { flex-direction: column; min-height: 6rem; font-size: 1.25rem; font-weight: 700; }
+.juist .reponse .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
+/* Loto des sons : grille de 3 colonnes, jeton (rond avec coche) posé sur l'image trouvée. */
+.ecoute-loto { display: flex; justify-content: center; width: 100%; }
+.reponses.loto { grid-template-columns: repeat(3, 1fr); max-width: 20rem; gap: .5rem; }
+.case-loto { padding: .3rem; }
+.case-loto:disabled:not(.juste):not(.faux) { opacity: 1; } /* fermée avant l'écoute, mais l'image reste bien visible */
+.jeton {
+  position: absolute; inset: 0; margin: auto; width: 55%; height: 55%;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--c4); color: var(--surface); box-shadow: var(--ombre); opacity: .85;
+}
+.jeton .ic { width: 60%; height: 60%; stroke-width: 3; }
+.case-loto.gagnante { outline: 4px solid var(--acc); outline-offset: 2px; }
+.suite-loto { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+.action.secondaire { color: var(--encre); background: var(--surface); border: 2px solid var(--trait); }
+.retour-ex.bingo { font-size: 2rem; }
+.retour-ex.bingo .ic { color: #b45309; fill: #fbbf24; }
+/* Memory : cartes carrées ; dos avec « ? », face (son ou indice) montrée une fois retournée. */
+.reponses.memory { gap: .5rem; max-width: 20rem; }
+.reponses.memory.c3 { grid-template-columns: repeat(3, 1fr); }
+.reponses.memory.c4 { grid-template-columns: repeat(4, 1fr); max-width: 24rem; }
+.carte-memory { aspect-ratio: 1; padding: .3rem; }
+.dos-memory {
+  width: 100%; height: 100%; display: grid; place-items: center; border-radius: .9rem;
+  background: var(--acc); color: var(--surface); font-size: 2.25rem; font-weight: 700;
+}
+.face-memory { display: none; width: 100%; height: 100%; grid-template: 100% / 100%; place-items: center; }
+.face-memory > .ic { width: 55%; height: 55%; color: var(--acc); }
+.face-memory .francais { font-size: 1.125rem; line-height: 1.15; overflow-wrap: anywhere; }
+.carte-memory.retournee .dos-memory { display: none; }
+.carte-memory.retournee .face-memory { display: grid; animation: retourner .15s ease-out; }
+@keyframes retourner { from { transform: scaleX(0); } }
+.carte-memory.trouvee { border-color: var(--c4); background: #ecfdf3; }
+.face-memory > .carre, .face-memory > .tuile, .face-memory > .image { width: 100%; height: 100%; aspect-ratio: auto; }
+.carte-memory.recachee:not(.retournee) .dos-memory { animation: retourner .15s ease-out; }
+/* Jeu de l'oie : 12 cases en 3 rangées de 4, en zigzag ; départ (triangle) et arrivée (étoile). */
+.consigne-oie { display: flex; align-items: center; gap: .5rem; font-weight: 700; text-align: left; }
+.consigne-oie .ic { color: var(--acc); }
+.plateau {
+  list-style: none; padding: 0; margin: .5rem auto .75rem; width: 100%; max-width: 22rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem;
+}
+.case-oie {
+  position: relative; min-height: 3rem; display: grid; place-items: center;
+  border: 2px solid var(--trait); border-radius: .9rem; background: var(--fond);
+  color: var(--gris); font-weight: 700;
+}
+.case-oie > .ic { color: var(--acc); }
+.case-oie.arrivee > .ic { color: #b45309; fill: #fbbf24; }
+.case-oie.fete { border-color: #b45309; background: #fff7d6; }
+.pion {
+  position: absolute; inset: 0; margin: auto; width: 2.5rem; height: 2.5rem;
+  display: grid; place-items: center; border-radius: 50%;
+  background: var(--acc); color: var(--surface); box-shadow: var(--ombre-haute);
+}
+.pion .ic { width: 1.9rem; height: 1.9rem; }
+.pion.saute { animation: saut .3s ease-out; }
+@keyframes saut { 40% { transform: translateY(-.6rem); } }
+.tete-oie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem .75rem; }
+/* Phrases en désordre : la ligne où l'on range les mots, puis les mots mélangés en dessous. */
+.ligne-phrase {
+  width: 100%; min-height: 4.5rem; padding: .5rem;
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .5rem;
+  border: 2px dashed var(--trait); border-radius: 1.25rem; background: var(--fond);
+}
+.ligne-phrase.juste { border-style: solid; border-color: var(--c4); background: #ecfdf3; }
+.reserve-phrase { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
+.place-phrase:empty { display: none; }
+.mot-phrase { min-height: 3.5rem; padding: .4rem 1rem; font-size: 1.5rem; font-weight: 700; }
+.reponse.mot-phrase:disabled:not(.faux) { opacity: 1; }

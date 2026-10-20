@@ -193,16 +193,17 @@ export async function chargerTexte(chemin) {
 
 // Renvoie l'ensemble des chemins dont le fichier existe (audios, images).
 // Un fichier absent ne doit rien afficher à l'enfant : on demande seulement s'il existe (HEAD), sans le télécharger.
+// Chaque fichier n'est demandé qu'une fois par page, même si plusieurs parties de la page le cherchent.
+const dejaDemandes = new Map();
 export async function fichiersPresents(chemins) {
-  const presents = new Set();
-  await Promise.all(chemins.map(async (chemin) => {
-    try {
-      if ((await fetch(chemin, { method: 'HEAD' })).ok) presents.add(chemin);
-    } catch {
+  const reponses = await Promise.all(chemins.map((chemin) => {
+    if (!dejaDemandes.has(chemin)) {
       // Hors connexion ou autre souci : le fichier compte comme absent, sans message.
+      dejaDemandes.set(chemin, fetch(chemin, { method: 'HEAD' }).then((r) => r.ok, () => false));
     }
+    return dejaDemandes.get(chemin);
   }));
-  return presents;
+  return new Set(chemins.filter((_, k) => reponses[k]));
 }
 
 export function cheminChapitre(langue, annee, chapitre) {

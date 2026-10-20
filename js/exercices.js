@@ -134,8 +134,9 @@ export function planVerifie(dispo) {
 
 // ---------- Affichage ----------
 
-// Une question. `fin(juste)` est appelé quand elle est terminée (juste = réussie du premier coup).
-function question(q, ctx, verifie, rang, total, fin) {
+// Une question. `fin(premierCoup, juste)` est appelé quand elle est terminée (réussie du premier coup, réussie tout court).
+// Sans `total` (jeu de l'oie), ni compteur ni « Terminer ».
+export function question(q, ctx, verifie, rang, total, fin) {
   const { langue, n, dispo } = ctx;
   const son = (x) => (x.son ? creerLecteur(`${ctx.dossier}audio/${x.id}.m4a`, { nom: x.mot || x.phrase }) : null);
   const mot = (x) => el('span', { class: 'mot', lang: langue }, x.mot);
@@ -212,7 +213,7 @@ function question(q, ctx, verifie, rang, total, fin) {
     }
     suite.hidden = false;
     suite.focus();
-    suite.addEventListener('click', () => fin(juste && essais === 0));
+    suite.addEventListener('click', () => fin(juste && essais === 0, juste));
   }
   for (const b of boutons) {
     b.addEventListener('click', () => {
@@ -229,7 +230,7 @@ function question(q, ctx, verifie, rang, total, fin) {
   }
 
   const zone = el('div', { class: 'exercice' },
-    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${total}`)),
+    el('div', { class: 'tete-ex' }, titre, total ? el('p', { class: 'compteur' }, `${rang} / ${total}`) : ''),
     ctx.presents.has(consigneSon) ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false }) : '',
     el('div', { class: 'enonce' }, enonce),
     // Images en grille ; mots les uns sous les autres (« de » et « het » côte à côte).
@@ -286,9 +287,10 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
   titre.focus();
 }
 
-function bilanEntraine(zone, relancer) {
+// Fin de « Je m'entraîne », et aussi des jeux (`pose` de l'avatar, `autres` : des lignes de plus sous le titre).
+export function bilanEntraine(zone, relancer, pose = 'bravo', ...autres) {
   const titre = el('h2', { tabindex: '-1' }, icone('sourire'), 'C\'est fini, bravo !');
-  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar('bravo'), titre), boutonRecommencer(relancer)));
+  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar(pose), titre), ...autres, boutonRecommencer(relancer)));
   titre.focus();
 }
 

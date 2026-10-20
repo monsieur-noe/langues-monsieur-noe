@@ -5,11 +5,13 @@ import { parametre, couleur, el, icone, encadreErreurs } from './outils.js';
 import { afficherDecouvre } from './cartes.js';
 import { afficherExercices } from './exercices.js';
 import { avatar, chargerAvatar } from './avatar.js';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
   { id: 'entraine', nom: 'Je m\'entraîne', icone: 'crayon' },
   { id: 'verifie', nom: 'Je vérifie', icone: 'etoile' },
+  { id: 'joue', nom: 'Je joue', icone: 'puzzle' },
 ];
 
 const langue = parametre('langue');
@@ -19,9 +21,12 @@ const sens = parametre('sens'); // 'indice' : l'image (ou le français) d'abord,
 const rubrique = RUBRIQUES.find((r) => r.id === parametre('rubrique')) || RUBRIQUES[0];
 const message = document.getElementById('message');
 
-function afficherOnglets() {
+// « Je joue » n'apparaît que si au moins un jeu est possible dans ce chapitre.
+function afficherOnglets(avecJeux) {
   const nav = document.getElementById('onglets');
-  for (const r of RUBRIQUES) {
+  // Quatre onglets : deux lignes de deux sur téléphone (classe lue par le CSS).
+  nav.classList.toggle('quatre', avecJeux);
+  for (const r of RUBRIQUES.filter((x) => avecJeux || x.id !== 'joue')) {
     nav.append(el('a', {
       class: 'seg',
       href: `chapitre.html?langue=${langue}&annee=${annee}&chapitre=${chapitre}&rubrique=${r.id}${sens ? `&sens=${sens}` : ''}`,
@@ -30,9 +35,10 @@ function afficherOnglets() {
   }
 }
 
-function afficherRubrique(donnees) {
+function afficherRubrique(donnees, jeux) {
   const zone = document.getElementById('rubrique');
   const dossier = cheminChapitre(langue, annee, chapitre);
+  if (rubrique.id === 'joue') return afficherJeux(zone, jeux, parametre('jeu'));
   if (rubrique.id === 'decouvre') return afficherDecouvre(zone, donnees, dossier, langue, sens === 'indice');
   return afficherExercices(zone, donnees, dossier, langue, annee, rubrique.id === 'verifie', parametre('exercice'));
 }
@@ -87,8 +93,9 @@ async function demarrer() {
   document.title = `${titre.textContent} · Les langues avec Monsieur Noé`;
   if (donnees.erreurs.length) message.append(encadreErreurs(donnees.erreurs, 'Certaines lignes du chapitre sont ignorées :'));
 
-  afficherOnglets();
-  await afficherRubrique(donnees);
+  const jeux = await contenuJeux(donnees, cheminChapitre(langue, annee, chapitre), langue, annee);
+  afficherOnglets(jeuxPossibles(jeux).length > 0);
+  await afficherRubrique(donnees, jeux);
   afficherExtras(donnees);
   document.getElementById('contenu').hidden = false;
 }
