@@ -91,7 +91,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: '', note_parents: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: '', note_parents: '', couleurs: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -111,11 +111,11 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       // En-tête : lignes « clé: valeur » avant la première section.
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
-        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: » ou « note_parents: ».');
-      } else if (['titre', 'quizlet', 'note_parents'].includes(m[1])) {
+        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: » ou « couleurs: ».');
+      } else if (['titre', 'quizlet', 'note_parents', 'couleurs'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: » et « note_parents: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: » et « couleurs: ».`);
       }
       continue;
     }

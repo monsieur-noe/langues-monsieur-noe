@@ -18,6 +18,11 @@ titre: Titre du chapitre
 # Un conseil pour les parents (facultatif ; enlève le # pour l'activer) :
 # note_parents: Écrivez ici votre conseil.
 
+# Exercice « Couleurs » (facultatif ; enlève le # pour l'activer) : « De bus is rood. »
+# Les dessins SVG de Claude dont une partie est marquée class="teinte" sont repeints
+# dans les couleurs du chapitre indiqué ici (son nom de dossier).
+# couleurs: kleuren
+
 [mots]
 # id | mot (avec l'article pour un nom : de, het) | français | indice (facultatif)
 # Exemples :

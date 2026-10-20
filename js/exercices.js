@@ -6,6 +6,7 @@ import { chercherFichiers, visuel } from './cartes.js';
 import { positionReponse } from './donnees.js';
 import { avatar, chargerAvatar } from './avatar.js';
 import { serieOrdre } from './ordre.js';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -308,8 +309,8 @@ function dictee(d, ctx) {
       d.francais ? el('p', { class: 'fr' }, ...lignes(d.francais)) : ''));
 }
 
-// Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ?exercice=ordre, ?exercice=dictees).
-const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], ordre: ['Mots en ordre', 'ordre'], dictees: ['Dictées', 'haut-parleur'] };
+// Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ordre, couleurs ou dictees).
+const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'] };
 function choixExercice(choix, actif) {
   const lien = (valeur) => {
     const params = new URLSearchParams(location.search);
@@ -349,9 +350,10 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const avecMelange = unites(dispo).size > 0;
   const avecDeHet = dispo['de-het'].length > 0;
   const avecOrdre = !verifie && donnees.ordre.length > 0; // « Mots en ordre » : seulement dans « Je m'entraîne »
+  const couleurs = verifie ? null : await preparerCouleurs(donnees, mots, langue, annee); // exercice « Couleurs » (ligne couleurs:)
   const dictees = verifie ? [] : donnees.dictees.filter(aSon); // dictées : leur propre entrée (demande du 2026-10-20)
   // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
-  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', dictees.length > 0 && 'dictees'].filter((x) => x !== false);
+  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => x !== false);
   const actif = choix.includes(exercice) ? exercice : choix[0];
   const deHet = actif === 'de-het';
   if (!verifie && choix.length > 1) parties.push(choixExercice(choix, actif));
@@ -360,6 +362,7 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const plan = () => (verifie ? planVerifie(dispo) : planEntraine(dispo, deHet));
   const lancer = () => {
     if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
+    if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });
     if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => dictee(d, ctx)));
     const p = plan();
     serie(zone, p, ctx, verifie, (rates) => (verifie

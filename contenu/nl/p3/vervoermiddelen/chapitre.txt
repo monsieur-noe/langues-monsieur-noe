@@ -1,4 +1,6 @@
 titre: Vervoermiddelen
+# couleurs: active l'exercice « Couleurs » (Je m'entraîne) avec les couleurs du chapitre indiqué.
+couleurs: kleuren
 # Traductions françaises de Claude, validées par l'enseignant le 2026-10-19.
 # Les dessins (images/<id>.svg) sont de Claude. Pour en changer un, dépose un fichier du même nom.
 

@@ -74,5 +74,7 @@ export function creerLecteur(chemin, { nom, large = false, avecBarre = true }) {
   maj();
   const racine = el('div', { class: large ? 'lecteur-audio large' : 'lecteur-audio' }, ...enfants);
   racine.jouer = () => { audio.currentTime = 0; lire(); };
+  // Signal « fin » quand le son est fini : sert à enchaîner deux sons (exercice « Couleurs »).
+  audio.addEventListener('ended', () => racine.dispatchEvent(new Event('fin')));
   return racine;
 }
