@@ -54,8 +54,11 @@ function afficherExtras(donnees) {
   if (/^https:\/\/([a-z0-9-]+\.)?quizlet\.com\//i.test(donnees.quizlet)) {
     const p = document.getElementById('quizlet');
     p.append(el('a', { href: donnees.quizlet, target: '_blank', rel: 'noopener noreferrer' },
-      'Réviser sur Quizlet (site externe, avec un adulte)'));
+      'Pour aller plus loin : révise sur Quizlet ', el('strong', { class: 'ici' }, 'ici'),
+      " (site externe, demande d'abord l'accord de tes parents)"));
     p.hidden = false;
+    // Petit avatar « reflechit » à côté du lien (demande de l'enseignant du 2026-10-20).
+    chargerAvatar().then(() => p.prepend(avatar('reflechit')));
   }
 }
 

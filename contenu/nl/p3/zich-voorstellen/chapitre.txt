@@ -1,4 +1,5 @@
 titre: Zich voorstellen
+quizlet: https://quizlet.com/be/1224987302/nombres-0-10-neerlandais-flash-cards/
 # BROUILLON : seuls les nombres, les dictées et la piste « Savoir se présenter » sont là. Le reste du chapitre est à compléter.
 
 [mots]

@@ -307,8 +307,10 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .conseil[open] summary::after { content: "−"; }
 .conseil p { padding: 0 1rem 1rem; }
 
-.quizlet { margin-top: 1.25rem; }
-.quizlet a { display: inline-flex; align-items: center; min-height: 3.5rem; }
+.quizlet { margin-top: 1.25rem; display: flex; align-items: center; gap: .6rem; }
+.quizlet .avatar { height: 4.5rem; } /* petit, à côté du lien */
+.quizlet .ici { padding: 0 .3rem; border-radius: .4rem; background: var(--acc); color: var(--surface); }
+.quizlet a { display: block; padding: .5rem 0; line-height: 1.4; } /* zone de toucher assez haute (au moins 56 px avec deux lignes) */
 
 /* ---------- Je m'entraîne, Je vérifie (js/exercices.js) ---------- */
 

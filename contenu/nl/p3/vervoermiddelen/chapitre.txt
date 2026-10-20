@@ -1,4 +1,5 @@
 titre: Vervoermiddelen
+quizlet: https://quizlet.com/be/1224988834/moyens-de-transport-neerlandais-flash-cards/
 # couleurs: active l'exercice « Couleurs » (Je m'entraîne) avec les couleurs du chapitre indiqué.
 couleurs: kleuren
 # Traductions françaises de Claude, validées par l'enseignant le 2026-10-19.
