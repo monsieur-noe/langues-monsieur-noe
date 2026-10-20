@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <title>Les langues avec Monsieur Noé</title>
+  <circle cx="64" cy="36" r="30" fill="#F08A24"/>
+  <path d="M84 54L96 74L72 62Z" fill="#F08A24"/>
+  <circle cx="42" cy="56" r="37.5" fill="#FFFFFF"/>
+  <circle cx="42" cy="56" r="34" fill="#2E5AA8"/>
+  <path d="M16 76L6 96L32 86Z" fill="#2E5AA8"/>
+  <path d="M29 72V40L55 70V38" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
