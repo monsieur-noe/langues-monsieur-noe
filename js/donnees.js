@@ -23,6 +23,7 @@ const SECTIONS = {
   phrases: [3, 5, 'id | phrase | français | réponse à masquer (facultatif) | autres propositions (facultatif)'],
   pistes: [2, 4, 'id | titre | texte (facultatif) | français (facultatif)'],
   dictees: [3, 4, 'id | titre | texte de la dictée | français (facultatif)'],
+  ordre: [2, 3, 'id | cases séparées par « / » | son à écouter à la fin (facultatif)'],
 };
 
 // Garde les lignes utiles avec leur numéro (lignes vides et # ignorées).
@@ -90,7 +91,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: '', note_parents: '', mots: [], phrases: [], pistes: [], dictees: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: '', note_parents: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -100,7 +101,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     if (titreSection) {
       section = titreSection[1].trim().toLowerCase();
       if (!SECTIONS[section]) {
-        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes] et [dictees].`);
+        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes], [dictees] et [ordre].`);
         section = 'inconnue';
       }
       continue;
@@ -148,6 +149,12 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       err(num, `la couleur « ${c[3].slice(8).trim()} » n'est pas reconnue. Écris un de ces noms : ${Object.keys(COULEURS).join(', ')} ; ou un code comme couleur:#C62828.`);
       continue;
     }
+    // [ordre] : « / » sépare les cases ; ce qui est entre deux « / » forme une seule case.
+    const cases = section === 'ordre' ? c[1].split('/').map((x) => x.trim()).filter(Boolean) : [];
+    if (section === 'ordre' && cases.length < 2) {
+      err(num, 'il faut au moins 2 cases, séparées par « / » (exemple : Ik / woon / in / Charleroi.).');
+      continue;
+    }
     if (section === 'mots' && c[3]?.startsWith('texte:') && !c[3].slice(6).trim()) {
       err(num, 'rien n\'est écrit après « texte: ». Écris ce qu\'il faut afficher en grand (exemple : texte:7).');
       continue;
@@ -167,6 +174,8 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     } else if (section === 'pistes') {
       const [, titre, texteP = '', francais = ''] = c;
       resultat.pistes.push({ id, titre, texte: texteP, francais, ligne: num });
+    } else if (section === 'ordre') {
+      resultat.ordre.push({ id, cases, son: c[2] || '', ligne: num });
     } else {
       const [, titre, texteD, francais = ''] = c;
       resultat.dictees.push({ id, titre, texte: texteD, francais, ligne: num });

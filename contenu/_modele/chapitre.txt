@@ -48,3 +48,10 @@ titre: Titre du chapitre
 # id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)
 # Exemple :
 # dictee-1 | Dictée 1 | Ik heet Lina. / Ik ben acht jaar.
+
+[ordre]
+# id | cases séparées par « / » | son à écouter à la fin (facultatif : l'identifiant d'un audio du chapitre)
+# Jeu « Mots en ordre » de « Je m'entraîne » : l'enfant remet les cases dans le bon ordre.
+# Ce qui est entre deux « / » forme une seule case. Une ligne = une manche (au moins 2 cases).
+# Exemple :
+# presenter-1 | Ik / ben / een jongen (of meisje) | savoir-se-presenter

@@ -49,12 +49,20 @@ function lancer(zone, contenu, difficile) {
   const position = el('p', { class: 'compteur', 'aria-live': 'polite' });
   const questionZone = el('div', { class: 'zone-exercice' });
 
-  function poser(saut) {
+  function poser(anime) {
+    const avant = pion.isConnected ? pion.getBoundingClientRect() : null;
     cases[pos].append(pion);
     position.textContent = `Case ${pos + 1} / ${CASES}`;
-    // Petit saut du pion à l'arrivée sur sa case (coupé si l'appareil demande moins d'animations).
-    pion.classList.remove('saute');
-    if (saut) { void pion.offsetWidth; pion.classList.add('saute'); }
+    if (!anime || !avant || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Le pion glisse de son ancienne case vers la nouvelle en faisant un petit bond (en avant comme en arrière).
+    const apres = pion.getBoundingClientRect();
+    const dx = avant.left - apres.left;
+    const dy = avant.top - apres.top;
+    pion.animate([
+      { transform: `translate(${dx}px, ${dy}px)` },
+      { transform: `translate(${dx / 2}px, ${dy / 2 - 18}px)` },
+      { transform: 'translate(0, 0)' },
+    ], { duration: 450, easing: 'ease-in-out' });
   }
 
   function tour(_premierCoup, juste) {
@@ -62,8 +70,8 @@ function lancer(zone, contenu, difficile) {
     const nouvelle = Math.max(0, pos + (juste === undefined ? 0 : pas(juste, difficile)));
     if (nouvelle !== pos) {
       pos = nouvelle;
+      zone.scrollIntoView({ block: 'start' }); // le plateau revient à l'écran pour voir le pion bouger
       poser(true);
-      zone.scrollIntoView({ block: 'start' }); // le plateau revient à l'écran pour voir le pion avancer
     }
     if (pos === CASES - 1) {
       cases[pos].classList.add('fete');

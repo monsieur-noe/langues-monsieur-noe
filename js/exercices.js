@@ -5,6 +5,7 @@ import { creerLecteur, arreter } from './audio.js';
 import { chercherFichiers, visuel } from './cartes.js';
 import { positionReponse } from './donnees.js';
 import { avatar, chargerAvatar } from './avatar.js';
+import { serieOrdre } from './ordre.js';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -307,20 +308,36 @@ function dictee(d, ctx) {
       d.francais ? el('p', { class: 'fr' }, ...lignes(d.francais)) : ''));
 }
 
-// Lien vers « Exercices » ou « De ou het ? », gardé dans l'adresse (?exercice=de-het).
-function choixExercice(deHet) {
-  const lien = (valeur, nom, ic) => {
+// Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ?exercice=ordre, ?exercice=dictees).
+const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], ordre: ['Mots en ordre', 'ordre'], dictees: ['Dictées', 'haut-parleur'] };
+function choixExercice(choix, actif) {
+  const lien = (valeur) => {
     const params = new URLSearchParams(location.search);
     if (valeur) params.set('exercice', valeur); else params.delete('exercice');
-    return el('a', { class: 'seg', href: `?${params}`, 'aria-current': (valeur === 'de-het') === deHet && 'page' }, icone(ic), nom);
+    const [nom, ic] = ENTREES[valeur];
+    return el('a', { class: 'seg', href: `?${params}`, 'aria-current': valeur === actif && 'page' }, icone(ic), nom);
   };
-  return el('nav', { class: 'segments sens', 'aria-label': 'Choix de l\'exercice' },
-    lien('', 'Exercices', 'crayon'), lien('de-het', 'De ou het ?', 'bulle'));
+  return el('nav', { class: `segments sens n${choix.length}`, 'aria-label': 'Choix de l\'exercice' }, ...choix.map(lien));
+}
+
+// « Mots en ordre » : les manches de [ordre], dans l'ordre du fichier ; à la fin, le son de tout le texte.
+function lancerOrdre(zone, donnees, ctx) {
+  const { dossier, langue, presents } = ctx;
+  const audio = (id) => (id && presents.has(`${dossier}audio/${id}.m4a`) ? `${dossier}audio/${id}.m4a` : '');
+  const items = donnees.ordre.map((o) => ({ cases: o.cases, audio: audio(o.id), francais: '' }));
+  const sons = [...new Set(donnees.ordre.map((o) => audio(o.son)).filter(Boolean))];
+  serieOrdre(zone, items, langue, () => lancerOrdre(zone, donnees, ctx),
+    el('p', {}, 'Tu as remis tous les mots en ordre !'),
+    ...sons.map((chemin) => el('div', { class: 'pile' },
+      el('p', {}, icone('haut-parleur'), ' Écoute tout le texte :'),
+      creerLecteur(chemin, { nom: 'tout le texte', large: true }))));
 }
 
 export async function afficherExercices(conteneur, donnees, dossier, langue, annee, verifie, exercice) {
   const consignes = Object.keys(CONSIGNES).map((v) => `contenu/${langue}/consignes/${v}.m4a`);
-  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, consignes), chargerAvatar()]);
+  // Sons facultatifs de [ordre] : un par manche, et celui à écouter à la fin.
+  const sonsOrdre = donnees.ordre.flatMap((o) => [o.id, o.son]).filter(Boolean).map((id) => `${dossier}audio/${id}.m4a`);
+  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre]), chargerAvatar()]);
   const aSon = (x) => presents.has(`${dossier}audio/${x.id}.m4a`);
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
@@ -331,26 +348,30 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const parties = [];
   const avecMelange = unites(dispo).size > 0;
   const avecDeHet = dispo['de-het'].length > 0;
-  // Sans exercice « mélangé » possible, « De ou het ? » est le seul exercice.
-  const deHet = avecDeHet && (exercice === 'de-het' || !avecMelange);
-  if (!verifie && avecMelange && avecDeHet) parties.push(choixExercice(deHet));
+  const avecOrdre = !verifie && donnees.ordre.length > 0; // « Mots en ordre » : seulement dans « Je m'entraîne »
+  const dictees = verifie ? [] : donnees.dictees.filter(aSon); // dictées : leur propre entrée (demande du 2026-10-20)
+  // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
+  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', dictees.length > 0 && 'dictees'].filter((x) => x !== false);
+  const actif = choix.includes(exercice) ? exercice : choix[0];
+  const deHet = actif === 'de-het';
+  if (!verifie && choix.length > 1) parties.push(choixExercice(choix, actif));
 
   const zone = el('div', { class: 'zone-exercice' });
   const plan = () => (verifie ? planVerifie(dispo) : planEntraine(dispo, deHet));
   const lancer = () => {
+    if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
+    if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => dictee(d, ctx)));
     const p = plan();
     serie(zone, p, ctx, verifie, (rates) => (verifie
       ? bilanVerifie(zone, p.length, rates, ctx, lancer)
       : bilanEntraine(zone, lancer)));
   };
-  if (avecMelange || avecDeHet) {
+  if (choix.length) {
     parties.push(zone);
     lancer();
   } else {
     parties.push(el('p', { class: 'bientot-ici' }, icone(verifie ? 'etoile' : 'crayon'), 'Pas encore d\'exercice dans ce chapitre.'));
   }
 
-  const dictees = verifie ? [] : donnees.dictees.filter(aSon);
-  if (dictees.length) parties.push(el('section', { class: 'bloc' }, el('h2', {}, 'Dictées'), ...dictees.map((d) => dictee(d, ctx))));
   conteneur.replaceChildren(...parties);
 }

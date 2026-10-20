@@ -1,0 +1,91 @@
+// Remettre des cases dans l'ordre : moteur commun au jeu « Les phrases en désordre » (Je joue)
+// et à « Mots en ordre » (Je m'entraîne, section [ordre] de chapitre.txt).
+// Les cases sont mélangées sur de gros boutons ; un toucher les range sur la ligne, un toucher sur la ligne
+// les renvoie en bas. Ligne complète : bon ordre = bravo et suite ; sinon on réessaie, sans limite.
+import { el, icone } from './outils.js';
+import { creerLecteur, arreter } from './audio.js';
+import { melanger, bilanEntraine } from './exercices.js';
+import { avatar } from './avatar.js';
+
+// Les cases dans le désordre, jamais dans le bon ordre (sinon il n'y aurait rien à faire).
+export function desordre(cases) {
+  if (new Set(cases).size < 2) return [...cases];
+  let m;
+  do m = melanger(cases); while (m.join(' ') === cases.join(' '));
+  return m;
+}
+
+// Une manche. `item` : { cases, audio (chemin du son à écouter pour vérifier, ou rien), francais }.
+function manche(item, langue, rang, total, fin) {
+  const { cases } = item;
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('crayon'), 'Touche les mots dans le bon ordre.');
+  const ligne = el('div', { class: 'ligne-phrase', lang: langue, 'aria-label': 'Ta phrase' });
+  const reserve = el('div', { class: 'reserve-phrase', lang: langue });
+  const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
+  const av = avatar('neutre');
+  av.hidden = true; // l'avatar n'apparaît qu'après une ligne complète
+  const message = el('div', { class: 'message-ex' }, av, retour);
+  const ecoute = el('div', { class: 'pile', hidden: '' });
+  const suite = el('button', { type: 'button', class: 'action', hidden: '' }, rang === total ? 'Terminer' : 'Suivant', icone('droite'));
+  suite.addEventListener('click', fin);
+  let lecteur = null;
+
+  // Chaque bouton garde sa place d'origine en bas, pour y revenir quand on le retire de la ligne.
+  const boutons = desordre(cases).map((texte) => {
+    const b = el('button', { type: 'button', class: 'reponse mot-phrase' }, texte);
+    const place = el('span', { class: 'place-phrase' }, b);
+    b.addEventListener('click', () => {
+      if (!suite.hidden) return;
+      if (b.parentNode === place) ligne.append(b); else place.append(b);
+      verifier();
+    });
+    reserve.append(place);
+    return b;
+  });
+
+  function verifier() {
+    retour.replaceChildren();
+    av.hidden = true;
+    if (ligne.children.length < cases.length) { ecoute.hidden = true; return; }
+    // Ligne complète : on compare le texte des cases (deux cases identiques sont interchangeables).
+    const juste = [...ligne.children].map((b) => b.textContent).join(' ') === cases.join(' ');
+    if (item.audio) {
+      lecteur ||= creerLecteur(item.audio, { nom: 'la phrase' });
+      ecoute.replaceChildren(el('p', {}, icone('haut-parleur'), ' Écoute pour vérifier :'), lecteur);
+      ecoute.hidden = false;
+    }
+    if (juste) {
+      ligne.classList.add('juste');
+      for (const b of boutons) b.disabled = true;
+      retour.replaceChildren(icone('sourire'), 'Bravo !');
+      av.pose('content');
+      if (item.francais) { ecoute.append(el('p', { class: 'fr', lang: 'fr' }, item.francais)); ecoute.hidden = false; }
+      lecteur?.jouer(); // après un toucher : permis sur iPhone
+      suite.hidden = false;
+      suite.focus();
+    } else {
+      retour.replaceChildren(icone('tourner'), 'Essaie encore !');
+      av.pose('encourage');
+    }
+  }
+
+  const zone = el('div', { class: 'exercice' },
+    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${total}`)),
+    ligne, reserve, message, ecoute, suite);
+  zone.titre = titre;
+  return zone;
+}
+
+// Enchaîne les manches, puis le bilan (`relancer` pour « Recommencer », `fin` : lignes de plus sous le titre).
+export function serieOrdre(zone, items, langue, relancer, ...fin) {
+  let i = 0;
+  function suivante() {
+    arreter();
+    if (i === items.length) return bilanEntraine(zone, relancer, 'bravo', ...fin);
+    i += 1;
+    const q = manche(items[i - 1], langue, i, items.length, suivante);
+    zone.replaceChildren(q);
+    if (i > 1) q.titre.focus();
+  }
+  suivante();
+}
