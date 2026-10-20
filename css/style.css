@@ -216,7 +216,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
   background: var(--acc); color: var(--surface);
   font-size: 2rem; font-weight: 700; line-height: 1.1; overflow-wrap: anywhere;
 }
-.tuile.court { font-size: 6rem; }
+.tuile.court { font-size: 6rem; overflow-wrap: normal; white-space: nowrap; } /* « 10 » ne se coupe jamais en deux lignes */
 .image { object-fit: contain; }
 /* Carré de couleur : bordure foncée pour que le blanc et le jaune restent visibles. */
 .carre {
@@ -346,7 +346,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .reponse .mot { font-size: 1.625rem; }
 .reponses.visuels .reponse { padding: .4rem; }
 .reponse .tuile, .reponse .image, .reponse .carre { width: 100%; height: auto; aspect-ratio: 1; }
-.reponse .tuile { font-size: 1.25rem; }
+.reponse .tuile { font-size: 1.25rem; padding: .25rem; }
 .reponse .tuile.court { font-size: 2.75rem; }
 /* Juste ou faux : jamais la couleur seule, toujours une coche ou une croix (cahier 8). */
 .reponse.juste { border-color: var(--c4); background: #ecfdf3; }

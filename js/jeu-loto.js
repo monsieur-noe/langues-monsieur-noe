@@ -6,7 +6,17 @@ import { visuel } from './cartes.js';
 import { melanger, bilanEntraine } from './exercices.js';
 import { avatar } from './avatar.js';
 
-const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
+// Mots utilisables dans la grille : avec un indice visuel et un son, et jamais deux fois le même indice
+// (deux « texte:10 » ou deux fois la même couleur rendraient deux cases identiques : on n'en garde qu'une).
+export function motsDuLoto(mots) {
+  const parIndice = new Map();
+  for (const m of melanger(mots)) {
+    if (m.ind.type === 'francais' || !m.son) continue;
+    const cle = `${m.ind.type}:${m.ind.src || m.ind.fond || m.ind.texte}`;
+    if (!parIndice.has(cle)) parIndice.set(cle, m);
+  }
+  return [...parIndice.values()];
+}
 
 // 3 × 3 dès 9 mots, sinon 2 × 3 (au moins 6 mots) ; toujours 3 colonnes.
 export const tailleLoto = (nb) => (nb >= 9 ? 9 : nb >= 6 ? 6 : 0);
@@ -27,8 +37,8 @@ export const ligneComplete = (lignes, jetons) => lignes.find((l) => l.every((k) 
 
 function lancer(zone, contenu) {
   const { langue, dossier } = contenu;
-  const pool = avecImageEtSon(contenu);
-  const grille = melanger(pool).slice(0, tailleLoto(pool.length));
+  const pool = motsDuLoto(contenu.mots);
+  const grille = pool.slice(0, tailleLoto(pool.length)); // déjà mélangés
   const appels = melanger(grille.map((_, k) => k)); // ordre des mots appelés : chacun une fois
   const lignes = lignesLoto(grille.length);
   const jetons = new Set();
@@ -127,6 +137,6 @@ export default {
   nom: 'Le loto des sons',
   icone: 'grille',
   // Au moins 6 mots avec un indice visuel (dessin, couleur, chiffre) et un son.
-  possible: (contenu) => tailleLoto(avecImageEtSon(contenu).length) > 0,
+  possible: (contenu) => tailleLoto(motsDuLoto(contenu.mots).length) > 0,
   lancer,
 };
