@@ -71,6 +71,9 @@ a { color: inherit; text-underline-offset: 3px; }
 }
 .marque > a { display: inline-flex; align-items: center; gap: .65rem; min-height: 3.5rem; font-weight: 700; text-decoration: none; }
 .logo { width: 2.5rem; height: 2.5rem; border-radius: .75rem; display: grid; place-items: center; background: var(--encre); color: var(--surface); }
+/* Logo de l'enseignant (js/logo.js) : remplace la bulle, sans le fond foncé. */
+.logo.dessin { width: 3rem; height: 3rem; background: none; }
+.logo.dessin img { width: 100%; height: 100%; object-fit: contain; }
 
 .corps { width: 100%; max-width: calc(var(--largeur) + 2.5rem); margin: 0 auto; padding: 1.75rem 1.25rem 1rem; flex: 1; }
 h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: balance; }
