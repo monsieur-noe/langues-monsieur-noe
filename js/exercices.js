@@ -353,7 +353,8 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const couleurs = verifie ? null : await preparerCouleurs(donnees, mots, langue, annee); // exercice « Couleurs » (ligne couleurs:)
   const dictees = verifie ? [] : donnees.dictees.filter(aSon); // dictées : leur propre entrée (demande du 2026-10-20)
   // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
-  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => x !== false);
+  // Seules les entrées possibles restent (une condition fausse donne false ou null, jamais un nom d'entrée).
+  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
   const actif = choix.includes(exercice) ? exercice : choix[0];
   const deHet = actif === 'de-het';
   if (!verifie && choix.length > 1) parties.push(choixExercice(choix, actif));
