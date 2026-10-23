@@ -579,3 +579,8 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .question-couleurs { color: var(--gris); font-weight: 700; }
 .choix-couleurs { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ecoute-couleurs { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+/* Message « Oups » quand une page ne s'affiche pas (js/oups.js) : avatar à côté du texte. */
+.oups { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; padding: 1.25rem; background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1.5rem; box-shadow: var(--ombre); }
+.oups .avatar { height: 9rem; }
+.oups-titre { font-size: 1.5rem; font-weight: 700; }
+.oups .action { margin-top: .75rem; }
