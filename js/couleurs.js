@@ -3,9 +3,9 @@
 // le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
 import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
+import { creerLecteur } from './audio.js';
 import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine } from './exercices.js';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser } from './exercices.js';
 import { avatar } from './avatar.js';
 
 const NOMBRE = 10;
@@ -69,7 +69,7 @@ function dessin(vehicule, fond) {
   return document.importNode(svg, true);
 }
 
-function question(q, ctx, rang, fin) {
+function question(q, ctx, rang, total, fin) {
   const { langue, dossier } = ctx;
   const art = article(q.vehicule.mot);
   const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('crayon'), 'Complète la phrase.');
@@ -78,8 +78,9 @@ function question(q, ctx, rang, fin) {
   av.hidden = true; // l'avatar n'apparaît qu'après une réponse
   const message = el('div', { class: 'message-ex' }, av, retour);
   const ecoute = el('div', { class: 'ecoute-couleurs', hidden: '' });
-  const suite = el('button', { type: 'button', class: 'action', hidden: '' }, rang === NOMBRE ? 'Terminer' : 'Suivant', icone('droite'));
-  suite.addEventListener('click', fin);
+  const suite = el('button', { type: 'button', class: 'action', hidden: '' }, rang === total ? 'Terminer' : 'Suivant', icone('droite'));
+  let premierCoup = true; // les deux trous trouvés sans erreur ; sinon la question repassera
+  suite.addEventListener('click', () => fin(premierCoup));
   const dire = (ic, texte, pose) => { retour.replaceChildren(icone(ic), texte); av.pose(pose); };
 
   const trous = [el('span', { class: 'trou' }, '…'), el('span', { class: 'trou' }, '…')];
@@ -97,6 +98,7 @@ function question(q, ctx, rang, fin) {
     ecoute.replaceChildren(...[sonV, sonC].filter(Boolean));
     ecoute.hidden = !sonV && !sonC;
     (sonV || sonC)?.jouer(); // après un toucher : permis sur iPhone
+    if (!premierCoup) suite.firstChild.textContent = 'Suivant'; // elle repassera : pas encore « Terminer »
     suite.hidden = false;
     suite.focus();
   }
@@ -122,6 +124,7 @@ function question(q, ctx, rang, fin) {
         b.disabled = true;
         if (b.juste) { dire('sourire', 'Bravo !', 'content'); return remplir(); }
         essais += 1;
+        premierCoup = false;
         if (essais < 2) return dire('tourner', 'Essaie encore !', 'reflechit');
         marquer(boutons.find((x) => x.juste), true);
         dire('bulle', 'Voici la bonne réponse.', 'explique');
@@ -133,24 +136,18 @@ function question(q, ctx, rang, fin) {
   });
 
   const zone = el('div', { class: 'exercice ex-couleurs' },
-    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${NOMBRE}`)),
+    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${total}`)),
     el('div', { class: 'enonce' }, dessin(q.vehicule, q.couleur.fond)),
     el('p', { class: 'phrase', lang: langue }, `${art[0].toUpperCase()}${art.slice(1)} `, trous[0], ' is ', trous[1], '.'),
     ...blocs, message, ecoute, suite);
   zone.titre = titre;
+  zone.suite = suite;
   return zone;
 }
 
+// Les questions ratées repassent jusqu'à ce que tout soit réussi (demande du 2026-10-24).
 export function lancerCouleurs(zone, ctx) {
-  const plan = planCouleurs(ctx.vehicules, ctx.couleurs, NOMBRE);
-  let i = 0;
-  function suivante() {
-    arreter();
-    if (i === plan.length) return bilanEntraine(zone, () => lancerCouleurs(zone, ctx));
-    i += 1;
-    const q = question(plan[i - 1], ctx, i, suivante);
-    zone.replaceChildren(q);
-    if (i > 1) q.titre.focus();
-  }
-  suivante();
+  serieARepasser(zone, planCouleurs(ctx.vehicules, ctx.couleurs, NOMBRE),
+    (q, rang, total, fin) => question(q, ctx, rang, total, fin),
+    () => bilanEntraine(zone, () => lancerCouleurs(zone, ctx)));
 }

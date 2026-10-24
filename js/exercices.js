@@ -134,6 +134,13 @@ export function planVerifie(dispo) {
   return plan;
 }
 
+// Tour suivant (demande du 2026-10-24) : les questions ratées, mélangées, sans recommencer par la dernière posée.
+export function tourSuivant(ratees, derniere) {
+  const t = melanger(ratees);
+  if (t.length > 1 && t[0] === derniere) t.push(t.shift());
+  return t;
+}
+
 // ---------- Affichage ----------
 
 // Une question. `fin(premierCoup, juste)` est appelé quand elle est terminée (réussie du premier coup, réussie tout court).
@@ -213,6 +220,8 @@ export function question(q, ctx, verifie, rang, total, fin) {
       if (!lecteurDansEnonce) retour.after(lecteur);
       lecteur.jouer(); // après un toucher : permis aussi sur iPhone
     }
+    // Une question ratée repassera dans un autre tour : « Terminer » serait trompeur.
+    if (rang === total && !(juste && essais === 0)) suite.firstChild.textContent = 'Suivant';
     suite.hidden = false;
     suite.focus();
     suite.addEventListener('click', () => fin(juste && essais === 0, juste));
@@ -239,23 +248,47 @@ export function question(q, ctx, verifie, rang, total, fin) {
     el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}` }, ...boutons),
     message, suite);
   zone.titre = titre;
+  zone.suite = suite;
   return zone;
 }
 
-// Enchaîne les questions d'un plan, puis appelle `bilan(rates)` (liste des cibles ratées).
-function serie(zone, plan, ctx, verifie, bilan) {
-  const rates = [];
+// Enchaîne les questions d'un plan. Celles qui ne sont pas réussies du premier coup repassent, tour après tour,
+// jusqu'à ce que toutes soient réussies (demande du 2026-10-24) ; puis `bilan(ratees)`, les ratées du premier tour.
+// `poser(q, rang, total, fin)` fabrique une question, qui appelle `fin(reussieDuPremierCoup)`.
+export function serieARepasser(zone, plan, poser, bilan) {
+  let tour = plan;
+  let ratees = [];
+  let premier = null;
   let i = 0;
-  function suivante(juste) {
+  function suivante(reussie) {
     arreter();
-    if (i > 0 && !juste) rates.push(plan[i - 1].cible);
-    if (i === plan.length) return bilan(rates);
+    if (i > 0 && !reussie) ratees.push(tour[i - 1]);
+    if (i === tour.length) {
+      premier ??= ratees;
+      if (!ratees.length) return bilan(premier);
+      tour = tourSuivant(ratees, tour[i - 1]);
+      ratees = [];
+      i = 0;
+      return annonceTour(zone, tour.length, () => suivante(true));
+    }
     i += 1;
-    const q = question(plan[i - 1], ctx, verifie, i, plan.length, suivante);
+    const q = poser(tour[i - 1], i, tour.length, suivante);
+    // Des ratées attendent leur tour : la dernière question de ce tour ne « termine » pas encore.
+    if (ratees.length && i === tour.length) q.suite.firstChild.textContent = 'Suivant';
     zone.replaceChildren(q);
-    if (i > 1) q.titre.focus(); // au clavier et au lecteur d'écran, on repart de la consigne
+    if (i > 1 || tour !== plan) q.titre.focus(); // au clavier et au lecteur d'écran, on repart de la consigne
   }
   suivante(true);
+}
+
+// Entre deux tours : combien de questions reviennent, avec l'avatar « encourage » (demande du 2026-10-24).
+function annonceTour(zone, nombre, partir) {
+  const titre = el('h2', { tabindex: '-1' }, icone('tourner'), 'Encore un petit effort !');
+  const b = el('button', { type: 'button', class: 'action' }, 'C\'est parti', icone('droite'));
+  b.addEventListener('click', partir);
+  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar('encourage'), titre),
+    el('p', {}, nombre > 1 ? `Revoyons les ${nombre} questions ratées.` : 'Revoyons la question ratée.'), b));
+  titre.focus();
 }
 
 function boutonRecommencer(relancer) {
@@ -366,8 +399,8 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
     if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });
     if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => dictee(d, ctx)));
     const p = plan();
-    serie(zone, p, ctx, verifie, (rates) => (verifie
-      ? bilanVerifie(zone, p.length, rates, ctx, lancer)
+    serieARepasser(zone, p, (q, rang, total, fin) => question(q, ctx, verifie, rang, total, fin), (ratees) => (verifie
+      ? bilanVerifie(zone, p.length, ratees.map((q) => q.cible), ctx, lancer)
       : bilanEntraine(zone, lancer)));
   };
   if (choix.length) {
