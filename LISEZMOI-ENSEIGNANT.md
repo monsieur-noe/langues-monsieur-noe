@@ -101,6 +101,13 @@ Il suffit de déposer le fichier, **au bon nom, dans le bon dossier**. Si un fic
 
 Un son enregistré en un seul long fichier (tous les mots à la suite) doit être découpé en un fichier par mot : demandez à Claude.
 
+**Le monstre du jeu « Le combat de boss »**
+
+- Son nom : la ligne `boss:` en haut du `chapitre.txt`, par exemple `boss: Gribouille`. Sans cette ligne, il s'appelle « le monstre ».
+- Son dessin : `boss.svg` (ou `boss.png`), directement dans le dossier du chapitre (pas dans `images`), carré, fond transparent, 60 Ko au plus. Page d'envoi pour « Kleuren » : https://github.com/monsieur-noe/langues-monsieur-noe/upload/main/contenu/nl/p3/kleuren (remplacez `kleuren` pour un autre chapitre). Sans dessin, une forme violette simple le remplace.
+- Sa version en colère, pour « Le combat de boss difficile » : `boss-difficile.svg` (ou `boss-difficile.png`), au même endroit. Sans elle, le site assombrit le dessin de base et l'entoure d'un halo rouge.
+- Vos poses pour le combat, `attaque` et `aie`, vont avec les autres poses de l'avatar dans `contenu/avatar/`. Sans elles, le site prend « pointe » et « reflechit ».
+
 ## 4. Ajouter un chapitre complet
 
 Exemple : un chapitre « Kleren » pour la P3. Choisissez d'abord **le nom du dossier** : minuscules, sans accent, tirets. Ici : `kleren`.
