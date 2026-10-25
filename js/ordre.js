@@ -2,10 +2,10 @@
 // et à « Mots en ordre » (Je m'entraîne, section [ordre] de chapitre.txt).
 // Les cases sont mélangées sur de gros boutons ; un toucher les range sur la ligne, un toucher sur la ligne
 // les renvoie en bas. Ligne complète : bon ordre = bravo et suite ; sinon on réessaie, sans limite.
-import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
-import { melanger, bilanEntraine } from './exercices.js';
-import { avatar } from './avatar.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=f57aa470';
+import { avatar } from './avatar.js?v=f57aa470';
 
 // Les cases dans le désordre, jamais dans le bon ordre (sinon il n'y aurait rien à faire).
 export function desordre(cases) {
@@ -13,6 +13,15 @@ export function desordre(cases) {
   let m;
   do m = melanger(cases); while (m.join(' ') === cases.join(' '));
   return m;
+}
+
+// Le mot glisse de son ancienne place à la nouvelle (0,25 s). Animation lancée en JavaScript :
+// la règle CSS « moins de mouvement » ne la coupe pas, d'où le test ici.
+function glisser(b, avant) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !b.animate) return;
+  const apres = b.getBoundingClientRect();
+  b.animate([{ transform: `translate(${avant.left - apres.left}px, ${avant.top - apres.top}px)` }, { transform: 'none' }],
+    { duration: 250, easing: 'ease-out' });
 }
 
 // Une manche. `item` : { cases, audio (chemin du son à écouter pour vérifier, ou rien), francais }.
@@ -36,7 +45,9 @@ function manche(item, langue, rang, total, fin) {
     const place = el('span', { class: 'place-phrase' }, b);
     b.addEventListener('click', () => {
       if (!suite.hidden) return;
+      const avant = b.getBoundingClientRect();
       if (b.parentNode === place) ligne.append(b); else place.append(b);
+      glisser(b, avant);
       verifier();
     });
     reserve.append(place);
@@ -57,7 +68,7 @@ function manche(item, langue, rang, total, fin) {
     if (juste) {
       ligne.classList.add('juste');
       for (const b of boutons) b.disabled = true;
-      retour.replaceChildren(icone('sourire'), 'Bravo !');
+      retour.replaceChildren(icone('sourire'), bravo());
       av.pose('content');
       if (item.francais) { ecoute.append(el('p', { class: 'fr', lang: 'fr' }, item.francais)); ecoute.hidden = false; }
       lecteur?.jouer(); // après un toucher : permis sur iPhone
@@ -70,7 +81,7 @@ function manche(item, langue, rang, total, fin) {
   }
 
   const zone = el('div', { class: 'exercice' },
-    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${total}`)),
+    el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
     ligne, reserve, message, ecoute, suite);
   zone.titre = titre;
   return zone;

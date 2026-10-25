@@ -2,11 +2,11 @@
 // d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. » à compléter :
 // le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js';
-import { creerLecteur } from './audio.js';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser } from './exercices.js';
-import { avatar } from './avatar.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur } from './audio.js?v=f57aa470';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js?v=f57aa470';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=f57aa470';
+import { avatar } from './avatar.js?v=f57aa470';
 
 const NOMBRE = 10;
 const CHOIX = 5;
@@ -122,7 +122,7 @@ function question(q, ctx, rang, total, fin) {
       b.addEventListener('click', () => {
         marquer(b, b.juste);
         b.disabled = true;
-        if (b.juste) { dire('sourire', 'Bravo !', 'content'); return remplir(); }
+        if (b.juste) { dire('sourire', bravo(), 'content'); return remplir(); }
         essais += 1;
         premierCoup = false;
         if (essais < 2) return dire('tourner', 'Essaie encore !', 'reflechit');
@@ -136,7 +136,7 @@ function question(q, ctx, rang, total, fin) {
   });
 
   const zone = el('div', { class: 'exercice ex-couleurs' },
-    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${total}`)),
+    el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
     el('div', { class: 'enonce' }, dessin(q.vehicule, q.couleur.fond)),
     el('p', { class: 'phrase', lang: langue }, `${art[0].toUpperCase()}${art.slice(1)} `, trous[0], ' is ', trous[1], '.'),
     ...blocs, message, ecoute, suite);

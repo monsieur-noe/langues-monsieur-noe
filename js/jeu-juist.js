@@ -1,10 +1,10 @@
 // Jeu « Juist of fout ? » (cahier 7.9) : une image, un mot entendu ; l'enfant dit s'ils vont ensemble.
 // Un seul essai par question (deux boutons), puis le bon mot est montré et joué. 8 questions.
-import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
-import { visuel } from './cartes.js';
-import { melanger, tirer, bilanEntraine } from './exercices.js';
-import { avatar } from './avatar.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { visuel } from './cartes.js?v=f57aa470';
+import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=f57aa470';
+import { avatar } from './avatar.js?v=f57aa470';
 
 const NOMBRE = 8;
 const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
@@ -41,7 +41,7 @@ function question(q, ctx, rang, fin) {
       for (const x of boutons) x.disabled = true;
       b.classList.add(b.juste ? 'juste' : 'faux');
       b.prepend(el('span', { class: 'marque-ex' }, icone(b.juste ? 'coche' : 'croix')));
-      retour.replaceChildren(icone(b.juste ? 'sourire' : 'bulle'), b.juste ? 'Bravo !' : 'Pas grave, continue !');
+      retour.replaceChildren(icone(b.juste ? 'sourire' : 'bulle'), b.juste ? bravo() : 'Pas grave, continue !');
       message.prepend(avatar(b.juste ? 'content' : 'encourage'));
       // Le bon mot de l'image, écrit et joué (après un toucher : permis sur iPhone).
       const son = creerLecteur(`${dossier}audio/${q.image.id}.m4a`, { nom: q.image.mot });
@@ -55,7 +55,7 @@ function question(q, ctx, rang, fin) {
   }
 
   const zone = el('div', { class: 'exercice' },
-    el('div', { class: 'tete-ex' }, titre, el('p', { class: 'compteur' }, `${rang} / ${NOMBRE}`)),
+    el('div', { class: 'tete-ex' }, titre, compteur(rang, NOMBRE)),
     el('div', { class: 'enonce' }, el('div', { class: 'pile' }, visuel(q.image, q.image.ind, langue), ecoute)),
     el('div', { class: 'reponses n2 juist' }, ...boutons),
     message, solution, suite);

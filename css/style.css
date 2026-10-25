@@ -1,15 +1,17 @@
 /* Feuille de style unique du site : l'allure « Épuré ».
    Les couleurs et réglages sont réunis en haut (variables) pour pouvoir les changer à un seul endroit. */
 
+/* « Lettres Noe » : la police Andika (SIL, licence OFL dans polices/), allégée aux seules lettres du français
+   et du néerlandais (tests/alleger-police.py) ; la licence impose un autre nom à une version modifiée. */
 @font-face {
-  font-family: Andika;
-  src: url("../polices/Andika-Regular.woff2") format("woff2");
+  font-family: "Lettres Noe";
+  src: url("../polices/LettresNoe-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 @font-face {
-  font-family: Andika;
-  src: url("../polices/Andika-Bold.woff2") format("woff2");
+  font-family: "Lettres Noe";
+  src: url("../polices/LettresNoe-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
@@ -43,7 +45,7 @@ body, h1, h2, h3, p, ul, ol { margin: 0; }
 [hidden] { display: none !important; } /* un élément masqué reste masqué, quel que soit son style */
 
 body {
-  font-family: Andika, "Trebuchet MS", Verdana, sans-serif;
+  font-family: "Lettres Noe", "Trebuchet MS", Verdana, sans-serif;
   font-size: 1.25rem; /* 20 px : texte courant minimum */
   line-height: 1.4;
   color: var(--encre);
@@ -54,6 +56,14 @@ body {
 }
 ::selection { background: #ffe08a; color: var(--encre); }
 :focus-visible { outline: 3px solid var(--en); outline-offset: 3px; border-radius: 8px; }
+/* Toucher sans attente sur tablette (pas de délai « double toucher » ; le zoom à deux doigts reste possible). */
+a, button, input { touch-action: manipulation; }
+/* Fondu d'une page à l'autre (navigateurs récents ; ailleurs, changement de page habituel) et défilement doux. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  html { scroll-behavior: smooth; }
+}
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .25s; }
 a { color: inherit; text-underline-offset: 3px; }
 
 .ic {
@@ -112,6 +122,13 @@ h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: bala
   text-decoration: none;
   transition: transform var(--duree) var(--ease), box-shadow var(--duree) var(--ease), border-color var(--duree) var(--ease);
 }
+/* Les cartes de choix (langue, année, chapitre) arrivent l'une après l'autre en glissant. */
+.liste > li { animation: arrive .3s var(--ease) backwards; }
+.liste > li:nth-child(2) { animation-delay: .06s; }
+.liste > li:nth-child(3) { animation-delay: .12s; }
+.liste > li:nth-child(4) { animation-delay: .18s; }
+.liste > li:nth-child(n+5) { animation-delay: .24s; }
+@keyframes arrive { from { transform: translateY(.75rem); opacity: 0; } }
 a.choix:hover { transform: translateY(-3px); box-shadow: var(--ombre-haute); border-color: var(--acc); }
 a.choix:active { transform: scale(.985); box-shadow: var(--ombre); }
 .choix .titre { min-width: 0; font-size: 1.375rem; font-weight: 700; line-height: 1.15; hyphens: auto; overflow-wrap: anywhere; }
@@ -171,6 +188,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .seg:hover { color: var(--encre); background: rgba(255, 255, 255, .55); }
 .seg[aria-current] { color: var(--encre); background: var(--surface); box-shadow: var(--ombre); font-weight: 700; }
 .seg[aria-current] .ic { color: var(--acc); }
+.seg:active { color: var(--encre); background: var(--surface); box-shadow: var(--ombre); } /* l'onglet touché s'allume aussitôt, avant le changement de page */
 
 .fiche {
   margin-top: 1rem;
@@ -188,7 +206,18 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 
 /* ---------- Je découvre : cartes, phrases, pistes ---------- */
 
-.zone-carte { display: flex; justify-content: center; }
+.zone-carte { display: flex; justify-content: center; overflow: clip; overflow-clip-margin: 1rem; } /* la carte qui glisse ne fait pas défiler la page de côté */
+/* Carte suivante ou précédente : elle arrive en glissant du côté de la flèche touchée. */
+.carte.vient-droite { animation: glisse-droite .3s var(--ease); }
+.carte.vient-gauche { animation: glisse-gauche .3s var(--ease); }
+@keyframes glisse-droite { from { transform: translateX(3rem); opacity: 0; } }
+@keyframes glisse-gauche { from { transform: translateX(-3rem); opacity: 0; } }
+img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
+/* Écran d'attente du chapitre : formes grises, montrées seulement si le chargement dépasse une demi-seconde. */
+.attente { display: grid; gap: .75rem; animation: fondu .3s .5s backwards; }
+.attente span { height: 4.25rem; border-radius: 1.15rem; background: var(--doux); }
+.attente span:last-child { height: 14rem; border-radius: 1.5rem; }
+#contenu:not([hidden]) ~ .attente, #message:not(:empty) ~ .attente, .oups ~ .attente { display: none; }
 /* La carte se retourne en 3D ; les deux faces sont empilées dans la même case. */
 .sens { margin-bottom: .75rem; grid-template-columns: repeat(2, 1fr); }
 .sens .seg { min-height: 3.5rem; flex-direction: row; gap: .4rem; }
@@ -247,6 +276,20 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .lire .ic { width: 2rem; height: 2rem; }
 .lire:hover { transform: scale(1.06); }
 .lire:active { transform: scale(.94); }
+/* Bouton « tortue » : réécouter plus lentement (56 px, plus discret que le bouton principal). */
+.tortue {
+  width: 3.5rem; height: 3.5rem; flex: none;
+  display: grid; place-items: center;
+  background: var(--surface); color: var(--acc);
+  border: 2px solid var(--trait); border-radius: 50%; cursor: pointer;
+  transition: transform var(--duree) var(--ease), border-color var(--duree);
+}
+.tortue .ic { width: 2rem; height: 2rem; }
+.tortue:hover { border-color: var(--acc); }
+.tortue:active { transform: scale(.94); }
+/* Pendant le son : des ondes douces s'éloignent du bouton, comme des ronds dans l'eau (aucun flash). */
+.lire.joue { animation: ondes 1.4s ease-out infinite; }
+@keyframes ondes { from { box-shadow: var(--ombre), 0 0 0 0 color-mix(in srgb, var(--acc) 45%, transparent); } to { box-shadow: var(--ombre), 0 0 0 .9rem transparent; } }
 /* Barre : zone tactile de 56 px de haut, trait fin ; la partie déjà écoutée prend la couleur du chapitre. */
 .barre {
   flex: 1 1 8rem; min-width: 6rem; height: 3.5rem; margin: 0;
@@ -318,6 +361,18 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .exercice, .bilan { display: flex; flex-direction: column; align-items: center; gap: .9rem; text-align: center; }
 .tete-ex { display: flex; align-items: center; justify-content: space-between; gap: .5rem; width: 100%; }
 .tete-ex .compteur { min-width: 0; flex: none; }
+/* Petite barre sous « 3 / 8 », qui se remplit depuis la question précédente (--fait et --avant : js/exercices.js). */
+@property --fait { syntax: '<percentage>'; inherits: true; initial-value: 0%; }
+.tete-ex .compteur::after {
+  content: ""; display: block; width: 4rem; height: .4rem; margin: .2rem auto 0; border-radius: 1rem;
+  background: linear-gradient(to right, var(--acc) var(--fait), var(--doux) 0);
+  animation: remplir .5s var(--ease) .15s backwards;
+}
+@keyframes remplir { from { --fait: var(--avant); } }
+/* Chaque nouvelle question arrive en glissant ; le bouton « Suivant » apparaît en douceur. */
+.exercice { animation: entre .3s var(--ease); }
+@keyframes entre { from { transform: translateX(1rem); opacity: 0; } }
+.exercice .action { animation: arrive .3s var(--ease); }
 /* Énoncé un peu plus petit que sur les cartes : les réponses doivent tenir à l'écran d'un téléphone. */
 .enonce .tuile, .enonce .image, .enonce .carre { width: 7.5rem; height: 7.5rem; }
 .enonce .tuile.court { font-size: 4.5rem; }
@@ -360,6 +415,16 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 }
 .faux .marque-ex { background: var(--c1); }
 .marque-ex .ic { width: 1.4rem; height: 1.4rem; stroke-width: 3; }
+/* Coche qui « pousse » avec un petit rebond ; la croix arrive simplement en fondu, pour rester neutre. */
+.juste > .marque-ex, .trouvee > .marque-ex { animation: pousse .35s var(--ease); }
+.faux > .marque-ex { animation: fondu .25s ease-out; }
+@keyframes pousse { 0% { transform: scale(0); } 60% { transform: scale(1.3); } 100% { transform: scale(1); } }
+@keyframes grossit { 50% { transform: scale(1.12); } }
+/* Après une erreur, la bonne réponse grossit un instant pour attirer l'œil. */
+.reponse.montree { animation: grossit .5s var(--ease) .15s; }
+/* Le bouton d'écoute de la question fait un seul petit rebond : « commence par m'écouter ». */
+.enonce .lire, .ecoute-loto .lire { animation: grossit .5s var(--ease) .4s; }
+.enonce .lire.joue, .ecoute-loto .lire.joue { animation: ondes 1.4s ease-out infinite; }
 /* Avatar de l'enseignant (js/avatar.js) : au plus 25 % de la largeur, à côté du message, jamais devant une réponse. */
 /* Taille réglée par la hauteur : un personnage en pied est plus haut que large. */
 .avatar { flex: none; height: 7rem; width: auto; max-width: 25vw; object-fit: contain; }
@@ -367,7 +432,11 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 #langues + .avatar { display: block; height: 15rem; max-width: 50vw; margin: 1.5rem auto 0; } /* accueil : « bonjour » sous les langues */
 #langues + .avatar[hidden] { display: none; }.avatar.fondu { animation: fondu .2s ease-out; }
 @keyframes fondu { from { opacity: 0; } }
+/* « Bravo » : en plus du fondu, un seul petit saut. */
+.avatar.fondu[src*="bravo."] { animation: fondu .2s ease-out, saut .45s ease-out; }
+@keyframes saut { 40% { transform: translateY(-.9rem); } }
 .message-ex, .tete-bilan { display: flex; align-items: center; justify-content: center; gap: .75rem; }
+.message-ex { flex-wrap: wrap; } /* sur téléphone, le lecteur du son passe sous l'avatar et le message (pas de débordement) */
 .conseil .avatar { float: left; margin: 0 .75rem .5rem 1rem; }
 .retour-ex { min-height: 2rem; display: flex; align-items: center; gap: .5rem; font-size: 1.375rem; font-weight: 700; }
 .retour-ex:empty { display: none; }
@@ -382,10 +451,15 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 }
 .action:active { transform: scale(.96); }
 
+.bilan { position: relative; } /* pour la pluie d'étoiles des 3 étoiles */
 .bilan h2 { display: flex; align-items: center; gap: .5rem; font-size: 1.75rem; }
 .etoiles { display: flex; gap: .4rem; }
 .etoiles .ic { width: 3.25rem; height: 3.25rem; color: var(--gris); }
 .etoiles .pleine .ic { color: #b45309; fill: #fbbf24; }
+/* Les étoiles gagnées s'allument l'une après l'autre (0,3 s d'écart). */
+.etoiles .pleine { animation: pousse .35s var(--ease) backwards; }
+.etoiles .pleine:nth-child(2) { animation-delay: .3s; }
+.etoiles .pleine:nth-child(3) { animation-delay: .6s; }
 .bilan h3 { font-size: 1.375rem; }
 .a-revoir { list-style: none; padding: 0; width: 100%; display: flex; flex-direction: column; gap: .75rem; }
 .a-revoir li { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .6rem; padding: .75rem; border: 1.5px solid var(--trait); border-radius: 1.15rem; }
@@ -466,6 +540,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
   .num { width: 2.75rem; height: 2.75rem; font-size: 1.25rem; }
   .fleche { width: 2.5rem; height: 2.5rem; }
   .choix .titre { font-size: 1.25rem; }
+  .bandeau h1 { font-size: 1.5rem; } /* « Vervoermiddelen » tient à côté du retour dès 320 px (zoom 200 %) */
   .bulle { padding: .25rem .55rem; }
   .choix.off { flex-wrap: wrap; } /* « Bientôt » passe sous le nom plutôt que de le couper */
 }
@@ -480,7 +555,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; } /* « * » seul n'atteint pas ::after (barre du compteur) */
 }
 
 /* ---------- Je joue ---------- */
@@ -507,7 +582,9 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
   background: var(--c4); color: var(--surface); box-shadow: var(--ombre); opacity: .85;
 }
 .jeton .ic { width: 60%; height: 60%; stroke-width: 3; }
-.case-loto.gagnante { outline: 4px solid var(--acc); outline-offset: 2px; }
+.jeton { animation: pose .3s ease-out; } /* le jeton tombe sur le carton */
+@keyframes pose { from { transform: translateY(-1.5rem) scale(1.4); opacity: 0; } 70% { transform: scale(.95); } }
+.case-loto.gagnante { outline: 4px solid var(--acc); outline-offset: 2px; animation: grossit .4s var(--ease) backwards; } /* l'une après l'autre (délai : js/jeu-loto.js) */
 .suite-loto { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
 .action.secondaire { color: var(--encre); background: var(--surface); border: 2px solid var(--trait); }
 .retour-ex.bingo { font-size: 2rem; }
@@ -527,7 +604,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .carte-memory.retournee .dos-memory { display: none; }
 .carte-memory.retournee .face-memory { display: grid; animation: retourner .15s ease-out; }
 @keyframes retourner { from { transform: scaleX(0); } }
-.carte-memory.trouvee { border-color: var(--c4); background: #ecfdf3; }
+.carte-memory.trouvee { border-color: var(--c4); background: #ecfdf3; animation: saut .45s ease-out; } /* les deux cartes sautent ensemble */
 .face-memory > .carre, .face-memory > .tuile, .face-memory > .image { width: 100%; height: 100%; aspect-ratio: auto; }
 .carte-memory.recachee:not(.retournee) .dos-memory { animation: retourner .15s ease-out; }
 /* Jeu de l'oie : 12 cases en 3 rangées de 4, en zigzag ; départ (triangle) et arrivée (étoile). */
@@ -544,7 +621,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 }
 .case-oie > .ic { color: var(--acc); }
 .case-oie.arrivee > .ic { color: #b45309; fill: #fbbf24; }
-.case-oie.fete { border-color: #b45309; background: #fff7d6; }
+.case-oie.fete { border-color: #b45309; background: #fff7d6; animation: grossit .5s var(--ease) .45s; } /* bond de l'arrivée, une fois le pion posé (l'étoile est sous le pion) */
 .pion {
   position: absolute; inset: 0; margin: auto; width: 2.5rem; height: 2.5rem;
   display: grid; place-items: center; border-radius: 50%;
@@ -579,6 +656,80 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
 .question-couleurs { color: var(--gris); font-weight: 700; }
 .choix-couleurs { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ecoute-couleurs { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+/* Combat de boss : arène face à face (en haut le cadre du monstre et le monstre, en bas l'avatar et le cadre
+   de l'enseignant) ; étoiles qui tombent à la victoire. */
+.zone-jeu { position: relative; }
+.arene {
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center; justify-items: center; gap: .5rem 1rem;
+  margin: .5rem 0 1rem; overflow-x: clip; /* les deux combattants arrivent du bord sans faire défiler la page */
+}
+.coeurs span { display: inline-flex; }
+.monstre > .ic, .dessin-boss { width: 5.5rem; height: 5.5rem; object-fit: contain; }
+.monstre { transition: transform .4s var(--ease), opacity .4s; }
+.monstre.vaincu { transform: rotate(80deg) translateY(1rem); opacity: .55; }
+.place-prof { position: relative; min-height: 5.5rem; display: flex; align-items: flex-end; }
+.parade { position: absolute; right: -1.25rem; top: 50%; translate: 0 -50%; opacity: 0; pointer-events: none; }
+.parade .ic { width: 3rem; height: 3rem; color: var(--acc); fill: var(--surface); stroke-width: 2.6; }
+.monstre { position: relative; }
+.arene { position: relative; }
+.etoile-super { position: absolute; opacity: 0; pointer-events: none; }
+.etoile-super .ic { width: 1.75rem; height: 1.75rem; color: #b45309; fill: #fbbf24; }
+.parade-boss { right: auto; left: -1.5rem; }
+.parade-boss .ic { color: #6b4fa0; }
+.soin-boss { position: absolute; left: 50%; top: -.75rem; translate: -50% 0; opacity: 0; pointer-events: none; }
+.soin-boss .ic { width: 2.25rem; height: 2.25rem; color: var(--c4); fill: #dcfce7; }
+.place-prof .avatar { height: 6.5rem; }
+.cadre-vies {
+  justify-self: stretch; display: flex; flex-direction: column; gap: .2rem; padding: .45rem .7rem;
+  border: 2px solid var(--trait); border-radius: 1rem; background: var(--surface); box-shadow: var(--ombre);
+}
+.nom-vies { font-weight: 700; }
+.coeurs { display: flex; flex-wrap: wrap; gap: .15rem; margin: 0; }
+.coeurs .ic { width: 1.6rem; height: 1.6rem; color: #be123c; }
+.coeurs .plein .ic { fill: #fb7185; }
+/* Intention du monstre, annoncée avant chaque question. */
+.intention { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; padding: .6rem 1rem; border: 2px solid var(--trait); border-radius: 1.25rem; background: var(--fond); text-align: left; }
+.intention:empty { display: none; }
+.intention > .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
+.intention p { margin: 0; }
+.intention strong { font-size: 1.25rem; }
+/* Téléphone : arène compacte, pour que les réponses restent dans l'écran sous les deux combattants. */
+@media (max-width: 30rem) {
+  .arene { gap: .25rem .5rem; margin: .25rem 0 .5rem; }
+  .monstre > .ic, .dessin-boss { width: 4.75rem; height: 4.75rem; }
+  .place-prof { min-height: 0; }
+  .place-prof .avatar { height: 5.25rem; }
+  .cadre-vies { padding: .35rem .5rem; }
+  .coeurs { gap: .1rem; }
+  .coeurs .ic { width: 1.4rem; height: 1.4rem; }
+  .intention { gap: .5rem; margin-bottom: .5rem; padding: .4rem .75rem; }
+  .intention > .ic { width: 2rem; height: 2rem; }
+}
+/* Téléphone en paysage : arène sur une seule ligne (moi et mon cadre à gauche, le monstre et le sien à droite),
+   pour que la question reste visible sous l'arène. */
+@media (orientation: landscape) and (max-height: 30rem) {
+  .arene { grid-template-columns: auto 1fr 1fr auto; grid-template-areas: "prof noe boss monstre"; gap: .5rem; margin: .25rem 0 .5rem; }
+  .arene > :nth-child(1) { grid-area: boss; }
+  .arene > .monstre { grid-area: monstre; }
+  .arene > .place-prof { grid-area: prof; min-height: 0; }
+  .arene > :nth-child(4) { grid-area: noe; }
+  .monstre > .ic, .dessin-boss { width: 4.5rem; height: 4.5rem; }
+  .place-prof .avatar { height: 5rem; }
+  .intention { margin-bottom: .5rem; padding: .4rem .75rem; }
+}
+/* Combat de boss difficile : arène de nuit, monstre de base assombri avec un halo rouge, annonce en rouge. */
+.boss-difficile .arene { padding: .5rem; border-radius: 1.25rem; background: #1f1630; }
+.boss-difficile .dessin-boss.de-base { filter: brightness(.8) saturate(1.3) drop-shadow(0 0 .35rem #dc2626); }
+.boss-difficile .intention { border-color: #fca5a5; background: #fef2f2; }
+.boss-difficile .intention > .ic { color: #b91c1c; }
+@media (max-width: 30rem) {
+  .boss-difficile .arene { padding: .35rem .25rem; column-gap: .35rem; }
+  .boss-difficile .coeurs .ic { width: 1.3rem; height: 1.3rem; } /* les 5 cœurs du monstre tiennent sur une ligne */
+}
+.fete-boss { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.fete-boss span { position: absolute; top: -2rem; animation: tombe 1.2s ease-in forwards; }
+.fete-boss .ic { color: #b45309; fill: #fbbf24; }
+@keyframes tombe { to { transform: translateY(70vh) rotate(160deg); opacity: 0; } }
 /* Message « Oups » quand une page ne s'affiche pas (js/oups.js) : avatar à côté du texte. */
 .oups { display: flex; align-items: center; gap: 1rem; margin: 1rem 0; padding: 1.25rem; background: var(--surface); border: 1.5px solid var(--trait); border-radius: 1.5rem; box-shadow: var(--ombre); }
 .oups .avatar { height: 9rem; }

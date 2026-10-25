@@ -23,6 +23,11 @@ titre: Titre du chapitre
 # dans les couleurs du chapitre indiqué ici (son nom de dossier).
 # couleurs: kleuren
 
+# Le monstre du jeu « Le combat de boss » (facultatif ; enlève le # pour l'activer) :
+# son nom, et son dessin boss.svg (ou boss.png) dans le dossier du chapitre.
+# Sans cette ligne, il s'appelle « le monstre » ; sans dessin, une forme simple le remplace.
+# boss: Gribouille
+
 [mots]
 # id | mot (avec l'article pour un nom : de, het) | français | indice (facultatif)
 # Exemples :

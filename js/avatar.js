@@ -1,10 +1,12 @@
 // Avatar de l'enseignant (cahier 7.8) : facultatif. Sans dessin dans contenu/avatar/, rien ne s'affiche.
 // Pour changer une pose, l'enseignant remplace le fichier du même nom : aucun code à toucher.
-import { el } from './outils.js';
-import { fichiersPresents } from './donnees.js';
+import { el } from './outils.js?v=f57aa470';
+import { fichiersPresents } from './donnees.js?v=f57aa470';
 
 const DOSSIER = 'contenu/avatar/';
-export const POSES = ['neutre', 'content', 'bravo', 'encourage', 'reflechit', 'explique', 'pointe', 'bonjour'];
+export const POSES = ['neutre', 'content', 'bravo', 'encourage', 'reflechit', 'explique', 'pointe', 'bonjour', 'attaque', 'aie'];
+// Poses du combat de boss : sans leur dessin, une pose proche avant « neutre ».
+const PROCHE = { attaque: 'pointe', aie: 'reflechit' };
 
 // Pour chaque pose, le fichier qui existe : le SVG passe avant le PNG.
 export function choisirDessins(presents, dossier = DOSSIER) {
@@ -16,15 +18,19 @@ export function choisirDessins(presents, dossier = DOSSIER) {
   return dessins;
 }
 
-// Pose manquante : « neutre » ; « neutre » manquante aussi : rien.
-export const cheminPose = (dessins, pose) => dessins[pose] || dessins.neutre || '';
+// Pose manquante : la pose proche s'il y en a une, sinon « neutre » ; « neutre » manquante aussi : rien.
+export const cheminPose = (dessins, pose) => dessins[pose] || dessins[PROCHE[pose]] || dessins.neutre || '';
 
 let dessins = {};
 let recherche = null;
-// Cherche une seule fois par page quels dessins existent (sans les télécharger).
+// Cherche une seule fois par page quels dessins existent (sans les télécharger) : d'abord les SVG,
+// puis le PNG des seules poses sans SVG (10 demandes au lieu de 20 quand tout est en SVG).
 export function chargerAvatar() {
-  recherche ||= fichiersPresents(POSES.flatMap((p) => [`${DOSSIER}${p}.svg`, `${DOSSIER}${p}.png`]))
-    .then((presents) => { dessins = choisirDessins(presents); });
+  recherche ||= fichiersPresents(POSES.map((p) => `${DOSSIER}${p}.svg`))
+    .then(async (svg) => {
+      const png = await fichiersPresents(POSES.filter((p) => !svg.has(`${DOSSIER}${p}.svg`)).map((p) => `${DOSSIER}${p}.png`));
+      dessins = choisirDessins(new Set([...svg, ...png]));
+    });
   return recherche;
 }
 

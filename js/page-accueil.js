@@ -1,9 +1,9 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js';
-import { avatar, chargerAvatar } from './avatar.js';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=f57aa470';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=f57aa470';
+import { avatar, chargerAvatar } from './avatar.js?v=f57aa470';
 
 const langue = parametre('langue');
 const annee = parametre('annee');

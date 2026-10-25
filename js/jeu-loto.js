@@ -1,10 +1,10 @@
 // Jeu « Le loto des sons » (cahier 7.9) : une grille d'images ; on écoute un mot, on touche son image,
 // elle reçoit un jeton. La première ligne complète donne « Bingo ! » ; on peut continuer jusqu'à la grille pleine.
-import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
-import { visuel } from './cartes.js';
-import { melanger, bilanEntraine } from './exercices.js';
-import { avatar } from './avatar.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { visuel } from './cartes.js?v=f57aa470';
+import { melanger, bilanEntraine, bravo } from './exercices.js?v=f57aa470';
+import { avatar } from './avatar.js?v=f57aa470';
 
 // Mots utilisables dans la grille : avec un indice visuel et un son, et jamais deux fois le même indice
 // (deux « texte:10 » ou deux fois la même couleur rendraient deux cases identiques : on n'en garde qu'une).
@@ -93,7 +93,7 @@ function lancer(zone, contenu) {
     bingo = true;
     effacerCroix();
     retour.classList.add('bingo');
-    for (const k of ligne) cases[k].classList.add('gagnante');
+    ligne.forEach((k, i) => { cases[k].classList.add('gagnante'); cases[k].style.animationDelay = `${i * 0.15}s`; }); // l'une après l'autre
     dire('etoile', 'Bingo !', 'bravo');
     ouvrir(false);
     const continuer = el('button', { type: 'button', class: 'action' }, 'Continuer', icone('droite'));
@@ -109,7 +109,7 @@ function lancer(zone, contenu) {
     const bon = appels[appel];
     if (k === bon) {
       poserJeton(k);
-      dire('sourire', 'Bravo !', 'content');
+      dire('sourire', bravo(), 'content');
       lecteur.jouer(); // le mot redit après la bonne réponse (après un toucher : permis sur iPhone)
       return apresJeton();
     }

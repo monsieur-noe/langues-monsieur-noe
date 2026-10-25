@@ -5,19 +5,24 @@
 // La page est-elle déjà visible ? (accueil : une liste de choix ; chapitre : le contenu du chapitre)
 const pageAffichee = () => document.querySelector('#contenu:not([hidden]), main > .liste:not([hidden])');
 
-function oups() {
+function oups(e) {
+  // Un fondu entre deux pages interrompu par le navigateur (sauté, trop long, écran tourné) n'est pas une panne.
+  if (e.reason instanceof DOMException && ['AbortError', 'TimeoutError', 'InvalidStateError'].includes(e.reason.name)) return;
   const main = document.querySelector('main');
   if (!main || pageAffichee() || document.querySelector('.oups')) return;
   const bloc = document.createElement('div');
   bloc.className = 'oups';
   bloc.setAttribute('role', 'alert');
 
-  // Avatar « oups » s'il existe ; sinon rien (l'image se retire toute seule).
+  // Avatar « oups » s'il existe (SVG, sinon PNG) ; sinon rien (l'image se retire toute seule).
   const avatar = document.createElement('img');
   avatar.className = 'avatar';
   avatar.alt = '';
   avatar.src = 'contenu/avatar/oups.svg';
-  avatar.addEventListener('error', () => avatar.remove());
+  avatar.addEventListener('error', () => {
+    if (avatar.src.endsWith('.svg')) avatar.src = 'contenu/avatar/oups.png';
+    else avatar.remove();
+  });
 
   const texte = document.createElement('div');
   const titre = document.createElement('p');

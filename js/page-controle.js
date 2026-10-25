@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js';
-import { chercherFichiers, cheminImage } from './cartes.js';
-import { disponibles, motSecret } from './exercices.js';
-import { el } from './outils.js';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=f57aa470';
+import { chercherFichiers, cheminImage } from './cartes.js?v=f57aa470';
+import { disponibles, motSecret } from './exercices.js?v=f57aa470';
+import { el } from './outils.js?v=f57aa470';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=f57aa470';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };
@@ -148,12 +148,15 @@ async function controlerChapitre(c) {
 
   const pire = constats.reduce((a, k) => (RANG[k.etat] > RANG[a] ? k.etat : a), 'ok');
   if (pire === 'ok') constats.unshift(constat('ok', 'Aucune erreur, aucun fichier manquant.'));
-  return carte(pire, titre, constats, compteurs, quizlet.bloc, motsSecrets(donnees.mots, c.langue));
+  // Ouvre le chapitre tel que les élèves le voient, dans un nouvel onglet (la page de contrôle reste ouverte).
+  const voir = el('p', {}, el('a', { class: 'action secondaire', target: '_blank',
+    href: `${RACINE}chapitre.html?langue=${c.langue}&annee=${c.annee}&chapitre=${c.chapitre}` }, 'Voir comme un élève'));
+  return carte(pire, titre, constats, compteurs, quizlet.bloc, motsSecrets(donnees.mots, c.langue), voir);
 }
 
-function carte(etat, titre, constats, compteurs = '', quizlet = '', secrets = '') {
+function carte(etat, titre, constats, compteurs = '', quizlet = '', secrets = '', voir = '') {
   titre.prepend(pastille(etat), ' ');
-  return el('section', { class: 'fiche controle-chapitre' }, titre, compteurs,
+  return el('section', { class: 'fiche controle-chapitre' }, titre, compteurs, voir,
     el('ul', { class: 'constats' }, ...constats.map((k) => k.li)), quizlet, secrets);
 }
 

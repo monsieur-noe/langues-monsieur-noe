@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
-import { chercherFichiers, visuel } from './cartes.js';
-import { positionReponse } from './donnees.js';
-import { avatar, chargerAvatar } from './avatar.js';
-import { serieOrdre } from './ordre.js';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { chercherFichiers, visuel } from './cartes.js?v=f57aa470';
+import { positionReponse } from './donnees.js?v=f57aa470';
+import { avatar, chargerAvatar } from './avatar.js?v=f57aa470';
+import { serieOrdre } from './ordre.js?v=f57aa470';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=f57aa470';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -143,6 +143,22 @@ export function tourSuivant(ratees, derniere) {
 
 // ---------- Affichage ----------
 
+// Félicitation d'une bonne réponse, tirée au hasard (jamais deux fois la même d'affilée) : liste à changer ici.
+const BRAVOS = ['Bravo !', 'Super !', 'Génial !', 'Bien joué !', 'Excellent !', 'Tu as trouvé !'];
+let dernierBravo = '';
+export function bravo() {
+  dernierBravo = tirer(BRAVOS.filter((b) => b !== dernierBravo), 1)[0];
+  return dernierBravo;
+}
+
+// « 3 / 8 » et sa petite barre (CSS), qui se remplit de la question précédente à celle-ci.
+export function compteur(rang, total) {
+  const p = el('p', { class: 'compteur' }, `${rang} / ${total}`);
+  p.style.setProperty('--fait', `${(rang / total) * 100}%`);
+  p.style.setProperty('--avant', `${((rang - 1) / total) * 100}%`);
+  return p;
+}
+
 // Une question. `fin(premierCoup, juste)` est appelé quand elle est terminée (réussie du premier coup, réussie tout court).
 // Sans `total` (jeu de l'oie), ni compteur ni « Terminer ».
 export function question(q, ctx, verifie, rang, total, fin) {
@@ -208,12 +224,17 @@ export function question(q, ctx, verifie, rang, total, fin) {
     return b;
   });
   const marquer = (b, juste) => { b.classList.add(juste ? 'juste' : 'faux'); b.prepend(el('span', { class: 'marque-ex' }, icone(juste ? 'coche' : 'croix'))); };
-  const dire = (ic2, txt, pose) => { retour.replaceChildren(icone(ic2), txt); av.pose(pose); message.prepend(av); };
+  // `ctx.sansAvatar` : le combat de boss a déjà l'avatar dans son arène (exception du cahier 7.8).
+  const dire = (ic2, txt, pose) => { retour.replaceChildren(icone(ic2), txt); if (!ctx.sansAvatar) { av.pose(pose); message.prepend(av); } };
 
   let essais = 0;
   function terminer(juste, texte, ic2, pose) {
     for (const b of boutons) b.disabled = true;
-    if (!juste) marquer(boutons.find((b) => b.juste), true);
+    if (!juste) {
+      const bonne = boutons.find((b) => b.juste);
+      marquer(bonne, true);
+      bonne.classList.add('montree'); // elle grossit un instant (CSS)
+    }
     dire(ic2, texte, pose);
     apres();
     if (lecteur) {
@@ -222,16 +243,30 @@ export function question(q, ctx, verifie, rang, total, fin) {
     }
     // Une question ratée repassera dans un autre tour : « Terminer » serait trompeur.
     if (rang === total && !(juste && essais === 0)) suite.firstChild.textContent = 'Suivant';
-    suite.hidden = false;
-    suite.focus();
-    suite.addEventListener('click', () => fin(juste && essais === 0, juste));
+    // Avec l'enchaînement automatique (combat de boss), pas de « Suivant » : il rendrait les élèves confus.
+    suite.hidden = !!ctx.enchainer;
+    // `ctx.sansDefilement` (combat de boss) : la page ne descend pas jusqu'à « Suivant » (demande du 2026-10-25).
+    suite.focus({ preventScroll: !!ctx.sansDefilement });
+    let parti = false; // une seule suite, qu'elle vienne du bouton ou de l'enchaînement
+    const partir = () => { if (!parti) { parti = true; fin(juste && essais === 0, juste); } };
+    suite.addEventListener('click', partir);
+    // `ctx.enchainer` (combat de boss, demande du 2026-10-25) : [pause après une bonne réponse, après une erreur], en ms.
+    // On passe seul à la suite, le son fini et la pause écoulée.
+    if (ctx.enchainer) {
+      let attend = false;
+      const attendre = () => { if (!attend) { attend = true; setTimeout(partir, ctx.enchainer[juste ? 0 : 1]); } };
+      if (lecteur) {
+        lecteur.addEventListener('fin', attendre, { once: true });
+        setTimeout(attendre, 8000); // un son qui ne part pas (fichier absent, iPhone muet) ne bloque pas le combat
+      } else attendre();
+    }
   }
   for (const b of boutons) {
     b.addEventListener('click', () => {
       marquer(b, b.juste);
-      if (b.juste) return terminer(true, 'Bravo !', 'sourire', 'content');
+      if (b.juste) return terminer(true, bravo(), 'sourire', 'content');
       // Un bouton bloqué perd le focus : au clavier, on passe à la réponse suivante au lieu de repartir en haut.
-      boutons.find((x) => !x.disabled && x !== b)?.focus();
+      boutons.find((x) => !x.disabled && x !== b)?.focus({ preventScroll: !!ctx.sansDefilement });
       b.disabled = true;
       if (verifie) return terminer(false, 'Pas grave, continue !', 'bulle', 'encourage');
       essais += 1;
@@ -241,8 +276,8 @@ export function question(q, ctx, verifie, rang, total, fin) {
   }
 
   const zone = el('div', { class: 'exercice' },
-    el('div', { class: 'tete-ex' }, titre, total ? el('p', { class: 'compteur' }, `${rang} / ${total}`) : ''),
-    ctx.presents.has(consigneSon) ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false }) : '',
+    el('div', { class: 'tete-ex' }, titre, total ? compteur(rang, total) : ''),
+    ctx.presents.has(consigneSon) ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false, lent: false }) : '',
     el('div', { class: 'enonce' }, enonce),
     // Images en grille ; mots les uns sous les autres (« de » et « het » côte à côte).
     el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}` }, ...boutons),
@@ -319,7 +354,23 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
     rates.length ? el('h3', {}, 'À revoir') : '',
     rates.length ? el('ul', { class: 'a-revoir' }, ...ratees) : '',
     boutonRecommencer(relancer)));
+  if (nb === 3) fete(zone.firstChild);
   titre.focus();
+}
+
+// Petite fête : des étoiles tombent une seconde (victoire du combat de boss, 3 étoiles de « Je vérifie »).
+// Rien si l'appareil demande moins d'animations.
+export function fete(zone) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const pluie = el('div', { class: 'fete-boss', 'aria-hidden': 'true' },
+    ...Array.from({ length: 12 }, (_, k) => {
+      const s = el('span', {}, icone('etoile'));
+      s.style.left = `${4 + k * 8}%`;
+      s.style.animationDelay = `${(k % 4) * 0.1}s`;
+      return s;
+    }));
+  zone.append(pluie);
+  setTimeout(() => pluie.remove(), 1600);
 }
 
 // Fin de « Je m'entraîne », et aussi des jeux (`pose` de l'avatar, `autres` : des lignes de plus sous le titre).

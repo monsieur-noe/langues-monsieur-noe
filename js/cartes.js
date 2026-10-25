@@ -1,9 +1,9 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone } from './outils.js';
-import { couleurIndice, fichiersPresents } from './donnees.js';
-import { creerLecteur, arreter } from './audio.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { couleurIndice, fichiersPresents } from './donnees.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
 
 export function cheminImage(mot, dossier) {
   return `${dossier}images/${mot.image || `${mot.id}.png`}`;
@@ -33,7 +33,8 @@ function faceMot(mot, langue, son) {
 // Ce qui représente le mot (image, carré de couleur, texte en grand ou français) ; servi aussi aux exercices.
 // `langue` : le texte de remplacement est le mot étranger, lu avec le bon accent.
 export function visuel(mot, ind, langue) {
-  if (ind.type === 'image') return el('img', { class: 'image', src: ind.src, alt: mot.mot, lang: langue });
+  // `lazy` : une image loin de l'écran ne se télécharge qu'à l'approche (moins de données).
+  if (ind.type === 'image') return el('img', { class: 'image', src: ind.src, alt: mot.mot, lang: langue, loading: 'lazy' });
   if (ind.type === 'couleur') return carre(ind.fond, mot.mot, langue);
   if (ind.type === 'texte') return el('span', { class: ind.texte.length <= 3 ? 'tuile court' : 'tuile' }, ind.texte);
   return el('span', { class: 'francais' }, ind.texte);
@@ -53,6 +54,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
 
   function montrer(i) {
     const focusCarte = zone.contains(document.activeElement);
+    const ancien = index;
     index = Math.min(Math.max(i, 0), mots.length - 1);
     const mot = mots[index];
     const chemin = `${dossier}audio/${mot.id}.m4a`;
@@ -67,6 +69,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
     cacher(arriere, true);
     const tourner = el('button', { type: 'button', class: 'coin', 'aria-label': 'Retourner la carte', 'aria-pressed': 'false' }, icone('tourner'));
     const carte = el('div', { class: 'carte' }, avant, arriere, tourner);
+    if (index !== ancien) carte.classList.add(index > ancien ? 'vient-droite' : 'vient-gauche'); // glissement (CSS)
     // Toucher n'importe où sur la carte la retourne ; le lecteur audio, lui, joue le son.
     carte.addEventListener('click', (e) => {
       if (e.target.closest('.lecteur-audio')) return;

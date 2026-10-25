@@ -1,5 +1,7 @@
 titre: Kleuren
 quizlet: https://quizlet.com/be/1224987951/couleurs-neerlandais-flash-cards/
+# Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
+boss: Gribouille
 # Traductions françaises de Claude, validées par l'enseignant le 2026-10-19.
 # Dans votre message vous avez écrit « rose » ; j'ai mis « roze » (orthographe de votre PDF).
 # Les images sont à ajouter : une image par mot dans le dossier images/ (voir le cahier des charges).

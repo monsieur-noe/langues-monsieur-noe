@@ -1,11 +1,11 @@
 // Jeu « Le memory qui parle » (cahier 7.9) : des cartes retournées ; chaque paire = une carte « son »
 // (qui dit le mot quand on la retourne) et la carte de son indice (dessin, couleur, chiffre, ou le français).
 // Deux cartes qui ne vont pas ensemble se retournent seules après environ une seconde. Pas de limite de coups.
-import { el, icone } from './outils.js';
-import { creerLecteur, arreter } from './audio.js';
-import { visuel } from './cartes.js';
-import { melanger, bilanEntraine } from './exercices.js';
-import { avatar } from './avatar.js';
+import { el, icone } from './outils.js?v=f57aa470';
+import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { visuel } from './cartes.js?v=f57aa470';
+import { melanger, bilanEntraine } from './exercices.js?v=f57aa470';
+import { avatar } from './avatar.js?v=f57aa470';
 
 const PAIRES = 6;
 const PAUSE = 1000; // le temps de voir les deux cartes avant qu'elles se retournent (pas un chronomètre)
@@ -36,6 +36,7 @@ function lancer(zone, contenu) {
     // Un son par carte « son », joué par le lecteur unique du site.
     const lecteur = c.son ? creerLecteur(`${dossier}audio/${c.mot.id}.m4a`, { nom: 'le mot' }) : null;
     const face = el('span', { class: 'face-memory' }, c.son ? icone('haut-parleur') : visuel(c.mot, c.mot.ind, langue));
+    face.querySelector('img')?.setAttribute('loading', 'eager'); // face cachée : l'image doit être prête avant qu'on la retourne
     const b = el('button', { type: 'button', class: 'reponse carte-memory', 'aria-label': 'Carte cachée' },
       el('span', { class: 'dos-memory', 'aria-hidden': 'true' }, '?'), face);
     const montrer = (oui) => {

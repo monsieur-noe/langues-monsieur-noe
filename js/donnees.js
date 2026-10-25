@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js';
+import { LANGUES } from './outils.js?v=f57aa470';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -91,7 +91,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: '', note_parents: '', couleurs: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: '', note_parents: '', couleurs: '', boss: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -111,11 +111,11 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       // En-tête : lignes « clé: valeur » avant la première section.
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
-        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: » ou « couleurs: ».');
-      } else if (['titre', 'quizlet', 'note_parents', 'couleurs'].includes(m[1])) {
+        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: » ou « boss: ».');
+      } else if (['titre', 'quizlet', 'note_parents', 'couleurs', 'boss'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: » et « couleurs: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: » et « boss: ».`);
       }
       continue;
     }
