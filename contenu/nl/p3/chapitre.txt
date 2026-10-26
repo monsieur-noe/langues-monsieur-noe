@@ -1,0 +1,71 @@
+# Chapitre 5 : Schoolmateriaal (le matériel scolaire et le mobilier de la classe)
+# Source : fiche « Schoolmateriaal », exercices 1 à 12.
+
+titre: Schoolmateriaal
+
+# Les 2 listes Quizlet du chapitre.
+quizlet: Le matériel scolaire | https://quizlet.com/be/1225458665/materiel-scolaire-neerlandais-flash-cards/
+quizlet: Le mobilier scolaire | https://quizlet.com/be/1225460307/mobilier-scolaire-neerlandais-flash-cards/
+
+# Exercice « Couleurs » (« De boekentas is rood. »), comme dans vervoermiddelen.
+couleurs: kleuren
+boss: Trousse-Trouille
+
+[mots]
+# id | mot (avec l'article pour un nom) | français | image (facultatif)
+# Les dessins (images/<id>.svg) sont de Claude (demande de l'enseignant du 2026-10-26). Pour en changer un, dépose un fichier du même nom.
+# Deux listes de vocabulaire : « Le matériel scolaire » et « La classe ».
+
+liste: Le matériel scolaire
+boek | het boek | le livre | boek.svg
+map | de map | le classeur | map.svg
+vulpen | de vulpen | le stylo | vulpen.svg
+boekentas | de boekentas | le cartable | boekentas.svg
+pennenzak | de pennenzak | le plumier | pennenzak.svg
+schaar | de schaar | les ciseaux | schaar.svg
+lat | de lat | la latte | lat.svg
+plakstift | de plakstift | le bâton de colle | plakstift.svg
+stift | de stift | le marqueur | stift.svg
+slijper | de slijper | le taille-crayon | slijper.svg
+gom | de gom | la gomme | gom.svg
+potlood | het potlood | le crayon | potlood.svg
+kleurpotlood | het kleurpotlood | le crayon de couleur | kleurpotlood.svg
+
+liste: La classe
+kast | de kast | l'armoire | kast.svg
+bank | de bank | le banc | bank.svg
+bureau | het bureau | le bureau | bureau.svg
+stoel | de stoel | la chaise | stoel.svg
+klas | de klas | la classe | klas.svg
+school | de school | l'école | school.svg
+raam | het raam | la fenêtre | raam.svg
+klok | de klok | l'horloge | klok.svg
+deur | de deur | la porte | deur.svg
+kapstok | de kapstok | le portemanteau | kapstok.svg
+tafel | de tafel | la table | tafel.svg
+bord | het bord | le tableau | bord.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Chaque phrase s'affiche dans « Je découvre » avec la liste de mots du même nom.
+
+liste: Le matériel scolaire
+school-p1 | Mag ik je slijper hebben? | Je peux avoir ton taille-crayon ? | slijper
+school-p2 | Mag ik je schaar hebben? | Je peux avoir tes ciseaux ? | schaar
+school-p3 | Mijn boekentas is blauw. | Mon cartable est bleu. | boekentas
+school-p4 | Mijn pennenzak is groot. | Mon plumier est grand. | pennenzak
+school-p5 | Ik heb een rode gom. | J'ai une gomme rouge. | gom
+school-p6 | Mijn lat is geel. | Ma latte est jaune. | lat
+
+liste: La classe
+school-p7 | Het bord is groen. | Le tableau est vert. | bord
+school-p8 | Er is een kast. | Il y a une armoire. | kast
+school-p9 | Er zijn drie ramen. | Il y a trois fenêtres. | zijn | is
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus (facultatif)
+zin-1 | Mag / ik / je / slijper / hebben? | school-p1 | schaar
+zin-2 | Mijn / boekentas / is / blauw. | school-p3 | pennenzak
+zin-3 | Ik / heb / een / rode / gom. | school-p5 | lat
+zin-4 | Er / is / een / kast. | school-p8 | stoel
+zin-5 | Er / zijn / drie / ramen. | school-p9 | deur
