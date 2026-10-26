@@ -1,168 +1,38 @@
-# Chapitre 4 : Verjaardag (les mois, les jours, les nombres de 0 à 100)
-
-titre: Verjaardag
-boss: Croque-Gâteau
-
-# Les 3 listes Quizlet du chapitre.
-quizlet: Les jours de la semaine | https://quizlet.com/be/1225249263/jours-de-la-semaine-neerlandais-flash-cards/
-quizlet: Les mois | https://quizlet.com/be/1225249600/mois-neerlandais-flash-cards/
-quizlet: Les nombres de 0 à 100 | https://quizlet.com/be/1225250053/nombres-de-0-a-100-flash-cards/
+titre: Zich voorstellen
+quizlet: https://quizlet.com/be/1224987302/nombres-0-10-neerlandais-flash-cards/
+# Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
+boss: Bla-Bla le Bavard
+# BROUILLON : seuls les nombres, les dictées et la piste « Savoir se présenter » sont là. Le reste du chapitre est à compléter.
 
 [mots]
-# id | mot | français | indice (facultatif)
-
-# --- Les mois ---
-liste: Les mois
-januari | januari | janvier
-februari | februari | février
-maart | maart | mars
-april | april | avril
-mei | mei | mai
-juni | juni | juin
-juli | juli | juillet
-augustus | augustus | août
-september | september | septembre
-oktober | oktober | octobre
-november | november | novembre
-december | december | décembre
-
-# --- Les jours ---
-liste: Les jours de la semaine
-maandag | maandag | lundi
-dinsdag | dinsdag | mardi
-woensdag | woensdag | mercredi
-donderdag | donderdag | jeudi
-vrijdag | vrijdag | vendredi
-zaterdag | zaterdag | samedi
-zondag | zondag | dimanche
-
-# --- Les nombres de 0 à 100 ---
-liste: Les nombres de 0 à 100
-# POUR CLAUDE CODE : les sons de 0 à 10 existent déjà sur le site, dans un chapitre précédent.
-# Copie-les dans audio/ en les renommant zero.m4a, un.m4a ... dix.m4a, au lieu de les réenregistrer.
-zero | nul | | texte:0
-un | één | | texte:1
-deux | twee | | texte:2
-trois | drie | | texte:3
-quatre | vier | | texte:4
-cinq | vijf | | texte:5
-six | zes | | texte:6
-sept | zeven | | texte:7
-huit | acht | | texte:8
-neuf | negen | | texte:9
-dix | tien | | texte:10
-onze | elf | | texte:11
-douze | twaalf | | texte:12
-treize | dertien | | texte:13
-quatorze | veertien | | texte:14
-quinze | vijftien | | texte:15
-seize | zestien | | texte:16
-dix-sept | zeventien | | texte:17
-dix-huit | achttien | | texte:18
-dix-neuf | negentien | | texte:19
-vingt | twintig | | texte:20
-vingt-et-un | eenentwintig | | texte:21
-vingt-deux | tweeëntwintig | | texte:22
-vingt-trois | drieëntwintig | | texte:23
-vingt-quatre | vierentwintig | | texte:24
-vingt-cinq | vijfentwintig | | texte:25
-vingt-six | zesentwintig | | texte:26
-vingt-sept | zevenentwintig | | texte:27
-vingt-huit | achtentwintig | | texte:28
-vingt-neuf | negenentwintig | | texte:29
-trente | dertig | | texte:30
-trente-et-un | eenendertig | | texte:31
-trente-deux | tweeëndertig | | texte:32
-trente-trois | drieëndertig | | texte:33
-trente-quatre | vierendertig | | texte:34
-trente-cinq | vijfendertig | | texte:35
-trente-six | zesendertig | | texte:36
-trente-sept | zevenendertig | | texte:37
-trente-huit | achtendertig | | texte:38
-trente-neuf | negenendertig | | texte:39
-quarante | veertig | | texte:40
-quarante-et-un | eenenveertig | | texte:41
-quarante-deux | tweeënveertig | | texte:42
-quarante-trois | drieënveertig | | texte:43
-quarante-quatre | vierenveertig | | texte:44
-quarante-cinq | vijfenveertig | | texte:45
-quarante-six | zesenveertig | | texte:46
-quarante-sept | zevenenveertig | | texte:47
-quarante-huit | achtenveertig | | texte:48
-quarante-neuf | negenenveertig | | texte:49
-cinquante | vijftig | | texte:50
-cinquante-et-un | eenenvijftig | | texte:51
-cinquante-deux | tweeënvijftig | | texte:52
-cinquante-trois | drieënvijftig | | texte:53
-cinquante-quatre | vierenvijftig | | texte:54
-cinquante-cinq | vijfenvijftig | | texte:55
-cinquante-six | zesenvijftig | | texte:56
-cinquante-sept | zevenenvijftig | | texte:57
-cinquante-huit | achtenvijftig | | texte:58
-cinquante-neuf | negenenvijftig | | texte:59
-soixante | zestig | | texte:60
-soixante-et-un | eenenzestig | | texte:61
-soixante-deux | tweeënzestig | | texte:62
-soixante-trois | drieënzestig | | texte:63
-soixante-quatre | vierenzestig | | texte:64
-soixante-cinq | vijfenzestig | | texte:65
-soixante-six | zesenzestig | | texte:66
-soixante-sept | zevenenzestig | | texte:67
-soixante-huit | achtenzestig | | texte:68
-soixante-neuf | negenenzestig | | texte:69
-septante | zeventig | | texte:70
-septante-et-un | eenenzeventig | | texte:71
-septante-deux | tweeënzeventig | | texte:72
-septante-trois | drieënzeventig | | texte:73
-septante-quatre | vierenzeventig | | texte:74
-septante-cinq | vijfenzeventig | | texte:75
-septante-six | zesenzeventig | | texte:76
-septante-sept | zevenenzeventig | | texte:77
-septante-huit | achtenzeventig | | texte:78
-septante-neuf | negenenzeventig | | texte:79
-quatre-vingts | tachtig | | texte:80
-quatre-vingt-un | eenentachtig | | texte:81
-quatre-vingt-deux | tweeëntachtig | | texte:82
-quatre-vingt-trois | drieëntachtig | | texte:83
-quatre-vingt-quatre | vierentachtig | | texte:84
-quatre-vingt-cinq | vijfentachtig | | texte:85
-quatre-vingt-six | zesentachtig | | texte:86
-quatre-vingt-sept | zevenentachtig | | texte:87
-quatre-vingt-huit | achtentachtig | | texte:88
-quatre-vingt-neuf | negenentachtig | | texte:89
-nonante | negentig | | texte:90
-nonante-et-un | eenennegentig | | texte:91
-nonante-deux | tweeënnegentig | | texte:92
-nonante-trois | drieënnegentig | | texte:93
-nonante-quatre | vierennegentig | | texte:94
-nonante-cinq | vijfennegentig | | texte:95
-nonante-six | zesennegentig | | texte:96
-nonante-sept | zevenennegentig | | texte:97
-nonante-huit | achtennegentig | | texte:98
-nonante-neuf | negenennegentig | | texte:99
-cent | honderd | | texte:100
-
-[phrases]
-# id | phrase | français | mot à masquer | autres propositions
-p2 | Wanneer is je verjaardag? | Quand est ton anniversaire ? | Wanneer | Waar, Wie
-p3 | Mijn verjaardag is in ... | Mon anniversaire est en ...
-p5 | Mijn lievelingsdag is zaterdag. | Mon jour préféré est le samedi. | zaterdag
-p6 | Mijn lievelingsmaand is juli. | Mon mois préféré est juillet. | juli
+# id | mot | français | image (facultatif)
+nul | nul | zéro | texte:0
+een | een | un | texte:1
+twee | twee | deux | texte:2
+drie | drie | trois | texte:3
+vier | vier | quatre | texte:4
+vijf | vijf | cinq | texte:5
+zes | zes | six | texte:6
+zeven | zeven | sept | texte:7
+acht | acht | huit | texte:8
+negen | negen | neuf | texte:9
+tien | tien | dix | texte:10
 
 [pistes]
-# id | titre | texte | français
+# id | titre | texte (facultatif) | français (facultatif)
+savoir-se-presenter | Savoir se présenter | Hallo! Ik ben Thomas en ik ben 8 jaar oud. Ik woon in Charleroi. Ik ben een jongen (of meisje) en ik zit in het derde leerjaar.
 
 [dictees]
-# POUR CLAUDE CODE (nouvelle fonction demandée par Noé) : une dictée de dates tirées au hasard.
-# Le site colle 3 sons déjà enregistrés : un jour (maandag.m4a...) + un nombre de 1 à 31 (un.m4a... trente-et-un.m4a)
-# + un mois (januari.m4a...). Il ne tire que des dates qui existent (pas de 31 februari).
-# La correction s'affiche ensuite, écrite comme « maandag 3 februari ».
-# id | titre | texte | français
-dates | Les dates | dates:
+# id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)
+dictee-1 | Dictée 1 | 58321 / 04796 / 72164 / 39608 / 81537
+dictee-2 | Dictée 2 | 26490 / 73815 / 05183 / 94627 / 31075
+dictee-3 | Dictée 3 | 62941 / 08532 / 47196 / 15380 / 82754
 
 [ordre]
-# id | cases | son à écouter à la fin | intrus (facultatif)
-dagen | maandag / dinsdag / woensdag / donderdag / vrijdag / zaterdag / zondag | | juli
-maanden-1 | januari / februari / maart / april / mei / juni | | woensdag
-maanden-2 | juli / augustus / september / oktober / november / december | | zaterdag
-zin-1 | Wanneer / is / je / verjaardag? | p2 | zondag
+# id | cases séparées par « / » | son à écouter à la fin (facultatif) | intrus (facultatif)
+# Jeu « Mots en ordre » (Je m'entraîne) : « Savoir se présenter » en 5 manches.
+presenter-1 | Hallo! / Ik / ben / Thomas | savoir-se-presenter | vier
+presenter-2 | Ik / ben / 8 / jaar / oud. | savoir-se-presenter
+presenter-3 | Ik / woon / in / Charleroi. | savoir-se-presenter | drie
+presenter-4 | Ik / ben / een jongen (of meisje) | savoir-se-presenter | zeven
+presenter-5 | Ik / zit / in / het / derde / leerjaar. | savoir-se-presenter | vijf
