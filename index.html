@@ -3,35 +3,63 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Page de contrôle · Les langues avec Monsieur Noé</title>
-  <link rel="stylesheet" href="../css/style.css?v=c6de7ac4">
-  <script type="module" src="../js/page-controle.js?v=c6de7ac4"></script>
-  <script type="module" src="../js/logo.js?v=c6de7ac4"></script>
+  <title>Les langues avec Monsieur Noé</title>
+  <meta name="description" content="Révise le vocabulaire de néerlandais vu en classe : écoute, cartes et exercices.">
+  <link rel="stylesheet" href="css/style.css?v=c6de7ac4">
+  <link rel="preload" href="polices/LettresNoe-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="polices/LettresNoe-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="js/oups.js?v=c6de7ac4"></script>
+  <script type="module" src="js/page-accueil.js?v=c6de7ac4"></script>
+  <script type="module" src="js/logo.js?v=c6de7ac4"></script>
 </head>
 <body>
-  <!-- Page réservée à l'enseignant : aucun lien du site n'y mène. Adresse : …/controle/ -->
+  <!-- Pictogrammes de l'interface, réutilisés par <use href="#nom">. -->
   <svg class="sprite" aria-hidden="true">
     <symbol id="bulle" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
     <symbol id="gauche" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="droite" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="famille" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 20c0-3.6 2.5-6 5.5-6s5.5 2.4 5.5 6M14.5 15.2c.8-.7 1.6-1 2.5-1 2.6 0 4.5 2 4.5 5"/></symbol>
+    <symbol id="bouclier" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.8-3.4 8-8 9-4.6-1-8-4.2-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+    <!-- Drapeaux de la ligne de bienvenue seulement (cahier 7.1), décoratifs. -->
+    <symbol id="drapeau-gb" viewBox="0 0 60 30">
+      <clipPath id="gb-diagonales"><path d="M30 15h30v15zv15H0zH0V0zV0h30z"/></clipPath>
+      <rect width="60" height="30" fill="#012169"/>
+      <path d="M0 0l60 30m0-30L0 30" stroke="#fff" stroke-width="6"/>
+      <path d="M0 0l60 30m0-30L0 30" stroke="#c8102e" stroke-width="4" clip-path="url(#gb-diagonales)"/>
+      <path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10"/>
+      <path d="M30 0v30M0 15h60" stroke="#c8102e" stroke-width="6"/>
+    </symbol>
+    <symbol id="drapeau-nl" viewBox="0 0 9 6">
+      <rect width="9" height="2" fill="#ae1c28"/>
+      <rect y="2" width="9" height="2" fill="#fff"/>
+      <rect y="4" width="9" height="2" fill="#21468b"/>
+    </symbol>
   </svg>
 
   <header class="marque">
-    <a href="../index.html"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#bulle"/></svg></span>Les langues avec Monsieur Noé</a>
+    <a href="index.html"><span class="logo"><svg class="ic" aria-hidden="true"><use href="#bulle"/></svg></span>Les langues avec Monsieur Noé</a>
   </header>
+
   <main class="corps">
-    <div class="fil"><a class="retour" href="../index.html" aria-label="Retour à l'accueil"><svg class="ic" aria-hidden="true"><use href="#gauche"/></svg></a></div>
-    <h1>Page de contrôle</h1>
-    <p class="aide">Après une modification sur GitHub, attends environ 5 minutes, puis recharge cette page.</p>
-    <p class="aide legende">
-      <span class="etat ok" aria-hidden="true">✔</span> tout va bien
-      <span class="etat attention" aria-hidden="true">⚠</span> à vérifier
-      <span class="etat erreur" aria-hidden="true">✖</span> à corriger
-    </p>
-    <div id="resultats" aria-live="polite"><p class="aide">Vérification en cours…</p></div>
-    <noscript><p class="message">Cette page a besoin de JavaScript. Active-le dans ton navigateur.</p></noscript>
+    <!-- Trois écrans successifs : langue, puis année, puis chapitres (cahier 7.1). -->
+    <div class="fil" id="fil" hidden>
+      <a class="retour" id="retour" href="index.html" aria-label="Revenir au choix précédent"><svg class="ic" aria-hidden="true"><use href="#gauche"/></svg></a>
+      <span id="chemin"></span>
+    </div>
+    <p class="bienvenue" id="bienvenue" hidden></p>
+    <h1 id="consigne">Choisis ta langue.</h1>
+    <ul id="langues" class="liste" hidden></ul>
+    <ul id="annees" class="liste" hidden></ul>
+    <ol id="liste-chapitres" class="liste" hidden></ol>
+    <div id="message"></div>
+    <noscript><p class="message">Ce site a besoin de JavaScript. Active-le dans ton navigateur.</p></noscript>
   </main>
+
+  <footer class="pied">
+    <a href="pages/parents.html"><svg class="ic" aria-hidden="true"><use href="#famille"/></svg>Pour les parents</a>
+    <a href="pages/confidentialite.html"><svg class="ic" aria-hidden="true"><use href="#bouclier"/></svg>Confidentialité</a>
+  </footer>
 </body>
 </html>

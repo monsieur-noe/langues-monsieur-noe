@@ -354,6 +354,8 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .quizlet .avatar { height: 4.5rem; } /* petit, à côté du lien */
 .quizlet .ici { padding: 0 .3rem; border-radius: .4rem; background: var(--acc); color: var(--surface); }
 .quizlet a { display: block; padding: .5rem 0; line-height: 1.4; } /* zone de toucher assez haute (au moins 56 px avec deux lignes) */
+.quizlet .liens { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.4; } /* plusieurs listes nommées */
+.quizlet .liens a { min-height: 3.5rem; display: flex; align-items: center; }
 
 /* ---------- Je m'entraîne, Je vérifie (js/exercices.js) ---------- */
 

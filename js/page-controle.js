@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=f57aa470';
-import { chercherFichiers, cheminImage } from './cartes.js?v=f57aa470';
-import { disponibles, motSecret } from './exercices.js?v=f57aa470';
-import { el } from './outils.js?v=f57aa470';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=f57aa470';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=c6de7ac4';
+import { chercherFichiers, cheminImage } from './cartes.js?v=c6de7ac4';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=c6de7ac4';
+import { el } from './outils.js?v=c6de7ac4';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=c6de7ac4';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };
@@ -32,7 +32,7 @@ function constat(etat, titre, details = []) {
 function attendus(donnees, vignette) {
   const { mots, phrases, pistes, dictees } = donnees;
   return [
-    ...[...mots, ...phrases, ...pistes, ...dictees].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true })),
+    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true })),
     ...mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => ({ chemin: cheminImage(m, ''), id: m.id, obligatoire: !!m.image })),
     ...(vignette ? [{ chemin: `images/${vignette}`, id: `vignette ${vignette}`, obligatoire: true }] : []),
   ];
@@ -119,7 +119,7 @@ async function controlerChapitre(c) {
 
   // Dictées trop lourdes (3 Mo au plus) : plus longues à charger sur un vieux téléphone.
   const lourdes = [];
-  await Promise.all(donnees.dictees.map(async (d) => {
+  await Promise.all(donnees.dictees.filter((d) => !d.dates).map(async (d) => {
     const t = await taille(`${dossier}audio/${d.id}.m4a`);
     if (t > LIMITE_DICTEE) lourdes.push(`${d.id} : ${(Math.ceil(t / 1024 / 102.4) / 10).toFixed(1).replace('.', ',')} Mo. Demande à Claude de réduire le fichier.`);
   }));
@@ -136,6 +136,9 @@ async function controlerChapitre(c) {
   constats.push(aCorriger.length
     ? constat('attention', 'Exercices pas proposés aux élèves :', detail)
     : constat('ok', 'Tous les exercices possibles sont proposés.', detail));
+  if (donnees.dictees.some((d) => d.dates) && !datesPossibles(piecesDates(mots))) {
+    constats.push(constat('attention', 'Dictée de dates pas proposée : il faut des jours, des mois et des nombres de 1 à 31 (texte:), avec leur son.'));
+  }
 
   const quizlet = boutonQuizlet(donnees.mots);
   constats.push(...quizlet.constats);

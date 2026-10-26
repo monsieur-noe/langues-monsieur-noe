@@ -2,11 +2,11 @@
 // d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. » à compléter :
 // le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js?v=f57aa470';
-import { creerLecteur } from './audio.js?v=f57aa470';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js?v=f57aa470';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=f57aa470';
-import { avatar } from './avatar.js?v=f57aa470';
+import { el, icone } from './outils.js?v=c6de7ac4';
+import { creerLecteur } from './audio.js?v=c6de7ac4';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js?v=c6de7ac4';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=c6de7ac4';
+import { avatar } from './avatar.js?v=c6de7ac4';
 
 const NOMBRE = 10;
 const CHOIX = 5;
@@ -85,7 +85,7 @@ function question(q, ctx, rang, total, fin) {
 
   const trous = [el('span', { class: 'trou' }, '…'), el('span', { class: 'trou' }, '…')];
   const groupes = [
-    { trou: trous[0], bonne: sansArticle(q.vehicule.mot), pool: ctx.vehicules.map((v) => sansArticle(v.mot)), question: 'Quel moyen de transport ?' },
+    { trou: trous[0], bonne: sansArticle(q.vehicule.mot), pool: ctx.vehicules.map((v) => sansArticle(v.mot)), question: 'Qu\'est-ce que c\'est ?' }, // valable pour tous les chapitres (véhicules, matériel scolaire…)
     { trou: trous[1], bonne: q.couleur.mot, pool: ctx.couleurs.map((c) => c.mot), question: 'Quelle couleur ?' },
   ];
   let finis = 0;

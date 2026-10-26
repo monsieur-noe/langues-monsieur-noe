@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=f57aa470';
+import { LANGUES } from './outils.js?v=c6de7ac4';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -23,7 +23,7 @@ const SECTIONS = {
   phrases: [3, 5, 'id | phrase | français | réponse à masquer (facultatif) | autres propositions (facultatif)'],
   pistes: [2, 4, 'id | titre | texte (facultatif) | français (facultatif)'],
   dictees: [3, 4, 'id | titre | texte de la dictée | français (facultatif)'],
-  ordre: [2, 3, 'id | cases séparées par « / » | son à écouter à la fin (facultatif)'],
+  ordre: [2, 4, 'id | cases séparées par « / » | son à écouter à la fin (facultatif) | intrus (facultatif)'],
 };
 
 // Garde les lignes utiles avec leur numéro (lignes vides et # ignorées).
@@ -91,15 +91,17 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: '', note_parents: '', couleurs: '', boss: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
+  let liste = ''; // liste en cours dans [mots] ou [phrases] (ligne « liste: »), remise à zéro à chaque section
 
   for (const { num, texte: ligne } of lignesUtiles(texte)) {
     const titreSection = ligne.match(/^\[(.*)\]$/);
     if (titreSection) {
       section = titreSection[1].trim().toLowerCase();
+      liste = '';
       if (!SECTIONS[section]) {
         err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes], [dictees] et [ordre].`);
         section = 'inconnue';
@@ -112,7 +114,11 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
         err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: » ou « boss: ».');
-      } else if (['titre', 'quizlet', 'note_parents', 'couleurs', 'boss'].includes(m[1])) {
+      } else if (m[1] === 'quizlet') {
+        // Plusieurs lignes possibles, chacune « quizlet: lien » ou « quizlet: nom | lien » (demande du 2026-10-26).
+        const [nom, lien] = m[2].includes('|') ? colonnes(m[2]) : ['', m[2].trim()];
+        resultat.quizlet.push({ nom, lien });
+      } else if (['titre', 'note_parents', 'couleurs', 'boss'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
         err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: » et « boss: ».`);
@@ -120,6 +126,17 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       continue;
     }
     if (section === 'inconnue') continue;
+    // « liste: Les mois » dans [mots] : les mots suivants forment une liste de « Je découvre » (demande du 2026-10-26).
+    // Dans [phrases], même nom : les phrases suivantes s'affichent avec cette liste (sans liste : avec toutes).
+    const ligneListe = (section === 'mots' || section === 'phrases') && ligne.match(/^liste\s*:\s*(.*)$/);
+    if (ligneListe) {
+      liste = ligneListe[1].trim();
+      if (section === 'phrases' && !resultat.mots.some((m) => m.liste === liste)) {
+        err(num, `la liste « ${liste} » n'existe pas dans [mots]. Recopie exactement le nom d'une ligne « liste: » de [mots].`);
+        liste = '';
+      }
+      continue;
+    }
 
     const [min, max, modele] = SECTIONS[section];
     const c = colonnes(ligne);
@@ -163,22 +180,25 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
 
     if (section === 'mots') {
       const [, mot, francais, image = ''] = c;
-      resultat.mots.push({ id, mot, francais, image, ligne: num });
+      resultat.mots.push({ id, mot, francais, image, liste, ligne: num });
     } else if (section === 'phrases') {
       const [, phrase, francais, reponse = '', autres = ''] = c;
       if (reponse && positionReponse(phrase, reponse) < 0) {
         err(num, `la réponse à masquer « ${reponse} » n'apparaît pas dans la phrase. Recopie-la exactement comme dans la phrase.`);
       }
       const propositions = autres ? autres.split(',').map((p) => p.trim()).filter(Boolean) : [];
-      resultat.phrases.push({ id, phrase, francais, reponse, propositions, ligne: num });
+      resultat.phrases.push({ id, phrase, francais, reponse, propositions, liste, ligne: num });
     } else if (section === 'pistes') {
       const [, titre, texteP = '', francais = ''] = c;
       resultat.pistes.push({ id, titre, texte: texteP, francais, ligne: num });
     } else if (section === 'ordre') {
-      resultat.ordre.push({ id, cases, son: c[2] || '', ligne: num });
+      // 4e colonne : mots en trop, séparés par des virgules (demande du 2026-10-26).
+      const intrus = (c[3] || '').split(',').map((x) => x.trim()).filter(Boolean);
+      resultat.ordre.push({ id, cases, son: c[2] || '', intrus, ligne: num });
     } else {
       const [, titre, texteD, francais = ''] = c;
-      resultat.dictees.push({ id, titre, texte: texteD, francais, ligne: num });
+      // « dates: » en 3e colonne : dictée de dates tirées au hasard, sans son à elle (demande du 2026-10-26).
+      resultat.dictees.push({ id, titre, texte: texteD, francais, ligne: num, dates: texteD === 'dates:' });
     }
   }
 

@@ -14,6 +14,8 @@ titre: Titre du chapitre
 
 # Le lien Quizlet (facultatif ; enlève le # pour l'activer) :
 # quizlet: https://quizlet.com/...
+# Plusieurs listes : une ligne par liste, avec son nom avant « | » :
+# quizlet: Les mois | https://quizlet.com/...
 
 # Un conseil pour les parents (facultatif ; enlève le # pour l'activer) :
 # note_parents: Écrivez ici votre conseil.
@@ -42,9 +44,15 @@ titre: Titre du chapitre
 #                 purple, blue, white, gray, brown, ou un code comme couleur:#C62828
 # Sans indice, l'autre face montre le français. Avec un indice, le français n'est
 # pas affiché : tu peux laisser la 3e colonne vide (rood | rood | | couleur:red).
+# Listes de « Je découvre » (facultatif) : une ligne « liste: » avant un groupe de mots.
+# Les mots qui suivent forment une liste, jusqu'à la ligne « liste: » suivante. Exemple :
+# liste: Les mois
 
 [phrases]
 # id | phrase | français | mot à masquer (facultatif) | autres propositions (facultatif)
+# Listes (facultatif) : une ligne « liste: » avec le nom exact d'une liste de [mots] ;
+# les phrases qui suivent s'affichent dans « Je découvre » avec cette liste.
+# Une phrase sans liste s'affiche avec toutes les listes.
 # Exemple :
 # p1 | Ik draag een rode pet. | Je porte une casquette rouge. | rode
 
@@ -58,10 +66,20 @@ titre: Titre du chapitre
 # id | titre | texte de la dictée (= la correction ; « / » = retour à la ligne) | français (facultatif)
 # Exemple :
 # dictee-1 | Dictée 1 | Ik heet Lina. / Ik ben acht jaar.
+# Dictée de dates tirées au hasard (pas de son à enregistrer) : écris « dates: » en 3e colonne.
+# Il faut, dans [mots] et avec leur son, des jours (maandag…), des mois (januari…) et les nombres 1 à 31 (texte:1…).
+# dates | Les dates | dates:
 
 [ordre]
-# id | cases séparées par « / » | son à écouter à la fin (facultatif : l'identifiant d'un audio du chapitre)
+# id | cases séparées par « / » | son à écouter (facultatif : l'identifiant d'un audio du chapitre) | intrus (facultatif)
 # Jeu « Mots en ordre » de « Je m'entraîne » : l'enfant remet les cases dans le bon ordre.
 # Ce qui est entre deux « / » forme une seule case. Une ligne = une manche (au moins 2 cases).
-# Exemple :
+# Le son de la 3e colonne : s'il sert à une seule manche, il est joué juste après elle ;
+# s'il sert à plusieurs manches, il est proposé à la fin (« Écoute tout le texte »).
+# Intrus : un ou plusieurs mots en trop, séparés par des virgules, mélangés avec les cases ;
+# l'enfant doit les laisser de côté. Prends un mot du vocabulaire du chapitre (pas is, zijn, de, het).
+# Si la 3e colonne est vide, écris « | | » avant l'intrus.
+# Exemples :
 # presenter-1 | Ik / ben / een jongen (of meisje) | savoir-se-presenter
+# zin-4 | Er / is / een / kast. | school-p8 | stoel
+# dagen | maandag / dinsdag / woensdag / donderdag / vrijdag / zaterdag / zondag | | juli

@@ -2,10 +2,10 @@
 // et à « Mots en ordre » (Je m'entraîne, section [ordre] de chapitre.txt).
 // Les cases sont mélangées sur de gros boutons ; un toucher les range sur la ligne, un toucher sur la ligne
 // les renvoie en bas. Ligne complète : bon ordre = bravo et suite ; sinon on réessaie, sans limite.
-import { el, icone } from './outils.js?v=f57aa470';
-import { creerLecteur, arreter } from './audio.js?v=f57aa470';
-import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=f57aa470';
-import { avatar } from './avatar.js?v=f57aa470';
+import { el, icone } from './outils.js?v=c6de7ac4';
+import { creerLecteur, arreter } from './audio.js?v=c6de7ac4';
+import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=c6de7ac4';
+import { avatar } from './avatar.js?v=c6de7ac4';
 
 // Les cases dans le désordre, jamais dans le bon ordre (sinon il n'y aurait rien à faire).
 export function desordre(cases) {
@@ -24,10 +24,15 @@ function glisser(b, avant) {
     { duration: 250, easing: 'ease-out' });
 }
 
-// Une manche. `item` : { cases, audio (chemin du son à écouter pour vérifier, ou rien), francais }.
+// Une manche. `item` : { cases, audio (chemin du son à écouter pour vérifier, ou rien), francais,
+// intrus (cases en trop, facultatif), image (dessin du mot recherché, facultatif) }.
 function manche(item, langue, rang, total, fin) {
-  const { cases } = item;
-  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('crayon'), 'Touche les mots dans le bon ordre.');
+  const { cases, intrus = [], image } = item;
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('crayon'),
+    intrus.length ? 'Remets les mots en ordre. Attention à l\'intrus !' : 'Touche les mots dans le bon ordre.');
+  // Chaque intrus est glissé à une place au hasard parmi les cases mélangées.
+  const tuiles = desordre(cases);
+  for (const x of intrus) tuiles.splice(Math.floor(Math.random() * (tuiles.length + 1)), 0, x);
   const ligne = el('div', { class: 'ligne-phrase', lang: langue, 'aria-label': 'Ta phrase' });
   const reserve = el('div', { class: 'reserve-phrase', lang: langue });
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
@@ -40,7 +45,7 @@ function manche(item, langue, rang, total, fin) {
   let lecteur = null;
 
   // Chaque bouton garde sa place d'origine en bas, pour y revenir quand on le retire de la ligne.
-  const boutons = desordre(cases).map((texte) => {
+  const boutons = tuiles.map((texte) => {
     const b = el('button', { type: 'button', class: 'reponse mot-phrase' }, texte);
     const place = el('span', { class: 'place-phrase' }, b);
     b.addEventListener('click', () => {
@@ -82,7 +87,7 @@ function manche(item, langue, rang, total, fin) {
 
   const zone = el('div', { class: 'exercice' },
     el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
-    ligne, reserve, message, ecoute, suite);
+    image ? el('div', { class: 'enonce' }, image) : '', ligne, reserve, message, ecoute, suite);
   zone.titre = titre;
   return zone;
 }

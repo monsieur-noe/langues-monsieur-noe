@@ -29,10 +29,10 @@ dictee-2 | Dictée 2 | 26490 / 73815 / 05183 / 94627 / 31075
 dictee-3 | Dictée 3 | 62941 / 08532 / 47196 / 15380 / 82754
 
 [ordre]
-# id | cases séparées par « / » | son à écouter à la fin (facultatif)
+# id | cases séparées par « / » | son à écouter à la fin (facultatif) | intrus (facultatif)
 # Jeu « Mots en ordre » (Je m'entraîne) : « Savoir se présenter » en 5 manches.
-presenter-1 | Hallo! / Ik / ben / Thomas | savoir-se-presenter
+presenter-1 | Hallo! / Ik / ben / Thomas | savoir-se-presenter | vier
 presenter-2 | Ik / ben / 8 / jaar / oud. | savoir-se-presenter
-presenter-3 | Ik / woon / in / Charleroi. | savoir-se-presenter
-presenter-4 | Ik / ben / een jongen (of meisje) | savoir-se-presenter
-presenter-5 | Ik / zit / in / het / derde / leerjaar. | savoir-se-presenter
+presenter-3 | Ik / woon / in / Charleroi. | savoir-se-presenter | drie
+presenter-4 | Ik / ben / een jongen (of meisje) | savoir-se-presenter | zeven
+presenter-5 | Ik / zit / in / het / derde / leerjaar. | savoir-se-presenter | vijf

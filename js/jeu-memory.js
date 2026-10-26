@@ -1,11 +1,11 @@
 // Jeu « Le memory qui parle » (cahier 7.9) : des cartes retournées ; chaque paire = une carte « son »
 // (qui dit le mot quand on la retourne) et la carte de son indice (dessin, couleur, chiffre, ou le français).
 // Deux cartes qui ne vont pas ensemble se retournent seules après environ une seconde. Pas de limite de coups.
-import { el, icone } from './outils.js?v=f57aa470';
-import { creerLecteur, arreter } from './audio.js?v=f57aa470';
-import { visuel } from './cartes.js?v=f57aa470';
-import { melanger, bilanEntraine } from './exercices.js?v=f57aa470';
-import { avatar } from './avatar.js?v=f57aa470';
+import { el, icone } from './outils.js?v=c6de7ac4';
+import { creerLecteur, arreter } from './audio.js?v=c6de7ac4';
+import { visuel } from './cartes.js?v=c6de7ac4';
+import { melanger, bilanEntraine } from './exercices.js?v=c6de7ac4';
+import { avatar } from './avatar.js?v=c6de7ac4';
 
 const PAIRES = 6;
 const PAUSE = 1000; // le temps de voir les deux cartes avant qu'elles se retournent (pas un chronomètre)

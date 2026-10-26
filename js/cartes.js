@@ -1,9 +1,9 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone } from './outils.js?v=f57aa470';
-import { couleurIndice, fichiersPresents } from './donnees.js?v=f57aa470';
-import { creerLecteur, arreter } from './audio.js?v=f57aa470';
+import { el, icone } from './outils.js?v=c6de7ac4';
+import { couleurIndice, fichiersPresents } from './donnees.js?v=c6de7ac4';
+import { creerLecteur, arreter } from './audio.js?v=c6de7ac4';
 
 export function cheminImage(mot, dossier) {
   return `${dossier}images/${mot.image || `${mot.id}.png`}`;
@@ -112,6 +112,17 @@ function choixSens(indiceDabord, avecVisuel) {
     lien('indice', avecVisuel ? 'Image d\'abord' : 'Français d\'abord', avecVisuel ? 'image' : 'oeil'));
 }
 
+// Listes de « Je découvre » (lignes « liste: ») : un bouton par liste, puis « Tout ». Gardé dans l'adresse (?liste=1, 2… ou tout).
+function choixListe(listes, actif) {
+  const lien = (valeur, nom) => {
+    const params = new URLSearchParams(location.search);
+    params.set('liste', valeur);
+    return el('a', { class: 'seg', href: `?${params}`, 'aria-current': valeur === actif && 'page' }, nom);
+  };
+  return el('nav', { class: 'segments sens', 'aria-label': 'Choix de la liste' },
+    ...listes.map((nom, k) => lien(String(k + 1), nom)), lien('tout', 'Tout'));
+}
+
 function traduction(texte, quoi) {
   return el('details', { class: 'traduction' },
     el('summary', {}, icone('oeil'), quoi),
@@ -148,7 +159,7 @@ function piste(p, dossier, langue, sons) {
 // Cherche quels audios et images du chapitre existent (plus d'autres chemins), et l'indice de chaque mot.
 export async function chercherFichiers(donnees, dossier, autres = []) {
   const { mots, phrases, pistes, dictees } = donnees;
-  const audios = [...mots, ...phrases, ...pistes, ...dictees].map((x) => `${dossier}audio/${x.id}.m4a`);
+  const audios = [...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => `${dossier}audio/${x.id}.m4a`);
   // Les images ne sont cherchées que pour les mots sans « texte: » ni « couleur: ».
   const images = mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => cheminImage(m, dossier));
   const presents = await fichiersPresents([...audios, ...images, ...autres]);
@@ -160,11 +171,20 @@ export async function afficherDecouvre(conteneur, donnees, dossier, langue, indi
   const { presents, indices } = await chercherFichiers(donnees, dossier);
 
   const parties = [];
+  // Sans précision dans l'adresse, la première liste ; sans ligne « liste: », toutes les cartes comme avant.
+  const listes = [...new Set(mots.map((m) => m.liste).filter(Boolean))];
+  const demandee = new URLSearchParams(location.search).get('liste');
+  const actif = !listes.length || demandee === 'tout' ? 'tout' : (listes[demandee - 1] ? demandee : '1');
+  const dansListe = (x) => actif === 'tout' || x.liste === listes[actif - 1];
   if (mots.length) {
     parties.push(choixSens(indiceDabord, indices.some((i) => i.type !== 'francais')));
-    parties.push(cartes(mots, indices, dossier, langue, presents, indiceDabord));
+    const garder = mots.map(dansListe);
+    if (listes.length) parties.push(choixListe(listes, actif));
+    parties.push(cartes(mots.filter((_, k) => garder[k]), indices.filter((_, k) => garder[k]), dossier, langue, presents, indiceDabord));
   }
-  if (liste.length) parties.push(phrases(liste, dossier, langue, presents));
+  // Une phrase sans liste s'affiche avec toutes les listes (demande du 2026-10-26).
+  const phrasesVues = liste.filter((p) => !p.liste || dansListe(p));
+  if (phrasesVues.length) parties.push(phrases(phrasesVues, dossier, langue, presents));
   // Une piste sans son ni texte n'a rien à montrer.
   const aEcouter = pistes.filter((p) => presents.has(`${dossier}audio/${p.id}.m4a`) || p.texte);
   if (aEcouter.length) parties.push(el('section', { class: 'bloc' }, el('h2', {}, 'À écouter'), ...aEcouter.map((p) => piste(p, dossier, langue, presents))));

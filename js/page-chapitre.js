@@ -1,11 +1,11 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=f57aa470';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=f57aa470';
-import { afficherDecouvre } from './cartes.js?v=f57aa470';
-import { afficherExercices } from './exercices.js?v=f57aa470';
-import { avatar, chargerAvatar } from './avatar.js?v=f57aa470';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=f57aa470';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=c6de7ac4';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=c6de7ac4';
+import { afficherDecouvre } from './cartes.js?v=c6de7ac4';
+import { afficherExercices } from './exercices.js?v=c6de7ac4';
+import { avatar, chargerAvatar } from './avatar.js?v=c6de7ac4';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=c6de7ac4';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
@@ -51,11 +51,16 @@ function afficherExtras(donnees) {
     chargerAvatar().then(() => document.getElementById('note-parents').before(avatar('explique')));
   }
   // Seul un lien https vers Quizlet est accepté (pas d'adresse piégée dans le fichier texte).
-  if (/^https:\/\/([a-z0-9-]+\.)?quizlet\.com\//i.test(donnees.quizlet)) {
+  const liens = donnees.quizlet.filter((q) => /^https:\/\/([a-z0-9-]+\.)?quizlet\.com\//i.test(q.lien));
+  if (liens.length) {
     const p = document.getElementById('quizlet');
-    p.append(el('a', { href: donnees.quizlet, target: '_blank', rel: 'noopener noreferrer' },
-      'Pour aller plus loin : révise sur Quizlet ', el('strong', { class: 'ici' }, 'ici'),
-      " (site externe, demande d'abord l'accord de tes parents)"));
+    const lien = (q, ...contenu) => el('a', { href: q.lien, target: '_blank', rel: 'noopener noreferrer' }, ...contenu);
+    const prudence = " (site externe, demande d'abord l'accord de tes parents)";
+    // Un seul lien sans nom : la phrase d'origine. Sinon, une phrase puis un lien par nom.
+    p.append(liens.length === 1 && !liens[0].nom
+      ? lien(liens[0], 'Pour aller plus loin : révise sur Quizlet ', el('strong', { class: 'ici' }, 'ici'), prudence)
+      : el('span', { class: 'liens' }, `Pour aller plus loin : révise sur Quizlet${prudence}.`,
+        ...liens.map((q) => lien(q, el('strong', { class: 'ici' }, q.nom || 'Quizlet')))));
     p.hidden = false;
     // Petit avatar « reflechit » à côté du lien (demande de l'enseignant du 2026-10-20).
     chargerAvatar().then(() => p.prepend(avatar('reflechit')));

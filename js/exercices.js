@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=f57aa470';
-import { creerLecteur, arreter } from './audio.js?v=f57aa470';
-import { chercherFichiers, visuel } from './cartes.js?v=f57aa470';
-import { positionReponse } from './donnees.js?v=f57aa470';
-import { avatar, chargerAvatar } from './avatar.js?v=f57aa470';
-import { serieOrdre } from './ordre.js?v=f57aa470';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=f57aa470';
+import { el, icone } from './outils.js?v=c6de7ac4';
+import { creerLecteur, arreter } from './audio.js?v=c6de7ac4';
+import { chercherFichiers, visuel } from './cartes.js?v=c6de7ac4';
+import { positionReponse } from './donnees.js?v=c6de7ac4';
+import { avatar, chargerAvatar } from './avatar.js?v=c6de7ac4';
+import { serieOrdre } from './ordre.js?v=c6de7ac4';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=c6de7ac4';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -393,6 +393,50 @@ function dictee(d, ctx) {
       d.francais ? el('p', { class: 'fr' }, ...lignes(d.francais)) : ''));
 }
 
+// Dictée de dates (ligne « id | titre | dates: ») : un jour, un nombre de 1 à 31 et un mois du chapitre,
+// tirés au hasard et joués à la suite. Seuls les mots qui ont leur son servent ; jamais de « 31 februari ».
+const JOURS = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'];
+const MOIS = { januari: 31, februari: 29, maart: 31, april: 30, mei: 31, juni: 30, juli: 31, augustus: 31, september: 30, oktober: 31, november: 30, december: 31 };
+const valeur = (m) => Number(m.image.slice(6)); // « texte:12 » -> 12
+export function piecesDates(mots) {
+  const avecSon = mots.filter((m) => m.son);
+  return {
+    jours: avecSon.filter((m) => JOURS.includes(m.mot)),
+    mois: avecSon.filter((m) => MOIS[m.mot]),
+    nombres: avecSon.filter((m) => /^texte:([1-9]|[12]\d|3[01])$/.test(m.image)),
+  };
+}
+export const datesPossibles = ({ jours, mois, nombres }) => jours.length > 0 && mois.length > 0 && nombres.length > 0;
+export function tirerDate({ jours, mois, nombres }, hasard = Math.random) {
+  const un = (liste) => liste[Math.floor(hasard() * liste.length)];
+  const m = un(mois.filter((x) => nombres.some((n) => valeur(n) <= MOIS[x.mot])));
+  return [un(jours), un(nombres.filter((n) => valeur(n) <= MOIS[m.mot])), m];
+}
+
+function dicteeDates(d, ctx) {
+  const pieces = piecesDates(ctx.mots);
+  const bloc = el('div', { class: 'piste' });
+  const nouvelle = (e) => {
+    arreter();
+    const date = tirerDate(pieces);
+    const autre = el('button', { type: 'button', class: 'action' }, icone('tourner'), 'Une autre date');
+    autre.addEventListener('click', nouvelle);
+    bloc.replaceChildren(
+      el('h3', {}, d.titre),
+      el('p', { class: 'consigne-dictee' }, icone('crayon'), 'Écoute et écris la date sur ta feuille.'),
+      creerLecteur(date.map((m) => `${ctx.dossier}audio/${m.id}.m4a`), { nom: 'la date', avecBarre: false }),
+      el('details', { class: 'traduction' },
+        el('summary', {}, icone('oeil'), 'Voir la correction'),
+        el('p', { lang: ctx.langue }, `${date[0].mot} ${valeur(date[1])} ${date[2].mot}`),
+        // Traduction, comme pour les autres dictées (« lundi 1er janvier » : « 1er » en français).
+        el('p', { class: 'fr' }, `${date[0].francais} ${valeur(date[1]) === 1 ? '1er' : valeur(date[1])} ${date[2].francais}`)),
+      autre);
+    if (e) bloc.querySelector('.lire').focus(); // après « Une autre date », on peut écouter tout de suite
+  };
+  nouvelle();
+  return bloc;
+}
+
 // Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ordre, couleurs ou dictees).
 const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'] };
 function choixExercice(choix, actif) {
@@ -405,12 +449,22 @@ function choixExercice(choix, actif) {
   return el('nav', { class: `segments sens n${choix.length}`, 'aria-label': 'Choix de l\'exercice' }, ...choix.map(lien));
 }
 
-// « Mots en ordre » : les manches de [ordre], dans l'ordre du fichier ; à la fin, le son de tout le texte.
+// « Mots en ordre » : les manches de [ordre], dans l'ordre du fichier ; à la fin, le son de tout le texte s'il y en a un.
 function lancerOrdre(zone, donnees, ctx) {
   const { dossier, langue, presents } = ctx;
   const audio = (id) => (id && presents.has(`${dossier}audio/${id}.m4a`) ? `${dossier}audio/${id}.m4a` : '');
-  const items = donnees.ordre.map((o) => ({ cases: o.cases, audio: audio(o.id), francais: '' }));
-  const sons = [...new Set(donnees.ordre.map((o) => audio(o.son)).filter(Boolean))];
+  // Manche avec intrus : l'image du mot du chapitre présent dans la phrase, pour savoir quelle phrase faire
+  // (jamais le français, demande du 2026-10-26). Comparaison sans article, majuscule ni ponctuation.
+  const nu = (t) => t.toLowerCase().replace(/^(de|het) /, '').replace(/[.,!?]/g, '');
+  const image = (o) => {
+    const m = o.intrus.length && ctx.mots.find((x) => x.ind.type === 'image' && o.cases.some((c) => nu(c) === nu(x.mot)));
+    return m ? visuel(m, m.ind, langue) : null;
+  };
+  // Un son de la 3e colonne propre à une seule manche se joue après elle ; partagé, il reste pour la fin (2026-10-26).
+  const usages = (son) => donnees.ordre.filter((o) => o.son === son).length;
+  const items = donnees.ordre.map((o) => ({ cases: o.cases, audio: audio(o.id) || (usages(o.son) === 1 ? audio(o.son) : ''),
+    francais: '', intrus: o.intrus, image: image(o) }));
+  const sons = [...new Set(donnees.ordre.filter((o) => usages(o.son) > 1).map((o) => audio(o.son)).filter(Boolean))];
   serieOrdre(zone, items, langue, () => lancerOrdre(zone, donnees, ctx),
     el('p', {}, 'Tu as remis tous les mots en ordre !'),
     ...sons.map((chemin) => el('div', { class: 'pile' },
@@ -435,7 +489,7 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const avecDeHet = dispo['de-het'].length > 0;
   const avecOrdre = !verifie && donnees.ordre.length > 0; // « Mots en ordre » : seulement dans « Je m'entraîne »
   const couleurs = verifie ? null : await preparerCouleurs(donnees, mots, langue, annee); // exercice « Couleurs » (ligne couleurs:)
-  const dictees = verifie ? [] : donnees.dictees.filter(aSon); // dictées : leur propre entrée (demande du 2026-10-20)
+  const dictees = verifie ? [] : donnees.dictees.filter((d) => (d.dates ? datesPossibles(piecesDates(mots)) : aSon(d))); // dictées : leur propre entrée (demande du 2026-10-20)
   // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
   // Seules les entrées possibles restent (une condition fausse donne false ou null, jamais un nom d'entrée).
   const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
@@ -448,7 +502,7 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const lancer = () => {
     if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
     if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });
-    if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => dictee(d, ctx)));
+    if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => (d.dates ? dicteeDates(d, ctx) : dictee(d, ctx))));
     const p = plan();
     serieARepasser(zone, p, (q, rang, total, fin) => question(q, ctx, verifie, rang, total, fin), (ratees) => (verifie
       ? bilanVerifie(zone, p.length, ratees.map((q) => q.cible), ctx, lancer)
