@@ -1,0 +1,14 @@
+# Liste de tous les chapitres du site.
+# Une ligne par chapitre : langue | année | chapitre | ordre | titre affiché | vignette (facultative)
+#   langue  : nl ou en
+#   année   : p3 ou p4
+#   chapitre: le nom du dossier du chapitre (minuscules, sans accent, tirets)
+#   ordre   : la place du chapitre dans la liste (1, 2, 3…)
+#   vignette: une image du dossier images/ du chapitre (facultatif)
+# Ajouter un chapitre = ajouter une ligne ici + créer son dossier.
+
+nl | p3 | zich-voorstellen | 1 | Zich voorstellen
+nl | p3 | kleuren | 2 | Kleuren
+nl | p3 | vervoermiddelen | 3 | Vervoermiddelen
+nl | p3 | verjaardag | 4 | Verjaardag
+nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
