@@ -1,0 +1,95 @@
+# Chapitre 6 : Het uiterlijk (les vêtements et l'apparence)
+# Source : fiche « Het uiterlijk », listes de vocabulaire des pages 2 (ex. 3) et 7 (ex. 12).
+
+titre: Het uiterlijk
+
+# Les 2 listes Quizlet du chapitre.
+quizlet: Les vêtements | https://quizlet.com/be/1225511599/vetements-neerlandais-flash-cards/
+quizlet: L'apparence | https://quizlet.com/be/1225513175/apparence-neerlandais-flash-cards/
+boss: Chaussette-Chipie
+
+[mots]
+# id | mot (avec l'article pour un nom) | français | image (facultatif)
+# Les dessins (images/<id>.svg) sont de Claude (demande de l'enseignant du 2026-10-28). Pour en changer un, dépose un fichier du même nom.
+# Deux listes de vocabulaire : « Les vêtements » et « L'apparence ».
+# Seuls les mots avec « de » ou « het » vont dans « De ou het ? » (dans « L'apparence », seulement « de bril »).
+
+liste: Les vêtements
+pet | de pet | la casquette | pet.svg
+laarzen | de laarzen | les bottes | laarzen.svg
+rok | de rok | la jupe | rok.svg
+schoenen | de schoenen | les chaussures | schoenen.svg
+short | de short | le short | short.svg
+broek | de broek | le pantalon | broek.svg
+jas | de jas | la veste | jas.svg
+t-shirt | het T-shirt | le t-shirt | t-shirt.svg
+sokken | de sokken | les chaussettes | sokken.svg
+hemd | het hemd | la chemise | hemd.svg
+jurk | de jurk | la robe | jurk.svg
+sjaal | de sjaal | l'écharpe | sjaal.svg
+trui | de trui | le pull | trui.svg
+
+liste: L'apparence
+dik | dik | fort | dik.svg
+slank | slank | mince | slank.svg
+bril | de bril | les lunettes | bril.svg
+groot | groot | grand | groot.svg
+klein | klein | petit | klein.svg
+blond-haar | blond haar | les cheveux blonds | blond-haar.svg
+kort-haar | kort haar | les cheveux courts | kort-haar.svg
+lang-haar | lang haar | les cheveux longs | lang-haar.svg
+bruin-haar | bruin haar | les cheveux bruns | bruin-haar.svg
+rood-haar | rood haar | les cheveux roux | rood-haar.svg
+zwart-haar | zwart haar | les cheveux noirs | zwart-haar.svg
+gekruld-haar | gekruld haar | les cheveux bouclés | gekruld-haar.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Quatre descriptions de personnes (a, b, c, d), avec seulement des mots déjà appris :
+# les vêtements, l'apparence et les couleurs. Sans ligne « liste: », elles s'affichent avec les deux listes.
+
+# Description A
+a1 | Hij is groot en slank. | Il est grand et mince. | groot
+a2 | Hij heeft kort bruin haar. | Il a des cheveux bruns et courts. | bruin
+a3 | Hij draagt een bril. | Il porte des lunettes. | bril
+a4 | Hij draagt een rode trui. | Il porte un pull rouge. | trui
+a5 | Zijn broek is blauw. | Son pantalon est bleu. | broek
+
+# Description B
+b1 | Ze is klein. | Elle est petite. | klein
+b2 | Ze heeft lang blond haar. | Elle a des cheveux blonds et longs. | lang
+b3 | Ze draagt een gele jurk. | Elle porte une robe jaune. | jurk
+b4 | Haar schoenen zijn wit. | Ses chaussures sont blanches. | schoenen
+b5 | Ze draagt een roze sjaal. | Elle porte une écharpe rose. | sjaal
+
+# Description C
+c1 | Hij is klein en dik. | Il est petit et fort. | dik
+c2 | Hij heeft gekruld zwart haar. | Il a des cheveux noirs et bouclés. | gekruld
+c3 | Hij draagt een groene pet. | Il porte une casquette verte. | pet
+c4 | Zijn T-shirt is oranje. | Son t-shirt est orange. | T-shirt
+c5 | Hij draagt een blauwe short. | Il porte un short bleu. | short
+
+# Description D
+d1 | Ze is groot. | Elle est grande. | groot
+d2 | Ze heeft kort rood haar. | Elle a des cheveux roux et courts. | rood
+d3 | Ze draagt een paarse rok. | Elle porte une jupe mauve. | rok
+d4 | Ze draagt grijze sokken. | Elle porte des chaussettes grises. | sokken
+d5 | Haar jas is zwart. | Sa veste est noire. | jas
+
+[descriptions]
+# id | texte de la description (« / » = nouvelle phrase) | français (facultatif)
+# Jeu « Qui est-ce ? » (Je joue) : l'élève écoute (audio/<id>.m4a) et lit la description,
+# puis choisit la bonne personne parmi les dessins images/<id>.png (ou .svg, .jpg, .webp).
+description-a | Hij is groot en slank. / Hij heeft kort bruin haar. / Hij draagt een bril. / Hij draagt een rode trui. / Zijn broek is blauw. | Il est grand et mince. Il a des cheveux bruns et courts. Il porte des lunettes. Il porte un pull rouge. Son pantalon est bleu.
+description-b | Ze is klein. / Ze heeft lang blond haar. / Ze draagt een gele jurk. / Haar schoenen zijn wit. / Ze draagt een roze sjaal. | Elle est petite. Elle a des cheveux blonds et longs. Elle porte une robe jaune. Ses chaussures sont blanches. Elle porte une écharpe rose.
+description-c | Hij is klein en dik. / Hij heeft gekruld zwart haar. / Hij draagt een groene pet. / Zijn T-shirt is oranje. / Hij draagt een blauwe short. | Il est petit et fort. Il a des cheveux noirs et bouclés. Il porte une casquette verte. Son t-shirt est orange. Il porte un short bleu.
+description-d | Ze is groot. / Ze heeft kort rood haar. / Ze draagt een paarse rok. / Ze draagt grijze sokken. / Haar jas is zwart. | Elle est grande. Elle a des cheveux roux et courts. Elle porte une jupe mauve. Elle porte des chaussettes grises. Sa veste est noire.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus (facultatif)
+zin-1 | Hij / is / groot / en / slank. | a1 | jurk
+zin-2 | Ze / heeft / lang / blond / haar. | b2 | rok
+zin-3 | Ze / draagt / een / gele / jurk. | b3 | dik
+zin-4 | Hij / heeft / gekruld / zwart / haar. | c2 | trui
+zin-5 | Hij / draagt / een / groene / pet. | c3 | groot
+zin-6 | Ze / draagt / een / paarse / rok. | d3 | slank

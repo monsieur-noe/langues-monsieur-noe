@@ -575,6 +575,10 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .juist .reponse .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
 /* Loto des sons : grille de 3 colonnes, jeton (rond avec coche) posé sur l'image trouvée. */
 .ecoute-loto { display: flex; justify-content: center; width: 100%; }
+/* Qui est-ce ? : la description à lire, sous son lecteur ; le français après la réponse. */
+.description { font-size: 1.25rem; line-height: 1.5; text-align: left; margin: 0; }
+.message-ex .fr { width: 100%; color: var(--gris); }
+
 .reponses.loto { grid-template-columns: repeat(3, 1fr); max-width: 20rem; gap: .5rem; }
 .case-loto { padding: .3rem; }
 .case-loto:disabled:not(.juste):not(.faux) { opacity: 1; } /* fermée avant l'écoute, mais l'image reste bien visible */
@@ -641,7 +645,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .ligne-phrase.juste { border-style: solid; border-color: var(--c4); background: #ecfdf3; }
 .reserve-phrase { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .place-phrase:empty { display: none; }
-.mot-phrase { min-height: 3.5rem; padding: .4rem 1rem; font-size: 1.5rem; font-weight: 700; }
+.mot-phrase { min-height: 3.5rem; min-width: 3.5rem; padding: .4rem 1rem; font-size: 1.5rem; font-weight: 700; }
 .reponse.mot-phrase:disabled:not(.faux) { opacity: 1; }
 /* Trois entrées dans « Je m'entraîne » (avec « Mots en ordre ») : pictogramme au-dessus du nom. */
 .sens.n3 { grid-template-columns: repeat(3, 1fr); }

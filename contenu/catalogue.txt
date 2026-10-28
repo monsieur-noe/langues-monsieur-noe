@@ -12,3 +12,4 @@ nl | p3 | kleuren | 2 | Kleuren
 nl | p3 | vervoermiddelen | 3 | Vervoermiddelen
 nl | p3 | verjaardag | 4 | Verjaardag
 nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
+nl | p3 | uiterlijk | 6 | Het uiterlijk

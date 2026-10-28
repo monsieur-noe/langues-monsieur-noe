@@ -1,24 +1,26 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=c6de7ac4';
-import { chercherFichiers } from './cartes.js?v=c6de7ac4';
-import { chargerAvatar } from './avatar.js?v=c6de7ac4';
-import juist from './jeu-juist.js?v=c6de7ac4';
-import loto from './jeu-loto.js?v=c6de7ac4';
-import memory from './jeu-memory.js?v=c6de7ac4';
-import oie, { oieDifficile } from './jeu-oie.js?v=c6de7ac4';
-import phrases from './jeu-phrases.js?v=c6de7ac4';
-import boss, { bossDifficile } from './jeu-boss.js?v=c6de7ac4';
+import { el, icone } from './outils.js?v=c16b4cc5';
+import { chercherFichiers } from './cartes.js?v=c16b4cc5';
+import { chargerAvatar } from './avatar.js?v=c16b4cc5';
+import juist from './jeu-juist.js?v=c16b4cc5';
+import loto from './jeu-loto.js?v=c16b4cc5';
+import memory from './jeu-memory.js?v=c16b4cc5';
+import oie, { oieDifficile } from './jeu-oie.js?v=c16b4cc5';
+import phrases from './jeu-phrases.js?v=c16b4cc5';
+import boss, { bossDifficile } from './jeu-boss.js?v=c16b4cc5';
+import qui from './jeu-qui.js?v=c16b4cc5';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
 // Les jeux s'ajoutent ici un par un, quand ils sont prêts.
-export const JEUX = [juist, loto, memory, oie, oieDifficile, phrases, boss, bossDifficile];
+export const JEUX = [juist, loto, memory, oie, oieDifficile, phrases, qui, boss, bossDifficile];
 
 // Ce que les jeux utilisent : les mots avec leur indice (`ind`) et leur son (`son`), les phrases avec leur son.
 export async function contenuJeux(donnees, dossier, langue, annee) {
-  const { presents, indices } = await chercherFichiers(donnees, dossier);
+  const dessin = (d) => `${dossier}images/${d.id}.png`;
+  const { presents, indices } = await chercherFichiers(donnees, dossier, donnees.descriptions.flatMap((d) => [`${dossier}audio/${d.id}.m4a`, dessin(d)]));
   const aSon = (x) => presents.has(`${dossier}audio/${x.id}.m4a`);
   return {
     langue, annee, dossier, presents,
@@ -26,6 +28,8 @@ export async function contenuJeux(donnees, dossier, langue, annee) {
     n: annee === 'p3' ? 3 : 4, // 3 choix en P3, 4 en P4, comme les exercices
     mots: donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) })),
     phrases: donnees.phrases.map((p) => ({ ...p, son: aSon(p) })),
+    // « Qui est-ce ? » : seulement les personnes dont le dessin existe.
+    descriptions: donnees.descriptions.filter((d) => presents.has(dessin(d))).map((d) => ({ ...d, src: dessin(d), son: aSon(d) })),
   };
 }
 

@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=c6de7ac4';
-import { chercherFichiers, cheminImage } from './cartes.js?v=c6de7ac4';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=c6de7ac4';
-import { el } from './outils.js?v=c6de7ac4';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=c6de7ac4';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=c16b4cc5';
+import { chercherFichiers, cheminImage } from './cartes.js?v=c16b4cc5';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=c16b4cc5';
+import { el } from './outils.js?v=c16b4cc5';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=c16b4cc5';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };
@@ -30,10 +30,12 @@ function constat(etat, titre, details = []) {
 // Fichiers attendus du chapitre (chemins dans son dossier). `obligatoire` : l'absence est à signaler.
 // Une image sans 4e colonne n'est pas obligatoire (les images viennent plus tard), mais un nom voisin trouvé est signalé.
 function attendus(donnees, vignette) {
-  const { mots, phrases, pistes, dictees } = donnees;
+  const { mots, phrases, pistes, dictees, descriptions } = donnees;
   return [
-    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true })),
+    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates), ...descriptions].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true })),
     ...mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => ({ chemin: cheminImage(m, ''), id: m.id, obligatoire: !!m.image })),
+    // « Qui est-ce ? » : le dessin de chaque personne décrite.
+    ...descriptions.map((d) => ({ chemin: `images/${d.id}.png`, id: d.id, obligatoire: true })),
     ...(vignette ? [{ chemin: `images/${vignette}`, id: `vignette ${vignette}`, obligatoire: true }] : []),
   ];
 }
@@ -112,7 +114,7 @@ async function controlerChapitre(c) {
       donnees.erreurs.map((e) => `ligne ${e.ligne} : ${e.message}`)));
   }
 
-  const { presents, indices } = await chercherFichiers(donnees, dossier, c.vignette ? [`${dossier}images/${c.vignette}`] : []);
+  const { presents, indices } = await chercherFichiers(donnees, dossier, attendus(donnees, c.vignette).map((a) => dossier + a.chemin));
   const absents = attendus(donnees, c.vignette).filter((a) => !presents.has(dossier + a.chemin));
   constats.push(...await fichiersManquants(absents.filter((a) => a.chemin.startsWith('audio/')), dossier, 'Audios mal nommés ou manquants :'));
   constats.push(...await fichiersManquants(absents.filter((a) => a.chemin.startsWith('images/')), dossier, 'Images mal nommées ou manquantes :'));

@@ -83,3 +83,11 @@ titre: Titre du chapitre
 # presenter-1 | Ik / ben / een jongen (of meisje) | savoir-se-presenter
 # zin-4 | Er / is / een / kast. | school-p8 | stoel
 # dagen | maandag / dinsdag / woensdag / donderdag / vrijdag / zaterdag / zondag | | juli
+
+[descriptions]
+# id | texte de la description (« / » = nouvelle phrase) | français (facultatif)
+# Jeu « Qui est-ce ? » de « Je joue » : l'élève écoute et lit la description d'une personne,
+# puis la retrouve parmi 4 dessins. Il faut au moins 3 descriptions.
+# Pour chacune : le son audio/<id>.m4a et le dessin images/<id>.png (une personne en pied, fond uni).
+# Exemple :
+# description-a | Hij is groot en slank. / Hij draagt een bril. | Il est grand et mince. Il porte des lunettes.

@@ -3,9 +3,9 @@
 // à la seconde chance : le pion avance d'une case. Il ne recule jamais. Pas de dé. Arrivée : petite fête.
 // Version difficile (demandée le 2026-10-20) : un seul essai par question, comme « Je vérifie » ;
 // une erreur fait reculer le pion d'une case (jamais avant le départ).
-import { el, icone } from './outils.js?v=c6de7ac4';
-import { arreter } from './audio.js?v=c6de7ac4';
-import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=c6de7ac4';
+import { el, icone } from './outils.js?v=c16b4cc5';
+import { arreter } from './audio.js?v=c16b4cc5';
+import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=c16b4cc5';
 
 const CASES = 12;
 const COLONNES = 4;
