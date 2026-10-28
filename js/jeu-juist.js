@@ -1,10 +1,11 @@
 // Jeu « Juist of fout ? » (cahier 7.9) : une image, un mot entendu ; l'enfant dit s'ils vont ensemble.
 // Un seul essai par question (deux boutons), puis le bon mot est montré et joué. 8 questions.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { creerLecteur, arreter } from './audio.js?v=c16b4cc5';
-import { visuel } from './cartes.js?v=c16b4cc5';
-import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=c16b4cc5';
-import { avatar } from './avatar.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { cheminSon } from './donnees.js?v=c01d7235';
+import { creerLecteur, arreter } from './audio.js?v=c01d7235';
+import { visuel } from './cartes.js?v=c01d7235';
+import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=c01d7235';
+import { avatar } from './avatar.js?v=c01d7235';
 
 const NOMBRE = 8;
 const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
@@ -21,7 +22,7 @@ export function planJuist(pool, nombre) {
 
 function question(q, ctx, rang, fin) {
   const { langue, dossier } = ctx;
-  const ecoute = creerLecteur(`${dossier}audio/${q.entendu.id}.m4a`, { nom: 'le mot à écouter' });
+  const ecoute = creerLecteur(cheminSon(q.entendu, dossier), { nom: 'le mot à écouter' });
   const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('haut-parleur'), 'Écoute le mot. Est-ce bien cette image ?');
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const message = el('div', { class: 'message-ex' }, retour);
@@ -44,7 +45,7 @@ function question(q, ctx, rang, fin) {
       retour.replaceChildren(icone(b.juste ? 'sourire' : 'bulle'), b.juste ? bravo() : 'Pas grave, continue !');
       message.prepend(avatar(b.juste ? 'content' : 'encourage'));
       // Le bon mot de l'image, écrit et joué (après un toucher : permis sur iPhone).
-      const son = creerLecteur(`${dossier}audio/${q.image.id}.m4a`, { nom: q.image.mot });
+      const son = creerLecteur(cheminSon(q.image, dossier), { nom: q.image.mot });
       solution.replaceChildren(el('p', {}, 'Sur l\'image : ', el('span', { class: 'mot', lang: langue }, q.image.mot)), son);
       solution.hidden = false;
       son.jouer();

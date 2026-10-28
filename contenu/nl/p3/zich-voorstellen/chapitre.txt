@@ -2,6 +2,7 @@ titre: Zich voorstellen
 quizlet: https://quizlet.com/be/1224987302/nombres-0-10-neerlandais-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
 boss: Bla-Bla le Bavard
+arene: presentation
 # BROUILLON : seuls les nombres, les dictées et la piste « Savoir se présenter » sont là. Le reste du chapitre est à compléter.
 
 [mots]

@@ -1,9 +1,9 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=c16b4cc5';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=c16b4cc5';
-import { avatar, chargerAvatar } from './avatar.js?v=c16b4cc5';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=c01d7235';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=c01d7235';
+import { avatar, chargerAvatar } from './avatar.js?v=c01d7235';
 
 const langue = parametre('langue');
 const annee = parametre('annee');
@@ -97,7 +97,8 @@ function afficherChapitres(chapitres) {
     couleur(i),
     c.vignette
       ? el('img', { class: 'num', src: `${cheminChapitre(c.langue, c.annee, c.chapitre)}images/${c.vignette}`, alt: '' })
-      : el('span', { class: 'num', 'aria-hidden': 'true' }, String(i + 1)),
+      : el('span', { class: 'num', 'aria-hidden': 'true' }, c.revision ? icone('tourner') : String(i + 1)),
+
     el('span', { class: 'titre', lang: c.langue }, c.titre),
   )));
 }

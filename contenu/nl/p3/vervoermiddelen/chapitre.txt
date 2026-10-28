@@ -2,6 +2,7 @@ titre: Vervoermiddelen
 quizlet: https://quizlet.com/be/1224988834/moyens-de-transport-neerlandais-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
 boss: Tut-Tut
+arene: transports
 # couleurs: active l'exercice « Couleurs » (Je m'entraîne) avec les couleurs du chapitre indiqué.
 couleurs: kleuren
 # Traductions françaises de Claude, validées par l'enseignant le 2026-10-19.

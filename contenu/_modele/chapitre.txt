@@ -30,6 +30,19 @@ titre: Titre du chapitre
 # Sans cette ligne, il s'appelle « le monstre » ; sans dessin, une forme simple le remplace.
 # boss: Gribouille
 
+# Le décor du combat de boss (facultatif ; enlève le # pour l'activer) : le nom de ses deux
+# images dans le dossier commun contenu/arene/ (couleurs.jpg et couleurs-difficile.jpg),
+# sans « .jpg ». Deux chapitres, même de langues différentes, peuvent partager un décor.
+# arene: couleurs
+
+# Chapitre de révision (facultatif ; enlève le # pour l'activer) : les chapitres dont il
+# reprend tout (mots, phrases, pistes, dictées, Mots en ordre, Qui est-ce ?), noms de dossiers
+# séparés par des virgules. Rien n'est copié : sons et images restent dans leur chapitre.
+# À chaque partie, autant de mots de chaque chapitre ; « Je découvre » : une liste par chapitre.
+# Les sections ci-dessous peuvent alors rester vides.
+# reprend: kleuren, vervoermiddelen, verjaardag
+
+
 [mots]
 # id | mot (avec l'article pour un nom : de, het) | français | indice (facultatif)
 # Exemples :

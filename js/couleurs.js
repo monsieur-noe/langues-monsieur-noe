@@ -2,11 +2,11 @@
 // d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. » à compléter :
 // le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { creerLecteur } from './audio.js?v=c16b4cc5';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents } from './donnees.js?v=c16b4cc5';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=c16b4cc5';
-import { avatar } from './avatar.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { creerLecteur } from './audio.js?v=c01d7235';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=c01d7235';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=c01d7235';
+import { avatar } from './avatar.js?v=c01d7235';
 
 const NOMBRE = 10;
 const CHOIX = 5;
@@ -46,7 +46,7 @@ export async function preparerCouleurs(donnees, mots, langue, annee) {
     const dossier = cheminChapitre(langue, annee, donnees.couleurs);
     const chapitre = lireChapitre(await chargerTexte(`${dossier}chapitre.txt`));
     const avecFond = chapitre.mots.filter((m) => m.image.startsWith('couleur:') && couleurIndice(m.image))
-      .map((m) => ({ ...m, fond: couleurIndice(m.image), audio: `${dossier}audio/${m.id}.m4a` }));
+      .map((m) => ({ ...m, fond: couleurIndice(m.image), audio: cheminSon(m, dossier) }));
     const presents = await fichiersPresents(avecFond.map((m) => m.audio));
     couleurs = avecFond.map((m) => ({ ...m, son: presents.has(m.audio) }));
   } catch {
@@ -92,7 +92,7 @@ function question(q, ctx, rang, total, fin) {
 
   function terminer() {
     // Les deux trous sont remplis : le mot du dessin, puis la couleur, avec les enregistrements existants.
-    const sonV = q.vehicule.son ? creerLecteur(`${dossier}audio/${q.vehicule.id}.m4a`, { nom: q.vehicule.mot }) : null;
+    const sonV = q.vehicule.son ? creerLecteur(cheminSon(q.vehicule, dossier), { nom: q.vehicule.mot }) : null;
     const sonC = q.couleur.son ? creerLecteur(q.couleur.audio, { nom: q.couleur.mot }) : null;
     if (sonV && sonC) sonV.addEventListener('fin', () => sonC.jouer());
     ecoute.replaceChildren(...[sonV, sonC].filter(Boolean));

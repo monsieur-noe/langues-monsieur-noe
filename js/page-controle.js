@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=c16b4cc5';
-import { chercherFichiers, cheminImage } from './cartes.js?v=c16b4cc5';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=c16b4cc5';
-import { el } from './outils.js?v=c16b4cc5';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=c16b4cc5';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=c01d7235';
+import { chercherFichiers, cheminImage } from './cartes.js?v=c01d7235';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=c01d7235';
+import { el } from './outils.js?v=c01d7235';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=c01d7235';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };
@@ -29,26 +29,29 @@ function constat(etat, titre, details = []) {
 
 // Fichiers attendus du chapitre (chemins dans son dossier). `obligatoire` : l'absence est à signaler.
 // Une image sans 4e colonne n'est pas obligatoire (les images viennent plus tard), mais un nom voisin trouvé est signalé.
-function attendus(donnees, vignette) {
+// `dossier` : celui du chapitre, ou celui du chapitre d'origine pour ce qu'il reprend (ligne « reprend: »).
+function attendus(donnees, vignette, dossier) {
   const { mots, phrases, pistes, dictees, descriptions } = donnees;
   return [
-    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates), ...descriptions].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true })),
-    ...mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => ({ chemin: cheminImage(m, ''), id: m.id, obligatoire: !!m.image })),
+    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates), ...descriptions].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true, dossier: x.dossier || dossier })),
+    ...mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => ({ chemin: cheminImage(m, ''), id: m.id, obligatoire: !!m.image, dossier: m.dossier || dossier })),
     // « Qui est-ce ? » : le dessin de chaque personne décrite.
-    ...descriptions.map((d) => ({ chemin: `images/${d.id}.png`, id: d.id, obligatoire: true })),
-    ...(vignette ? [{ chemin: `images/${vignette}`, id: `vignette ${vignette}`, obligatoire: true }] : []),
+    ...descriptions.map((d) => ({ chemin: `images/${d.id}.png`, id: d.id, obligatoire: true, dossier: d.dossier || dossier })),
+    ...(vignette ? [{ chemin: `images/${vignette}`, id: `vignette ${vignette}`, obligatoire: true, dossier }] : []),
+    // Décor du combat de boss (ligne « arene: »), dans le dossier commun contenu/arene/.
+    ...(donnees.arene ? ['', '-difficile'].map((v) => ({ chemin: `arene/${donnees.arene}${v}.jpg`, id: `arène ${donnees.arene}${v}.jpg`, obligatoire: true, dossier: `${RACINE}contenu/` })) : []),
   ];
 }
 
 // Audios ou images absents : nom voisin trouvé -> conseil précis ; sinon, liste des identifiants.
-async function fichiersManquants(absents, dossier, quoi) {
+async function fichiersManquants(absents, quoi) {
   if (!absents.length) return [];
   const conseils = [];
   const introuvables = [];
   await Promise.all(absents.map(async (a) => {
     const voisins = variantesNom(a.chemin);
-    const trouves = await fichiersPresents(voisins.map((v) => dossier + v));
-    const trouve = voisins.find((v) => trouves.has(dossier + v));
+    const trouves = await fichiersPresents(voisins.map((v) => a.dossier + v));
+    const trouve = voisins.find((v) => trouves.has(a.dossier + v));
     if (trouve) conseils.push(conseilNom(a.chemin, trouve));
     else if (a.obligatoire) introuvables.push(a.id);
   }));
@@ -102,6 +105,7 @@ async function controlerChapitre(c) {
   let donnees;
   try {
     donnees = lireChapitre(await chargerTexte(RACINE + fichier), fichier);
+    await puiser(donnees, c.langue, c.annee, RACINE); // chapitre de révision : ses sons et images restent dans les autres chapitres
   } catch {
     return carte('erreur', titre, [constat('erreur', `Le fichier ${fichier} est introuvable.`, [
       `Vérifie que le dossier du chapitre s'appelle exactement « ${c.chapitre} », comme dans catalogue.txt, et qu'il contient chapitre.txt.`,
@@ -111,24 +115,25 @@ async function controlerChapitre(c) {
   const constats = [];
   if (donnees.erreurs.length) {
     constats.push(constat('erreur', `Erreurs dans ${fichier} (ces lignes sont ignorées par le site) :`,
-      donnees.erreurs.map((e) => `ligne ${e.ligne} : ${e.message}`)));
+      donnees.erreurs.map((e) => (e.ligne ? `ligne ${e.ligne} : ${e.message}` : e.message))));
   }
 
-  const { presents, indices } = await chercherFichiers(donnees, dossier, attendus(donnees, c.vignette).map((a) => dossier + a.chemin));
-  const absents = attendus(donnees, c.vignette).filter((a) => !presents.has(dossier + a.chemin));
-  constats.push(...await fichiersManquants(absents.filter((a) => a.chemin.startsWith('audio/')), dossier, 'Audios mal nommés ou manquants :'));
-  constats.push(...await fichiersManquants(absents.filter((a) => a.chemin.startsWith('images/')), dossier, 'Images mal nommées ou manquantes :'));
+  const tous = attendus(donnees, c.vignette, dossier);
+  const { presents, indices } = await chercherFichiers(donnees, dossier, tous.map((a) => a.dossier + a.chemin));
+  const absents = tous.filter((a) => !presents.has(a.dossier + a.chemin));
+  constats.push(...await fichiersManquants(absents.filter((a) => a.chemin.startsWith('audio/')), 'Audios mal nommés ou manquants :'));
+  constats.push(...await fichiersManquants(absents.filter((a) => /^(images|arene)\//.test(a.chemin)), 'Images mal nommées ou manquantes :'));
 
   // Dictées trop lourdes (3 Mo au plus) : plus longues à charger sur un vieux téléphone.
   const lourdes = [];
   await Promise.all(donnees.dictees.filter((d) => !d.dates).map(async (d) => {
-    const t = await taille(`${dossier}audio/${d.id}.m4a`);
+    const t = await taille(cheminSon(d, dossier));
     if (t > LIMITE_DICTEE) lourdes.push(`${d.id} : ${(Math.ceil(t / 1024 / 102.4) / 10).toFixed(1).replace('.', ',')} Mo. Demande à Claude de réduire le fichier.`);
   }));
   if (lourdes.length) constats.push(constat('attention', 'Dictées de plus de 3 Mo :', lourdes));
 
   // Variantes d'exercice : même calcul que les pages d'exercices.
-  const aSon = (x) => presents.has(`${dossier}audio/${x.id}.m4a`);
+  const aSon = (x) => presents.has(cheminSon(x, dossier));
   const n = c.annee === 'p3' ? 3 : 4;
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
   const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p) }));
@@ -146,8 +151,9 @@ async function controlerChapitre(c) {
   constats.push(...quizlet.constats);
   if (donnees.mots.length < 4) constats.push(constat('attention', `Seulement ${donnees.mots.length} mots : il en faut au moins 4.`));
 
-  const audios = attendus(donnees, '').filter((a) => a.chemin.startsWith('audio/'));
-  const nbAudios = audios.filter((a) => presents.has(dossier + a.chemin)).length;
+  const audios = attendus(donnees, '', dossier).filter((a) => a.chemin.startsWith('audio/'));
+  const nbAudios = audios.filter((a) => presents.has(a.dossier + a.chemin)).length;
+
   const compteurs = el('p', { class: 'compteurs' },
     `${nombre(donnees.mots.length, 'mot')} · ${nombre(donnees.phrases.length, 'phrase')} · ${nombre(donnees.dictees.length, 'dictée')} · ${nbAudios} sur ${nombre(audios.length, 'audio')} présents`);
 

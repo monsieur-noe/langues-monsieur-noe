@@ -1,0 +1,10 @@
+# Chapitre de révision de P3 (décidé le 2026-10-28) : il reprend tout le contenu des six chapitres
+# ci-dessous, sans rien copier. Sons et images restent dans le dossier de leur chapitre :
+# une correction faite là-bas arrive toute seule ici. Voir le modèle commenté contenu/_modele/chapitre.txt.
+
+titre: Herhaling
+reprend: zich-voorstellen, kleuren, vervoermiddelen, verjaardag, schoolmateriaal, uiterlijk
+couleurs: kleuren
+boss: Bouquin-Glouton
+arene: revision1
+

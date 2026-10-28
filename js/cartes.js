@@ -1,12 +1,14 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { couleurIndice, fichiersPresents } from './donnees.js?v=c16b4cc5';
-import { creerLecteur, arreter } from './audio.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=c01d7235';
+import { creerLecteur, arreter } from './audio.js?v=c01d7235';
+import { melanger } from './exercices.js?v=c01d7235';
 
 export function cheminImage(mot, dossier) {
-  return `${dossier}images/${mot.image || `${mot.id}.png`}`;
+  return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;
+
 }
 
 // Ce qui représente le mot. `images` = chemins d'images qui existent vraiment.
@@ -57,7 +59,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
     const ancien = index;
     index = Math.min(Math.max(i, 0), mots.length - 1);
     const mot = mots[index];
-    const chemin = `${dossier}audio/${mot.id}.m4a`;
+    const chemin = cheminSon(mot, dossier);
     // Sur les cartes, le bouton d'écoute seul : un mot dure une seconde, une barre n'y servirait pas.
     const recto = faceMot(mot, langue, sons.has(chemin) ? creerLecteur(chemin, { nom: mot.mot, avecBarre: false }) : '');
     const verso = faceIndice(mot, indices[index], langue);
@@ -133,7 +135,7 @@ function phrases(liste, dossier, langue, sons) {
   return el('section', { class: 'bloc' },
     el('h2', {}, 'Les phrases'),
     el('ul', { class: 'phrases' }, ...liste.map((p) => {
-      const chemin = `${dossier}audio/${p.id}.m4a`;
+      const chemin = cheminSon(p, dossier);
       return el('li', {},
         el('div', { class: 'ligne' },
           el('p', { lang: langue }, p.phrase),
@@ -144,7 +146,7 @@ function phrases(liste, dossier, langue, sons) {
 
 // Piste entière (exemple : « Savoir se présenter ») : le lecteur large, avec « ⟲ 5 s ».
 function piste(p, dossier, langue, sons) {
-  const chemin = `${dossier}audio/${p.id}.m4a`;
+  const chemin = cheminSon(p, dossier);
   const enfants = [el('h3', {}, p.titre)];
   if (sons.has(chemin)) enfants.push(creerLecteur(chemin, { nom: p.titre, large: true }));
   if (p.texte) {
@@ -159,7 +161,7 @@ function piste(p, dossier, langue, sons) {
 // Cherche quels audios et images du chapitre existent (plus d'autres chemins), et l'indice de chaque mot.
 export async function chercherFichiers(donnees, dossier, autres = []) {
   const { mots, phrases, pistes, dictees } = donnees;
-  const audios = [...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => `${dossier}audio/${x.id}.m4a`);
+  const audios = [...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => cheminSon(x, dossier));
   // Les images ne sont cherchées que pour les mots sans « texte: » ni « couleur: ».
   const images = mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => cheminImage(m, dossier));
   const presents = await fichiersPresents([...audios, ...images, ...autres]);
@@ -167,8 +169,12 @@ export async function chercherFichiers(donnees, dossier, autres = []) {
 }
 
 export async function afficherDecouvre(conteneur, donnees, dossier, langue, indiceDabord) {
-  const { mots, phrases: liste, pistes } = donnees;
-  const { presents, indices } = await chercherFichiers(donnees, dossier);
+  // Chapitre de révision (« reprend: ») : cartes et phrases de tous les chapitres mélangées (demande du 2026-10-28).
+  const melange = (l) => (donnees.reprend?.length ? melanger(l) : l);
+  const [mots, liste] = [melange(donnees.mots), melange(donnees.phrases)];
+  const { pistes } = donnees;
+  const { presents, indices } = await chercherFichiers({ ...donnees, mots }, dossier);
+
 
   const parties = [];
   // Sans précision dans l'adresse, la première liste ; sans ligne « liste: », toutes les cartes comme avant.
@@ -186,7 +192,7 @@ export async function afficherDecouvre(conteneur, donnees, dossier, langue, indi
   const phrasesVues = liste.filter((p) => !p.liste || dansListe(p));
   if (phrasesVues.length) parties.push(phrases(phrasesVues, dossier, langue, presents));
   // Une piste sans son ni texte n'a rien à montrer.
-  const aEcouter = pistes.filter((p) => presents.has(`${dossier}audio/${p.id}.m4a`) || p.texte);
+  const aEcouter = pistes.filter((p) => presents.has(cheminSon(p, dossier)) || p.texte);
   if (aEcouter.length) parties.push(el('section', { class: 'bloc' }, el('h2', {}, 'À écouter'), ...aEcouter.map((p) => piste(p, dossier, langue, presents))));
   conteneur.replaceChildren(...parties);
 }

@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { creerLecteur, arreter } from './audio.js?v=c16b4cc5';
-import { chercherFichiers, visuel } from './cartes.js?v=c16b4cc5';
-import { positionReponse } from './donnees.js?v=c16b4cc5';
-import { avatar, chargerAvatar } from './avatar.js?v=c16b4cc5';
-import { serieOrdre } from './ordre.js?v=c16b4cc5';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { creerLecteur, arreter } from './audio.js?v=c01d7235';
+import { chercherFichiers, visuel } from './cartes.js?v=c01d7235';
+import { positionReponse, cheminSon } from './donnees.js?v=c01d7235';
+import { avatar, chargerAvatar } from './avatar.js?v=c01d7235';
+import { serieOrdre } from './ordre.js?v=c01d7235';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=c01d7235';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -21,13 +21,25 @@ const MELANGE = ['image-mot', 'mot-image', 'ecoute', 'trous'];
 
 // ---------- Logique (testée dans tests/exercices.test.js) ----------
 
+// Ce qui vient de plusieurs chapitres (chapitre de révision, ligne « reprend: ») : les chapitres passent
+// à tour de rôle, dans un ordre retiré à chaque tour, pour qu'aucun ne domine (demande du 2026-10-28).
 export function melanger(liste) {
   const l = [...liste];
   for (let i = l.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [l[i], l[j]] = [l[j], l[i]];
   }
-  return l;
+  const groupes = new Map();
+  for (const x of l) {
+    if (!groupes.has(x?.chapitre)) groupes.set(x?.chapitre, []);
+    groupes.get(x?.chapitre).push(x);
+  }
+  if (groupes.size < 2) return l;
+  const sortie = [];
+  for (let reste = [...groupes.values()]; reste.length; reste = reste.filter((g) => g.length)) {
+    for (const g of melanger(reste)) sortie.push(g.pop());
+  }
+  return sortie;
 }
 
 // `nombre` éléments : chacun une fois avant toute répétition, et jamais deux fois le même de suite.
@@ -163,7 +175,7 @@ export function compteur(rang, total) {
 // Sans `total` (jeu de l'oie), ni compteur ni « Terminer ».
 export function question(q, ctx, verifie, rang, total, fin) {
   const { langue, n, dispo } = ctx;
-  const son = (x) => (x.son ? creerLecteur(`${ctx.dossier}audio/${x.id}.m4a`, { nom: x.mot || x.phrase }) : null);
+  const son = (x) => (x.son ? creerLecteur(cheminSon(x, ctx.dossier), { nom: x.mot || x.phrase }) : null);
   const mot = (x) => el('span', { class: 'mot', lang: langue }, x.mot);
   const c = q.cible;
   let enonce;
@@ -183,7 +195,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
     choix = propositions(c, dispo['mot-image'], n).map((x) => ({ noeud: visuel(x, x.ind, langue), juste: x === c }));
   } else if (q.variante === 'ecoute') {
     // Le nom lu par les lecteurs d'écran ne doit pas donner la réponse.
-    lecteur = creerLecteur(`${ctx.dossier}audio/${c.id}.m4a`, { nom: 'le mot à écouter' });
+    lecteur = creerLecteur(cheminSon(c, ctx.dossier), { nom: 'le mot à écouter' });
     lecteurDansEnonce = true;
     enonce = lecteur;
     const images = dispo.ecoute.every(aUnVisuel);
@@ -341,7 +353,7 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
   const ratees = [...new Set(rates)].map((x) => el('li', {},
     x.ind && aUnVisuel(x) ? visuel(x, x.ind, ctx.langue) : '',
     el('span', { class: 'mot', lang: ctx.langue }, x.mot || x.phrase),
-    x.son ? creerLecteur(`${ctx.dossier}audio/${x.id}.m4a`, { nom: x.mot || x.phrase }) : ''));
+    x.son ? creerLecteur(cheminSon(x, ctx.dossier), { nom: x.mot || x.phrase }) : ''));
   zone.replaceChildren(el('div', { class: 'bilan' },
     el('div', { class: 'tete-bilan' }, av, titre),
     el('p', { class: 'etoiles', role: 'img', 'aria-label': `${nb} étoile${nb > 1 ? 's' : ''} sur 3` },
@@ -386,7 +398,7 @@ function dictee(d, ctx) {
   return el('div', { class: 'piste' },
     el('h3', {}, d.titre),
     el('p', { class: 'consigne-dictee' }, icone('crayon'), 'Écoute et écris sur ta feuille. Tu peux arrêter et réécouter.'),
-    creerLecteur(`${ctx.dossier}audio/${d.id}.m4a`, { nom: d.titre, large: true }),
+    creerLecteur(cheminSon(d, ctx.dossier), { nom: d.titre, large: true }),
     el('details', { class: 'traduction' },
       el('summary', {}, icone('oeil'), 'Voir la correction'),
       el('p', { lang: ctx.langue }, ...lignes(d.texte)),
@@ -424,7 +436,7 @@ function dicteeDates(d, ctx) {
     bloc.replaceChildren(
       el('h3', {}, d.titre),
       el('p', { class: 'consigne-dictee' }, icone('crayon'), 'Écoute et écris la date sur ta feuille.'),
-      creerLecteur(date.map((m) => `${ctx.dossier}audio/${m.id}.m4a`), { nom: 'la date', avecBarre: false }),
+      creerLecteur(date.map((m) => cheminSon(m, ctx.dossier)), { nom: 'la date', avecBarre: false }),
       el('details', { class: 'traduction' },
         el('summary', {}, icone('oeil'), 'Voir la correction'),
         el('p', { lang: ctx.langue }, `${date[0].mot} ${valeur(date[1])} ${date[2].mot}`),
@@ -452,7 +464,7 @@ function choixExercice(choix, actif) {
 // « Mots en ordre » : les manches de [ordre], dans l'ordre du fichier ; à la fin, le son de tout le texte s'il y en a un.
 function lancerOrdre(zone, donnees, ctx) {
   const { dossier, langue, presents } = ctx;
-  const audio = (id) => (id && presents.has(`${dossier}audio/${id}.m4a`) ? `${dossier}audio/${id}.m4a` : '');
+  const audio = (o, id) => (id && presents.has(cheminSon(o, dossier, id)) ? cheminSon(o, dossier, id) : '');
   // Manche avec intrus : l'image du mot du chapitre présent dans la phrase, pour savoir quelle phrase faire
   // (jamais le français, demande du 2026-10-26). Comparaison sans article, majuscule ni ponctuation.
   const nu = (t) => t.toLowerCase().replace(/^(de|het) /, '').replace(/[.,!?]/g, '');
@@ -461,10 +473,12 @@ function lancerOrdre(zone, donnees, ctx) {
     return m ? visuel(m, m.ind, langue) : null;
   };
   // Un son de la 3e colonne propre à une seule manche se joue après elle ; partagé, il reste pour la fin (2026-10-26).
-  const usages = (son) => donnees.ordre.filter((o) => o.son === son).length;
-  const items = donnees.ordre.map((o) => ({ cases: o.cases, audio: audio(o.id) || (usages(o.son) === 1 ? audio(o.son) : ''),
+  // Chapitre de révision : 2 manches par chapitre repris, tirées à chaque partie (demande du 2026-10-28).
+  const manches = donnees.reprend?.length ? melanger(donnees.ordre).slice(0, 2 * new Set(donnees.ordre.map((o) => o.chapitre)).size) : donnees.ordre;
+  const usages = (x) => manches.filter((o) => o.son === x.son && o.dossier === x.dossier).length;
+  const items = manches.map((o) => ({ cases: o.cases, audio: audio(o, o.id) || (usages(o) === 1 ? audio(o, o.son) : ''),
     francais: '', intrus: o.intrus, image: image(o) }));
-  const sons = [...new Set(donnees.ordre.filter((o) => usages(o.son) > 1).map((o) => audio(o.son)).filter(Boolean))];
+  const sons = [...new Set(manches.filter((o) => usages(o) > 1).map((o) => audio(o, o.son)).filter(Boolean))];
   serieOrdre(zone, items, langue, () => lancerOrdre(zone, donnees, ctx),
     el('p', {}, 'Tu as remis tous les mots en ordre !'),
     ...sons.map((chemin) => el('div', { class: 'pile' },
@@ -475,9 +489,10 @@ function lancerOrdre(zone, donnees, ctx) {
 export async function afficherExercices(conteneur, donnees, dossier, langue, annee, verifie, exercice) {
   const consignes = Object.keys(CONSIGNES).map((v) => `contenu/${langue}/consignes/${v}.m4a`);
   // Sons facultatifs de [ordre] : un par manche, et celui à écouter à la fin.
-  const sonsOrdre = donnees.ordre.flatMap((o) => [o.id, o.son]).filter(Boolean).map((id) => `${dossier}audio/${id}.m4a`);
+  const sonsOrdre = donnees.ordre.flatMap((o) => [o.id, o.son].filter(Boolean).map((id) => cheminSon(o, dossier, id)));
+
   const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre]), chargerAvatar()]);
-  const aSon = (x) => presents.has(`${dossier}audio/${x.id}.m4a`);
+  const aSon = (x) => presents.has(cheminSon(x, dossier));
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
   const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p) }));

@@ -678,6 +678,11 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .parade .ic { width: 3rem; height: 3rem; color: var(--acc); fill: var(--surface); stroke-width: 2.6; }
 .monstre { position: relative; }
 .arene { position: relative; }
+/* Décor du chapitre (ligne « arene: »), image posée par jeu-boss.js ; le bas de l'image (le sol) reste visible. */
+.arene.avec-decor {
+  background-size: cover; background-position: center bottom; background-color: var(--fond);
+  border: 2px solid var(--trait); border-radius: 1.25rem; padding: .6rem;
+}
 .etoile-super { position: absolute; opacity: 0; pointer-events: none; }
 .etoile-super .ic { width: 1.75rem; height: 1.75rem; color: #b45309; fill: #fbbf24; }
 .parade-boss { right: auto; left: -1.5rem; }
@@ -723,14 +728,52 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   .place-prof .avatar { height: 5rem; }
   .intention { margin-bottom: .5rem; padding: .4rem .75rem; }
 }
-/* Combat de boss difficile : arène de nuit, monstre de base assombri avec un halo rouge, annonce en rouge. */
-.boss-difficile .arene { padding: .5rem; border-radius: 1.25rem; background: #1f1630; }
+/* Combat de boss difficile : arène sans fond sombre (retiré le 2026-10-28, à repenser), monstre de base assombri avec un halo rouge, annonce en rouge. */
 .boss-difficile .dessin-boss.de-base { filter: brightness(.8) saturate(1.3) drop-shadow(0 0 .35rem #dc2626); }
 .boss-difficile .intention { border-color: #fca5a5; background: #fef2f2; }
 .boss-difficile .intention > .ic { color: #b91c1c; }
 @media (max-width: 30rem) {
-  .boss-difficile .arene { padding: .35rem .25rem; column-gap: .35rem; }
+  .boss-difficile .arene { column-gap: .35rem; }
   .boss-difficile .coeurs .ic { width: 1.3rem; height: 1.3rem; } /* les 5 cœurs du monstre tiennent sur une ligne */
+}
+/* Combat sur téléphone (demande du 2026-10-28) : les réponses doivent tenir dans l'écran sans défiler, quelle que
+   soit la question. Consigne du jeu cachée (l'annonce du monstre la remplace), arène, énoncé et espaces resserrés ;
+   boutons de 56 px et texte de 20 px au moins (cahier 8). */
+@media (max-width: 30rem) {
+  .corps:has(.combat-boss) { padding-inline: .5rem; }
+  .fiche:has(.combat-boss) { padding: .5rem .6rem; }
+  .fiche:has(.combat-boss) .retour-jeux { margin-bottom: .4rem; }
+  .combat-boss .consigne-oie { display: none; }
+  /* Chaque cadre déborde sur la colonne du milieu : les noms tiennent sur une ligne. */
+  .combat-boss .arene {
+    grid-template-columns: auto 1fr auto; grid-template-areas: "cb cb m" "p cn cn"; gap: .15rem .4rem; margin: 0 0 .4rem;
+  }
+  .combat-boss .arene > :nth-child(1) { grid-area: cb; justify-self: start; }
+  .combat-boss .arene > .monstre { grid-area: m; }
+  .combat-boss .arene > .place-prof { grid-area: p; }
+  .combat-boss .arene > :nth-child(4) { grid-area: cn; justify-self: end; }
+  .combat-boss .arene.avec-decor { padding: .2rem; }
+  .combat-boss .monstre > .ic, .combat-boss .dessin-boss { width: 3.5rem; height: 3.5rem; }
+  .combat-boss .place-prof .avatar { height: 4rem; }
+  .combat-boss .cadre-vies { gap: 0; padding: .2rem .45rem; }
+  .combat-boss .coeurs .ic { width: 1.25rem; height: 1.25rem; }
+  .combat-boss .intention { gap: .3rem; margin-bottom: .3rem; padding: .15rem .4rem; line-height: 1.25; }
+  .combat-boss .intention > .ic { width: 1.25rem; height: 1.25rem; flex: none; }
+  .combat-boss.suite .explication { display: none; }
+  /* Pas de mot seul sur sa ligne : l'explication devient un bloc pour être équilibrée elle aussi. */
+  .combat-boss .consigne, .combat-boss .explication { text-wrap: balance; }
+  .combat-boss .explication { display: block; }
+  .combat-boss .explication br { display: none; }
+  .combat-boss .zone-exercice { min-height: 0; }
+  .combat-boss .exercice { gap: .35rem; }
+  .combat-boss .consigne { font-size: 1.25rem; gap: .4rem; }
+  .combat-boss .consigne .ic { width: 1.5rem; height: 1.5rem; }
+  .combat-boss .enonce .tuile, .combat-boss .enonce .image, .combat-boss .enonce .carre, .combat-boss .enonce .dessin-couleur { width: 4.25rem; height: 4.25rem; }
+  .combat-boss .enonce .tuile.court { font-size: 2.5rem; }
+  .combat-boss .phrase { font-size: 1.375rem; }
+  .combat-boss .reponses { gap: .4rem; }
+  .combat-boss .reponse { min-height: 3.5rem; padding: .3rem .5rem; }
+  .combat-boss .reponse .mot { font-size: 1.375rem; }
 }
 .fete-boss { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .fete-boss span { position: absolute; top: -2rem; animation: tombe 1.2s ease-in forwards; }

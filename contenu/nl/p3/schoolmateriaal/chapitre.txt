@@ -10,6 +10,7 @@ quizlet: Le mobilier scolaire | https://quizlet.com/be/1225460307/mobilier-scola
 # Exercice « Couleurs » (« De boekentas is rood. »), comme dans vervoermiddelen.
 couleurs: kleuren
 boss: Trousse-Trouille
+arene: materiel-scolaire
 
 [mots]
 # id | mot (avec l'article pour un nom) | français | image (facultatif)

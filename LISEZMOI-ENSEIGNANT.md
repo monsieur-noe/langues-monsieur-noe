@@ -143,6 +143,7 @@ Un son enregistré en un seul long fichier (tous les mots à la suite) doit êtr
 - Son nom : la ligne `boss:` en haut du `chapitre.txt`, avant `[mots]`, par exemple `boss: Gribouille`. Sans cette ligne, il s'appelle « le monstre ».
 - Son dessin : `boss.svg` (ou `boss.png`), directement dans le dossier du chapitre (pas dans `images`), carré, fond transparent, 60 Ko au plus. Sans dessin, une forme violette simple le remplace.
 - Sa version en colère, pour « Le combat de boss difficile » : `boss-difficile.svg` (ou `boss-difficile.png`), au même endroit. Sans elle, le site assombrit le dessin de base et l'entoure d'un halo rouge.
+- Le décor du combat (facultatif) : deux images JPG dans le dossier `contenu/arene/`, par exemple `couleurs.jpg` et `couleurs-difficile.jpg`, et la ligne `arene: couleurs` dans `chapitre.txt`. Noms en minuscules, sans accent ni espace. Demandez à Claude Code de les alléger avant de les déposer (une image de Gemini pèse près de 1 Mo).
 - Vos poses pour le combat, `attaque` et `aie`, vont avec les autres poses de l'avatar dans `contenu/avatar/`. Sans elles, le site prend « pointe » et « reflechit ».
 
 ## 5. Ajouter un chapitre complet

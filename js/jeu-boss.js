@@ -3,12 +3,12 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { arreter } from './audio.js?v=c16b4cc5';
-import { avatar } from './avatar.js?v=c16b4cc5';
-import { disponibles, question, fete } from './exercices.js?v=c16b4cc5'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=c16b4cc5';
-import oie, { planOie } from './jeu-oie.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { arreter } from './audio.js?v=c01d7235';
+import { avatar } from './avatar.js?v=c01d7235';
+import { disponibles, question, fete } from './exercices.js?v=c01d7235'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=c01d7235';
+import oie, { planOie } from './jeu-oie.js?v=c01d7235';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6'];
@@ -108,7 +108,9 @@ function lancer(zone, contenu, difficile) {
   const max = { boss: VIES.boss, noe: difficile ? VIE_DIFFICILE : VIES.noe };
   let vies = { ...max };
   let plan = [];
-  zone.classList.toggle('boss-difficile', difficile); // arène sombre, monstre plus inquiétant (CSS)
+  zone.classList.toggle('boss-difficile', difficile); // monstre plus inquiétant (CSS)
+  zone.classList.add('combat-boss'); // écran compact sur téléphone (CSS)
+  zone.classList.remove('suite');
   let but = null;
   let bouclier = 0;
   let aSoigne = false;
@@ -140,9 +142,15 @@ function lancer(zone, contenu, difficile) {
   const placeProf = el('div', { class: 'place-prof' }, prof, bouclierProf);
   // Arène face à face : en haut, le cadre du monstre et le monstre ; en bas, l'avatar et le cadre de l'enseignant.
   const arene = el('div', { class: 'arene' }, cadreBoss, monstre, placeProf, cadreNoe);
+  // Décor du chapitre (ligne « arene: ») : contenu/arene/<nom>.jpg, ou <nom>-difficile.jpg pour le combat difficile.
+  if (contenu.arene) {
+    arene.classList.add('avec-decor');
+    arene.style.backgroundImage = `url("contenu/arene/${contenu.arene}${difficile ? '-difficile' : ''}.jpg")`;
+  }
   const annonce = el('div', { class: 'intention', 'aria-live': 'polite' });
   const questionZone = el('div', { class: 'zone-exercice' });
-  const relancer = () => lancer(zone, contenu, difficile);
+  // Nouveau combat : il repart du haut de l'écran, comme au premier (sur téléphone, les réponses restent visibles).
+  const relancer = () => { lancer(zone, contenu, difficile); zone.parentElement.scrollIntoView({ block: 'start' }); };
 
   function afficherVies() {
     coeursBoss.mettre(vies.boss);
@@ -236,8 +244,9 @@ function lancer(zone, contenu, difficile) {
 
   function annoncer() {
     const [ic, titre, explication] = (difficile ? INTENTIONS_DIFFICILE : INTENTIONS)[but];
-    annonce.replaceChildren(icone(ic), el('p', {}, el('strong', {}, titre), el('br'),
-      but === 'protege' && bouclier ? 'Encore une bonne réponse pour le toucher !' : explication));
+    // Sur téléphone, l'explication n'est montrée qu'à la première question (classe `suite`, CSS), sauf le bouclier.
+    annonce.replaceChildren(icone(ic), el('p', {}, el('strong', {}, titre), el('span', { class: but === 'protege' ? '' : 'explication' }, el('br'),
+      but === 'protege' && bouclier ? 'Encore une bonne réponse pour le toucher !' : explication)));
   }
 
   // Fin du combat : l'avatar de l'arène prend la pose, l'écran de fin n'en ajoute pas un second.
@@ -280,6 +289,7 @@ function lancer(zone, contenu, difficile) {
     }
     // Le bouclier reste annoncé tant qu'il n'est pas cassé (deux bonnes réponses d'affilée).
     if (!bouclier) but = intention(contenu.annee, vies, aSoigne);
+    if (juste !== undefined) zone.classList.add('suite');
     annoncer();
     // Une fois les animations de la réponse finies (ou l'entrée du combat), le monstre montre ce qu'il prépare.
     preparation = bouger(monstre, PREPARE[but], { duration: 600, delay: juste === undefined ? 1300 : 1800 });

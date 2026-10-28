@@ -1,11 +1,11 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=c16b4cc5';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=c16b4cc5';
-import { afficherDecouvre } from './cartes.js?v=c16b4cc5';
-import { afficherExercices } from './exercices.js?v=c16b4cc5';
-import { avatar, chargerAvatar } from './avatar.js?v=c16b4cc5';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=c16b4cc5';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=c01d7235';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=c01d7235';
+import { afficherDecouvre } from './cartes.js?v=c01d7235';
+import { afficherExercices } from './exercices.js?v=c01d7235';
+import { avatar, chargerAvatar } from './avatar.js?v=c01d7235';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=c01d7235';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
@@ -90,7 +90,9 @@ async function demarrer() {
   let donnees;
   try {
     donnees = lireChapitre(await chargerTexte(fichier), fichier);
+    await puiser(donnees, langue, annee); // chapitre de révision (ligne « reprend: »)
   } catch (e) {
+
     message.append(encadreErreurs([{ message: e.message }], 'Ce chapitre ne s\'affiche pas.'));
     return;
   }

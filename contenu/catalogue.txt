@@ -4,7 +4,9 @@
 #   année   : p3 ou p4
 #   chapitre: le nom du dossier du chapitre (minuscules, sans accent, tirets)
 #   ordre   : la place du chapitre dans la liste (1, 2, 3…)
-#   vignette: une image du dossier images/ du chapitre (facultatif)
+#   vignette: une image du dossier images/ du chapitre (facultatif) ;
+#             « révision » : pictogramme de révision à la place du numéro
+
 # Ajouter un chapitre = ajouter une ligne ici + créer son dossier.
 
 nl | p3 | zich-voorstellen | 1 | Zich voorstellen
@@ -13,3 +15,4 @@ nl | p3 | vervoermiddelen | 3 | Vervoermiddelen
 nl | p3 | verjaardag | 4 | Verjaardag
 nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
 nl | p3 | uiterlijk | 6 | Het uiterlijk
+nl | p3 | herhaling | 7 | Herhaling | révision

@@ -7,6 +7,7 @@ titre: Het uiterlijk
 quizlet: Les vêtements | https://quizlet.com/be/1225511599/vetements-neerlandais-flash-cards/
 quizlet: L'apparence | https://quizlet.com/be/1225513175/apparence-neerlandais-flash-cards/
 boss: Chaussette-Chipie
+arene: apparence
 
 [mots]
 # id | mot (avec l'article pour un nom) | français | image (facultatif)

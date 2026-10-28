@@ -1,11 +1,12 @@
 // Jeu « Le memory qui parle » (cahier 7.9) : des cartes retournées ; chaque paire = une carte « son »
 // (qui dit le mot quand on la retourne) et la carte de son indice (dessin, couleur, chiffre, ou le français).
 // Deux cartes qui ne vont pas ensemble se retournent seules après environ une seconde. Pas de limite de coups.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { creerLecteur, arreter } from './audio.js?v=c16b4cc5';
-import { visuel } from './cartes.js?v=c16b4cc5';
-import { melanger, bilanEntraine } from './exercices.js?v=c16b4cc5';
-import { avatar } from './avatar.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { cheminSon } from './donnees.js?v=c01d7235';
+import { creerLecteur, arreter } from './audio.js?v=c01d7235';
+import { visuel } from './cartes.js?v=c01d7235';
+import { melanger, bilanEntraine } from './exercices.js?v=c01d7235';
+import { avatar } from './avatar.js?v=c01d7235';
 
 const PAIRES = 6;
 const PAUSE = 1000; // le temps de voir les deux cartes avant qu'elles se retournent (pas un chronomètre)
@@ -34,7 +35,7 @@ function lancer(zone, contenu) {
 
   const boutons = cartes.map((c) => {
     // Un son par carte « son », joué par le lecteur unique du site.
-    const lecteur = c.son ? creerLecteur(`${dossier}audio/${c.mot.id}.m4a`, { nom: 'le mot' }) : null;
+    const lecteur = c.son ? creerLecteur(cheminSon(c.mot, dossier), { nom: 'le mot' }) : null;
     const face = el('span', { class: 'face-memory' }, c.son ? icone('haut-parleur') : visuel(c.mot, c.mot.ind, langue));
     face.querySelector('img')?.setAttribute('loading', 'eager'); // face cachée : l'image doit être prête avant qu'on la retourne
     const b = el('button', { type: 'button', class: 'reponse carte-memory', 'aria-label': 'Carte cachée' },

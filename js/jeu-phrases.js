@@ -1,9 +1,10 @@
 // Jeu « Les phrases en désordre » (cahier 7.9) : les mots d'une phrase sont mélangés sur de gros boutons ;
 // l'enfant les touche un par un pour les ranger sur une ligne (toucher un mot de la ligne le renvoie en bas).
 // Phrase complète : son enregistrement à écouter pour vérifier ; si l'ordre n'est pas bon, on réessaie.
-import { el } from './outils.js?v=c16b4cc5';
-import { melanger } from './exercices.js?v=c16b4cc5';
-import { serieOrdre } from './ordre.js?v=c16b4cc5';
+import { el } from './outils.js?v=c01d7235';
+import { cheminSon } from './donnees.js?v=c01d7235';
+import { melanger } from './exercices.js?v=c01d7235';
+import { serieOrdre } from './ordre.js?v=c01d7235';
 
 const MAX_MOTS = 5;
 const MAX_PHRASES = 6;
@@ -18,7 +19,7 @@ export function phrasesUtilisables(phrases) {
 
 function lancer(zone, contenu) {
   const plan = melanger(phrasesUtilisables(contenu.phrases)).slice(0, MAX_PHRASES);
-  const items = plan.map((p) => ({ cases: motsDe(p.phrase), audio: `${contenu.dossier}audio/${p.id}.m4a`, francais: p.francais }));
+  const items = plan.map((p) => ({ cases: motsDe(p.phrase), audio: cheminSon(p, contenu.dossier), francais: p.francais }));
   serieOrdre(zone, items, contenu.langue, () => lancer(zone, contenu), el('p', {}, `Tu as remis ${plan.length} phrases en ordre !`));
 }
 

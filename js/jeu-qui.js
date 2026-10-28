@@ -1,10 +1,11 @@
 // Jeu « Qui est-ce ? » (cahier 7.9, demande du 2026-10-28) : l'enfant écoute et lit une description,
 // puis touche la bonne personne parmi les dessins. Chaque personne une fois, dans le désordre.
 // « Essaie encore ! » et une seconde chance, puis la bonne personne est montrée.
-import { el, icone } from './outils.js?v=c16b4cc5';
-import { creerLecteur, arreter } from './audio.js?v=c16b4cc5';
-import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=c16b4cc5';
-import { avatar } from './avatar.js?v=c16b4cc5';
+import { el, icone } from './outils.js?v=c01d7235';
+import { cheminSon } from './donnees.js?v=c01d7235';
+import { creerLecteur, arreter } from './audio.js?v=c01d7235';
+import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=c01d7235';
+import { avatar } from './avatar.js?v=c01d7235';
 
 const CHOIX = 4; // 4 personnes à l'écran, même en P3 (demande de l'enseignant)
 
@@ -46,7 +47,7 @@ function question(d, ctx, rang, total, fin) {
   const zone = el('div', { class: 'exercice' },
     el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
     el('div', { class: 'enonce' }, el('div', { class: 'pile' },
-      d.son ? creerLecteur(`${dossier}audio/${d.id}.m4a`, { nom: 'la description' }) : '', texte)),
+      d.son ? creerLecteur(cheminSon(d, dossier), { nom: 'la description' }) : '', texte)),
     el('div', { class: `reponses visuels qui n${boutons.length}` }, ...boutons),
     message, suite);
   zone.titre = titre;

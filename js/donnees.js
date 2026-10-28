@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=c16b4cc5';
+import { LANGUES } from './outils.js?v=c01d7235';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -73,7 +73,9 @@ export function lireCatalogue(texte, fichier = 'contenu/catalogue.txt') {
       erreurs.push(erreur(fichier, num, 'le titre affiché est vide. Écris le titre dans la 5e colonne.'));
       continue;
     }
-    chapitres.push({ langue, annee, chapitre, ordre: Number(ordre), titre, vignette });
+    // « révision » en 6e colonne : pictogramme de révision sur l'accueil, pas de numéro (demande du 2026-10-28).
+    const revision = /^r[eé]vision$/i.test(vignette);
+    chapitres.push({ langue, annee, chapitre, ordre: Number(ordre), titre, vignette: revision ? '' : vignette, revision });
   }
   chapitres.sort((a, b) => a.ordre - b.ordre);
   return { chapitres, erreurs };
@@ -92,7 +94,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', reprend: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -114,15 +116,28 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       // En-tête : lignes « clé: valeur » avant la première section.
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
-        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: » ou « boss: ».');
+        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: » ou « reprend: ».');
       } else if (m[1] === 'quizlet') {
         // Plusieurs lignes possibles, chacune « quizlet: lien » ou « quizlet: nom | lien » (demande du 2026-10-26).
         const [nom, lien] = m[2].includes('|') ? colonnes(m[2]) : ['', m[2].trim()];
         resultat.quizlet.push({ nom, lien });
+      } else if (m[1] === 'reprend') {
+        // Chapitre de révision (demande du 2026-10-28) : les chapitres dont il reprend tout le contenu.
+        resultat.reprend = m[2].split(',').map((x) => x.trim()).filter(Boolean);
+        const faux = resultat.reprend.filter((x) => !ID_VALIDE.test(x));
+        if (faux.length) err(num, `« ${faux.join(', ')} » n'est pas un nom de dossier de chapitre. Écris les noms séparés par des virgules (exemple : reprend: kleuren, verjaardag).`);
+        resultat.reprend = resultat.reprend.filter((x) => ID_VALIDE.test(x));
+      } else if (m[1] === 'arene') {
+        // Décor du combat de boss (demande du 2026-10-28) : contenu/arene/<nom>.jpg et <nom>-difficile.jpg, communs aux langues.
+        resultat.arene = m[2].trim();
+        if (!ID_VALIDE.test(resultat.arene)) {
+          err(num, `« ${resultat.arene} » n'est pas un nom d'arène. Écris le nom du fichier sans « .jpg », en minuscules, sans accent ni espace (exemple : arene: couleurs).`);
+          resultat.arene = '';
+        }
       } else if (['titre', 'note_parents', 'couleurs', 'boss'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: » et « boss: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: » et « reprend: ».`);
       }
       continue;
     }
@@ -242,6 +257,37 @@ export async function fichiersPresents(chemins) {
 export function cheminChapitre(langue, annee, chapitre) {
   return `contenu/${langue}/${annee}/${chapitre}/`;
 }
+
+// Son d'un mot, d'une phrase, d'une dictée… (`id` : un autre son du même chapitre). Ce qu'un chapitre
+// reprend d'un autre (ligne « reprend: ») garde le dossier de son chapitre d'origine dans `x.dossier`.
+export const cheminSon = (x, dossier, id = x.id) => `${x.dossier || dossier}audio/${id}.m4a`;
+
+// Ajoute à `donnees` le contenu d'un chapitre repris ; rien n'est copié : chaque élément garde son dossier
+// (sons et images) et le titre de son chapitre, qui sert de groupe pour les tirages. Pas de listes : tout est mélangé.
+
+// Un mot déjà présent (« twee » dans Zich voorstellen et Verjaardag) n'est gardé qu'une fois : sinon, deux bonnes réponses.
+export function fusionner(donnees, repris, dossier) {
+  const marquer = (x) => ({ ...x, dossier, chapitre: repris.titre, liste: '' });
+  const vus = new Set(donnees.mots.map((m) => m.mot.toLowerCase()));
+  donnees.mots.push(...repris.mots.filter((m) => !vus.has(m.mot.toLowerCase())).map(marquer));
+  for (const s of ['phrases', 'pistes', 'dictees', 'ordre', 'descriptions']) donnees[s].push(...repris[s].map(marquer));
+}
+
+// Chapitre de révision : lit les chapitres de sa ligne « reprend: », dans l'ordre de la ligne.
+// `racine` : '../' pour la page de contrôle. Un chapitre introuvable est signalé ; les autres servent quand même.
+export async function puiser(donnees, langue, annee, racine = '') {
+  const chapitres = await Promise.all(donnees.reprend.map(async (nom) => {
+    const dossier = racine + cheminChapitre(langue, annee, nom);
+    try {
+      return { dossier, repris: lireChapitre(await chargerTexte(`${dossier}chapitre.txt`)) };
+    } catch {
+      donnees.erreurs.push(erreur('', 0, `Ligne « reprend: » : le chapitre « ${nom} » est introuvable. Recopie exactement le nom de son dossier.`));
+      return null;
+    }
+  }));
+  for (const c of chapitres.filter(Boolean)) fusionner(donnees, c.repris, c.dossier);
+}
+
 
 // Ligne de bienvenue (contenu/accueil.txt) : première ligne utile, découpée sur « | ».
 export function lireAccueil(texte) {
