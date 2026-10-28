@@ -1,7 +1,7 @@
 // Logo du site (facultatif) : contenu/logo.svg ou contenu/logo.png.
 // S'il existe, il devient l'icône de l'onglet et remplace la petite bulle à côté du nom du site.
 // Sans fichier, rien ne change. Pour changer de logo, l'enseignant remplace le fichier du même nom.
-import { fichiersPresents } from './donnees.js?v=c01d7235';
+import { fichiersPresents } from './donnees.js?v=143dccb9';
 
 // Chemins calculés depuis ce fichier, pour marcher aussi depuis pages/ et controle/.
 const candidats = ['logo.svg', 'logo.png'].map((f) => new URL(`../contenu/${f}`, import.meta.url).href);

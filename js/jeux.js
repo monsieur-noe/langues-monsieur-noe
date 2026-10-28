@@ -1,17 +1,17 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=c01d7235';
-import { cheminSon } from './donnees.js?v=c01d7235';
-import { chercherFichiers } from './cartes.js?v=c01d7235';
-import { chargerAvatar } from './avatar.js?v=c01d7235';
-import juist from './jeu-juist.js?v=c01d7235';
-import loto from './jeu-loto.js?v=c01d7235';
-import memory from './jeu-memory.js?v=c01d7235';
-import oie, { oieDifficile } from './jeu-oie.js?v=c01d7235';
-import phrases from './jeu-phrases.js?v=c01d7235';
-import boss, { bossDifficile } from './jeu-boss.js?v=c01d7235';
-import qui from './jeu-qui.js?v=c01d7235';
+import { el, icone } from './outils.js?v=143dccb9';
+import { cheminSon } from './donnees.js?v=143dccb9';
+import { chercherFichiers } from './cartes.js?v=143dccb9';
+import { chargerAvatar } from './avatar.js?v=143dccb9';
+import juist from './jeu-juist.js?v=143dccb9';
+import loto from './jeu-loto.js?v=143dccb9';
+import memory from './jeu-memory.js?v=143dccb9';
+import oie, { oieDifficile } from './jeu-oie.js?v=143dccb9';
+import phrases from './jeu-phrases.js?v=143dccb9';
+import boss, { bossDifficile } from './jeu-boss.js?v=143dccb9';
+import qui from './jeu-qui.js?v=143dccb9';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
@@ -55,6 +55,8 @@ export async function afficherJeux(conteneur, contenu, jeu) {
     if (choisi.pleinEcran) document.getElementById('onglets').hidden = true;
     choisi.lancer(zone, contenu);
     // Sur téléphone, le jeu remonte en haut de l'écran : les boutons de réponse restent visibles sans défiler.
+    // Après un rechargement, le navigateur ne remet pas la page où elle était (il annulerait cette remontée).
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     requestAnimationFrame(() => conteneur.scrollIntoView({ block: 'start' }));
     return;
   }

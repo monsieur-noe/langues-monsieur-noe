@@ -1,6 +1,6 @@
 // Logique de la page de contrôle (testée dans tests/controle.test.js) : noms de fichiers à essayer,
 // conseils de renommage, variantes d'exercice indisponibles, texte pour Quizlet. Cahier 7.6.
-import { article } from './exercices.js?v=c01d7235';
+import { article } from './exercices.js?v=143dccb9';
 
 export const LIMITE_DICTEE = 3 * 1024 * 1024; // 3 Mo par dictée (cahier 9)
 const AUTRES_AUDIO = ['mp3', 'wav'];
