@@ -3,12 +3,13 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone } from './outils.js?v=e93b1733';
-import { arreter } from './audio.js?v=e93b1733';
-import { avatar } from './avatar.js?v=e93b1733';
-import { disponibles, question, fete } from './exercices.js?v=e93b1733'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=e93b1733';
-import oie, { planOie } from './jeu-oie.js?v=e93b1733';
+import { el, icone } from './outils.js?v=430d554b';
+import { arreter } from './audio.js?v=430d554b';
+import { jouer, arreterMusique, couper, coupee } from './musique.js?v=430d554b';
+import { avatar } from './avatar.js?v=430d554b';
+import { disponibles, question, fete } from './exercices.js?v=430d554b'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=430d554b';
+import oie, { planOie } from './jeu-oie.js?v=430d554b';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6'];
@@ -104,7 +105,7 @@ function lancer(zone, contenu, difficile) {
   // Nom du monstre : la ligne « boss: » du chapitre, sinon « le monstre » (avec une majuscule en début de phrase).
   const nom = contenu.boss || 'le monstre';
   const Nom = nom[0].toUpperCase() + nom.slice(1);
-  const ctx = { ...contenu, dispo: disponibles(contenu.mots, contenu.phrases, contenu.n), sansAvatar: true, sansDefilement: true, enchainer: ENCHAINER };
+  const ctx = { ...contenu, dispo: disponibles(contenu.mots, contenu.phrases, contenu.n), sansAvatar: true, sansDefilement: true, sansSon: true, enchainer: ENCHAINER };
   const max = { boss: VIES.boss, noe: difficile ? VIE_DIFFICILE : VIES.noe };
   let vies = { ...max };
   let plan = [];
@@ -118,6 +119,11 @@ function lancer(zone, contenu, difficile) {
   let retourNeutre = 0;
   let serie = 0; // bonnes réponses d'affilée
   let preparation = null;
+  // Musique (demande du 2026-10-28) : celle des chapitres ou celle du boss de fin d'année, normale ou difficile ;
+  // à mi-combat, sa version stressante. Elle part au premier toucher (exigence des navigateurs).
+  const musique = `${contenu.revision ? 'fin-annee' : 'combat'}${difficile ? '-difficile' : ''}`;
+  let stressante = false;
+  jouer(musique);
 
   // Bouclier du monstre (P5-P6) et cœur « + » de son soin : invisibles hors de leur animation.
   const bouclierBoss = el('span', { class: 'parade parade-boss', 'aria-hidden': 'true' }, icone('bouclier'));
@@ -140,6 +146,14 @@ function lancer(zone, contenu, difficile) {
   const cadreBoss = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, Nom), coeursBoss);
   const cadreNoe = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, 'Monsieur Noé'), coeursNoe);
   const placeProf = el('div', { class: 'place-prof' }, prof, bouclierProf);
+  // Bouton pour couper ou rallumer la musique (56 px), dans l'encadré de l'intention (demande de l'enseignant).
+  const boutonMusique = el('button', { type: 'button', class: 'bouton-musique', 'aria-label': 'Musique' });
+  const majMusique = () => {
+    boutonMusique.setAttribute('aria-pressed', String(!coupee));
+    boutonMusique.replaceChildren(icone(coupee ? 'musique-coupee' : 'musique'));
+  };
+  boutonMusique.addEventListener('click', () => { couper(!coupee); majMusique(); });
+  majMusique();
   // Arène face à face : en haut, le cadre du monstre et le monstre ; en bas, l'avatar et le cadre de l'enseignant.
   const arene = el('div', { class: 'arene' }, cadreBoss, monstre, placeProf, cadreNoe);
   // Décor du chapitre (ligne « arene: ») : contenu/arene/<nom>.jpg, ou <nom>-difficile.jpg pour le combat difficile.
@@ -246,12 +260,13 @@ function lancer(zone, contenu, difficile) {
     const [ic, titre, explication] = (difficile ? INTENTIONS_DIFFICILE : INTENTIONS)[but];
     // Sur téléphone, l'explication n'est montrée qu'à la première question (classe `suite`, CSS), sauf le bouclier.
     annonce.replaceChildren(icone(ic), el('p', {}, el('strong', {}, titre), el('span', { class: but === 'protege' ? '' : 'explication' }, el('br'),
-      but === 'protege' && bouclier ? 'Encore une bonne réponse pour le toucher !' : explication)));
+      but === 'protege' && bouclier ? 'Encore une bonne réponse pour le toucher !' : explication)), boutonMusique);
   }
 
   // Fin du combat : l'avatar de l'arène prend la pose, l'écran de fin n'en ajoute pas un second.
   function fin(pose, ic, titreTexte, phrase, bouton) {
     annonce.replaceChildren();
+    arreterMusique();
     poser(pose);
     const titre = el('h2', { tabindex: '-1' }, icone(ic), titreTexte);
     const b = el('button', { type: 'button', class: 'action' }, icone('tourner'), bouton);
@@ -275,6 +290,11 @@ function lancer(zone, contenu, difficile) {
       // L'arène revient à l'écran seulement si elle en est sortie par le haut (téléphone) : sinon la page ne bouge pas.
       if (arene.getBoundingClientRect().top < 0) arene.scrollIntoView({ block: 'start' });
       parade = animer(avant, juste);
+      // Plus qu'un cœur pour moi (combat normal) ou monstre à mi-vie (difficile) : la musique devient stressante.
+      if (!stressante && vies.boss && vies.noe && (difficile ? vies.boss <= 2 : vies.noe === 1)) {
+        stressante = true;
+        jouer(`${musique}-un-coeur`, true);
+      }
     }
     if (!vies.boss) {
       setTimeout(() => monstre.classList.add('vaincu'), parade);

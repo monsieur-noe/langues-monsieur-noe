@@ -684,6 +684,13 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   border: 2px solid var(--trait); border-radius: 1.25rem; padding: .6rem;
 }
 .etoile-super { position: absolute; opacity: 0; pointer-events: none; }
+/* Couper ou rallumer la musique du combat (56 px), à droite dans l'encadré de l'intention. */
+.bouton-musique {
+  margin-left: auto; flex: none;
+  width: 3.5rem; height: 3.5rem; display: grid; place-items: center;
+  background: var(--surface); color: var(--acc);
+  border: 2px solid var(--trait); border-radius: 50%; box-shadow: var(--ombre); cursor: pointer;
+}
 .etoile-super .ic { width: 1.75rem; height: 1.75rem; color: #b45309; fill: #fbbf24; }
 .parade-boss { right: auto; left: -1.5rem; }
 .parade-boss .ic { color: #6b4fa0; }
@@ -762,7 +769,8 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   .combat-boss .cadre-vies { gap: 0; padding: .2rem .45rem; }
   .combat-boss .coeurs .ic { width: 1.25rem; height: 1.25rem; }
   .combat-boss .intention { gap: .3rem; margin-bottom: .3rem; padding: .15rem .4rem; line-height: 1.25; }
-  .combat-boss .intention > .ic { width: 1.25rem; height: 1.25rem; flex: none; }
+  /* Le bouton de la musique prend la place du pictogramme de l'annonce : les réponses restent dans l'écran. */
+  .combat-boss .intention > .ic { display: none; }
   .combat-boss.suite .explication { display: none; }
   /* Pas de mot seul sur sa ligne : l'explication devient un bloc pour être équilibrée elle aussi. */
   .combat-boss .consigne, .combat-boss .explication { text-wrap: balance; }

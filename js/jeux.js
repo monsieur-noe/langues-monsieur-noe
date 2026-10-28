@@ -1,17 +1,17 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=e93b1733';
-import { cheminSon } from './donnees.js?v=e93b1733';
-import { chercherFichiers } from './cartes.js?v=e93b1733';
-import { chargerAvatar } from './avatar.js?v=e93b1733';
-import juist from './jeu-juist.js?v=e93b1733';
-import loto from './jeu-loto.js?v=e93b1733';
-import memory from './jeu-memory.js?v=e93b1733';
-import oie, { oieDifficile } from './jeu-oie.js?v=e93b1733';
-import phrases from './jeu-phrases.js?v=e93b1733';
-import boss, { bossDifficile } from './jeu-boss.js?v=e93b1733';
-import qui from './jeu-qui.js?v=e93b1733';
+import { el, icone } from './outils.js?v=430d554b';
+import { cheminSon } from './donnees.js?v=430d554b';
+import { chercherFichiers } from './cartes.js?v=430d554b';
+import { chargerAvatar } from './avatar.js?v=430d554b';
+import juist from './jeu-juist.js?v=430d554b';
+import loto from './jeu-loto.js?v=430d554b';
+import memory from './jeu-memory.js?v=430d554b';
+import oie, { oieDifficile } from './jeu-oie.js?v=430d554b';
+import phrases from './jeu-phrases.js?v=430d554b';
+import boss, { bossDifficile } from './jeu-boss.js?v=430d554b';
+import qui from './jeu-qui.js?v=430d554b';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
@@ -27,6 +27,7 @@ export async function contenuJeux(donnees, dossier, langue, annee) {
     langue, annee, dossier, presents,
     boss: donnees.boss, // nom du monstre du combat de boss (ligne « boss: » du chapitre)
     arene: donnees.arene, // décor du combat de boss (ligne « arene: »)
+    revision: donnees.reprend.length > 0, // chapitre de révision : musique du boss de fin d'année
     n: annee === 'p3' ? 3 : 4, // 3 choix en P3, 4 en P4, comme les exercices
     mots: donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) })),
     phrases: donnees.phrases.map((p) => ({ ...p, son: aSon(p) })),

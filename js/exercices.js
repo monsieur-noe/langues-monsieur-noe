@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=e93b1733';
-import { creerLecteur, arreter } from './audio.js?v=e93b1733';
-import { chercherFichiers, visuel } from './cartes.js?v=e93b1733';
-import { positionReponse, cheminSon } from './donnees.js?v=e93b1733';
-import { avatar, chargerAvatar } from './avatar.js?v=e93b1733';
-import { serieOrdre } from './ordre.js?v=e93b1733';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=e93b1733';
+import { el, icone } from './outils.js?v=430d554b';
+import { creerLecteur, arreter } from './audio.js?v=430d554b';
+import { chercherFichiers, visuel } from './cartes.js?v=430d554b';
+import { positionReponse, cheminSon } from './donnees.js?v=430d554b';
+import { avatar, chargerAvatar } from './avatar.js?v=430d554b';
+import { serieOrdre } from './ordre.js?v=430d554b';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=430d554b';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -175,7 +175,8 @@ export function compteur(rang, total) {
 // Sans `total` (jeu de l'oie), ni compteur ni « Terminer ».
 export function question(q, ctx, verifie, rang, total, fin) {
   const { langue, n, dispo } = ctx;
-  const son = (x) => (x.son ? creerLecteur(cheminSon(x, ctx.dossier), { nom: x.mot || x.phrase }) : null);
+  // `ctx.sansSon` (combat de boss, demande du 2026-10-28) : seul « Écoute » garde son son, pour ne pas casser le rythme de la musique.
+  const son = (x) => (x.son && !ctx.sansSon ? creerLecteur(cheminSon(x, ctx.dossier), { nom: x.mot || x.phrase }) : null);
   const mot = (x) => el('span', { class: 'mot', lang: langue }, x.mot);
   const c = q.cible;
   let enonce;
@@ -289,7 +290,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
 
   const zone = el('div', { class: 'exercice' },
     el('div', { class: 'tete-ex' }, titre, total ? compteur(rang, total) : ''),
-    ctx.presents.has(consigneSon) ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false, lent: false }) : '',
+    ctx.presents.has(consigneSon) && !ctx.sansSon ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false, lent: false }) : '',
     el('div', { class: 'enonce' }, enonce),
     // Images en grille ; mots les uns sous les autres (« de » et « het » côte à côte).
     el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}` }, ...boutons),

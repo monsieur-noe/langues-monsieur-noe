@@ -1,7 +1,7 @@
 // Avatar de l'enseignant (cahier 7.8) : facultatif. Sans dessin dans contenu/avatar/, rien ne s'affiche.
 // Pour changer une pose, l'enseignant remplace le fichier du même nom : aucun code à toucher.
-import { el } from './outils.js?v=e93b1733';
-import { fichiersPresents } from './donnees.js?v=e93b1733';
+import { el } from './outils.js?v=430d554b';
+import { fichiersPresents } from './donnees.js?v=430d554b';
 
 const DOSSIER = 'contenu/avatar/';
 export const POSES = ['neutre', 'content', 'bravo', 'encourage', 'reflechit', 'explique', 'pointe', 'bonjour', 'attaque', 'aie'];

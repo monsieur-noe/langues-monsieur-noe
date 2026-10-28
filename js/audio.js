@@ -1,7 +1,8 @@
 // Le lecteur audio unique du site (cahier 9) : tous les sons passent par creerLecteur().
 // Bouton lecture/pause, barre de progression que l'on touche ou fait glisser, temps écoulé / durée.
 // Un seul son à la fois ; rien ne démarre seul (sur iPhone, un son ne part qu'après un toucher).
-import { el, icone } from './outils.js?v=e93b1733';
+import { el, icone } from './outils.js?v=430d554b';
+import { baisser } from './musique.js?v=430d554b';
 
 let actif = null; // le son en cours, pour l'arrêter quand un autre démarre
 
@@ -63,6 +64,8 @@ export function creerLecteur(chemin, { nom, large = false, avecBarre = true, len
     if (actif && actif !== audio) actif.pause();
     actif = audio;
   });
+  // La musique du combat baisse tant qu'un son joue (l'arrêt de l'ancien son ne la remonte pas).
+  for (const evt of ['play', 'pause', 'ended']) audio.addEventListener(evt, () => baisser(!actif.paused));
 
   const lire = () => audio.play().catch(() => {}); // un son qui ne part pas n'affiche jamais d'erreur à l'enfant
   bouton.addEventListener('click', () => {
