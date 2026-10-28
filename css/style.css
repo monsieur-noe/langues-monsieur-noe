@@ -744,7 +744,9 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   /* Page toujours assez haute pour que le jeu remonte en haut de l'écran (sinon le titre garde de la place). */
   .corps:has(.combat-boss) { min-height: 100vh; min-height: 100svh; }
   .fiche:has(.combat-boss) { margin-top: 0; padding: .5rem .6rem; }
-  .fiche:has(.combat-boss) .retour-jeux { margin-bottom: .4rem; }
+  /* « Retour aux jeux » passe sous les réponses : sa place revient aux combattants (demande du 2026-10-28). */
+  .fiche:has(.combat-boss) { display: flex; flex-direction: column; }
+  .fiche:has(.combat-boss) .retour-jeux { order: 1; align-self: flex-start; margin: .75rem 0 0; }
   .combat-boss .consigne-oie { display: none; }
   /* Chaque cadre déborde sur la colonne du milieu : les noms tiennent sur une ligne. */
   .combat-boss .arene {
@@ -777,23 +779,20 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   .combat-boss .reponse { min-height: 3.5rem; padding: .3rem .5rem; }
   .combat-boss .reponse .mot { font-size: 1.375rem; }
 }
-/* Téléphones plus hauts que 640 px (la plupart) : arène et combattants plus grands, réponses toujours visibles. */
-@media (max-width: 30rem) and (min-height: 43.75rem) {
-  .combat-boss .monstre > .ic, .combat-boss .dessin-boss { width: 4.5rem; height: 4.5rem; }
-  .combat-boss .place-prof .avatar { height: 5rem; }
-}
-@media (max-width: 30rem) and (min-height: 47.5rem) {
-  .combat-boss .monstre > .ic, .combat-boss .dessin-boss { width: 5.5rem; height: 5.5rem; }
-  .combat-boss .place-prof .avatar { height: 6rem; }
-  .combat-boss .arene.avec-decor { padding: .4rem; }
-}
-@media (max-width: 30rem) and (min-height: 52.5rem) {
-  .combat-boss .monstre > .ic, .combat-boss .dessin-boss { width: 7rem; height: 7rem; }
-  .combat-boss .place-prof .avatar { height: 7.5rem; }
-}
-@media (max-width: 30rem) and (min-height: 56rem) {
-  .combat-boss .monstre > .ic, .combat-boss .dessin-boss { width: 9rem; height: 9rem; }
-  .combat-boss .place-prof .avatar { height: 9.5rem; }
+/* Téléphone : pendant le combat, la barre du titre du chapitre est cachée à l'œil (toujours lue par les lecteurs
+   d'écran). Ainsi tout tient sans que la page doive remonter (iPhone). */
+@media (max-width: 30rem) {
+  body:has(.combat-boss) .bandeau {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  /* Combattants : plus l'écran est haut, plus ils sont grands (81/89 px à 640 px de haut, jusqu'à 160/168 px) ; le monstre
+     reste assez étroit pour que les noms des cadres tiennent sur une ligne ;
+     les réponses gardent leur place (vérifié avec toutesQuestions() de tests/navigateur.js). */
+  .combat-boss .monstre > .ic, .combat-boss .dessin-boss {
+    width: clamp(3.5rem, min(50vh - 239px, 100vw - 250px), 10rem); height: clamp(3.5rem, min(50vh - 239px, 100vw - 250px), 10rem);
+    width: clamp(3.5rem, min(50svh - 239px, 100vw - 250px), 10rem); height: clamp(3.5rem, min(50svh - 239px, 100vw - 250px), 10rem);
+  }
+  .combat-boss .place-prof .avatar { height: clamp(4rem, 50vh - 231px, 10.5rem); height: clamp(4rem, 50svh - 231px, 10.5rem); }
 }
 .fete-boss { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .fete-boss span { position: absolute; top: -2rem; animation: tombe 1.2s ease-in forwards; }
