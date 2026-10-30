@@ -179,6 +179,7 @@ Les images viennent plus tard, quand vous les avez (partie 4). En attendant, les
 - `liste: Les mois` dans `[mots]` : range les mots qui suivent dans une liste de « Je découvre ». Dans `[phrases]`, avec **exactement le même nom**, elle range les phrases avec cette liste.
 - `dates | Les dates | dates:` dans `[dictees]` : une dictée de dates tirées au hasard (il faut les jours, les mois et les nombres de 1 à 31 dans `[mots]`, avec leur son).
 - `[ordre]` : le jeu « Mots en ordre », une ligne par manche ; la 4e colonne donne un intrus (un mot en trop à laisser de côté).
+- `[fin-de-phrase]` : l'exercice « Het is… », une ligne par manche ; la dernière colonne nomme le mot qui donne l'image et le son.
 
 ## 6. Vérifier votre travail avec la page de contrôle
 

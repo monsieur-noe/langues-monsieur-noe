@@ -1,0 +1,60 @@
+# Chapitre 7 : Het weer (le temps qu'il fait et les saisons), premier chapitre de P4.
+# Source : fiche « Het weer P4 » (exercices 1 à 17 et texte d'Albertine).
+
+titre: Het weer
+
+quizlet: https://quizlet.com/be/1225531028/la-meteo-neerlandais-flash-cards/
+# Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.png et boss-difficile.png dans ce dossier.
+boss: Grognuage
+arene: meteo
+
+[mots]
+# id | mot | français | image (facultatif)
+# Une seule liste de 20 mots (choix de l'enseignant).
+# Les 8 dessins de la météo sont de Claude (demande de l'enseignant du 2026-10-29). Pour en changer un, dépose un fichier du même nom.
+# Les 8 phrases reprennent le dessin de leur mot, avec « phrase » écrit dessous, pour que l'élève dise la phrase et pas le mot.
+# Les 4 saisons n'ont pas de dessin : la carte montre le français.
+# Une phrase (avec un point à la fin) ne va jamais dans « De ou het ? ».
+
+zon | de zon | le soleil | zon.svg
+wolken | de wolken | les nuages | wolken.svg
+regen | de regen | la pluie | regen.svg
+sneeuw | de sneeuw | la neige | sneeuw.svg
+wind | de wind | le vent | wind.svg
+mist | de mist | le brouillard | mist.svg
+warm | warm | chaud | warm.svg
+koud | koud | froid | koud.svg
+het-is-zonnig | Het is zonnig. | Il fait ensoleillé. | het-is-zonnig.svg
+het-is-bewolkt | Het is bewolkt. | Il fait nuageux. | het-is-bewolkt.svg
+het-regent | Het regent. | Il pleut. | het-regent.svg
+het-sneeuwt | Het sneeuwt. | Il neige. | het-sneeuwt.svg
+het-is-winderig | Het is winderig. | Il y a du vent. | het-is-winderig.svg
+het-is-mistig | Het is mistig. | Il y a du brouillard. | het-is-mistig.svg
+het-is-warm | Het is warm. | Il fait chaud. | het-is-warm.svg
+het-is-koud | Het is koud. | Il fait froid. | het-is-koud.svg
+lente | de lente | le printemps
+zomer | de zomer | l'été
+herfst | de herfst | l'automne
+winter | de winter | l'hiver
+
+[fin-de-phrase]
+# id | début de la phrase | bonne fin | autres propositions | identifiant du mot (son image et son son)
+# Exercice « Het is… » : c'est le seul exercice de phrases du chapitre (pas de [phrases], choix de l'enseignant).
+# 3 propositions, même si la P4 a 4 choix ailleurs (choix de l'enseignant du 2026-10-30).
+fin-1 | Het is | zonnig. | koud., mistig. | het-is-zonnig
+fin-2 | Het is | bewolkt. | warm., winderig. | het-is-bewolkt
+fin-3 | Het is | winderig. | zonnig., koud. | het-is-winderig
+fin-4 | Het is | mistig. | bewolkt., warm. | het-is-mistig
+fin-5 | Het is | warm. | koud., mistig. | het-is-warm
+fin-6 | Het is | koud. | warm., zonnig. | het-is-koud
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Intrus = noms du chapitre. Pas d'adjectif météo ni de saison : « Het is koud. » ou « Het is zomer. » seraient aussi des phrases correctes.
+# Les mêmes phrases que l'exercice « Het is… », avec les sons de la liste.
+zin-1 | Het / is / zonnig. | het-is-zonnig | zon
+zin-2 | Het / is / bewolkt. | het-is-bewolkt | wolken
+zin-3 | Het / is / winderig. | het-is-winderig | wind
+zin-4 | Het / is / mistig. | het-is-mistig | mist
+zin-5 | Het / is / warm. | het-is-warm | regen
+zin-6 | Het / is / koud. | het-is-koud | sneeuw

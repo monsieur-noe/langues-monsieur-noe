@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=430d554b';
-import { creerLecteur, arreter } from './audio.js?v=430d554b';
-import { chercherFichiers, visuel } from './cartes.js?v=430d554b';
-import { positionReponse, cheminSon } from './donnees.js?v=430d554b';
-import { avatar, chargerAvatar } from './avatar.js?v=430d554b';
-import { serieOrdre } from './ordre.js?v=430d554b';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=430d554b';
+import { el, icone } from './outils.js?v=b65db263';
+import { creerLecteur, arreter } from './audio.js?v=b65db263';
+import { chercherFichiers, visuel } from './cartes.js?v=b65db263';
+import { positionReponse, cheminSon } from './donnees.js?v=b65db263';
+import { avatar, chargerAvatar } from './avatar.js?v=b65db263';
+import { serieOrdre } from './ordre.js?v=b65db263';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=b65db263';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -15,6 +15,7 @@ const CONSIGNES = {
   'mot-image': ['image', 'Touche l\'image qui va avec le mot.'],
   ecoute: ['haut-parleur', 'Écoute, puis touche la bonne réponse.'],
   trous: ['crayon', 'Choisis le mot qui manque.'],
+  'fin-phrase': ['image', 'Regarde l\'image et choisis la bonne fin.'],
   'de-het': ['bulle', 'De ou het ? Choisis le bon petit mot.'],
 };
 const MELANGE = ['image-mot', 'mot-image', 'ecoute', 'trous'];
@@ -71,13 +72,15 @@ export function etoiles(bonnes, total) {
 // raccourci : un appareil mal réglé (mauvaise date) donne le mot d'un autre jour ; ajouter un mot change l'ordre.
 const hacher = (texte) => [...texte].reduce((h, c) => (h * 31 + c.codePointAt(0)) >>> 0, 7);
 export function motSecret(mots, date = new Date()) {
-  if (!mots.length) return '';
+  const seuls = mots.filter((m) => !/[.!?]$/.test(m.mot)); // pas de phrase (« Het regent. ») : l'élève la recopie (demande du 2026-10-30)
+  if (!seuls.length) return '';
   const jour = Math.round(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 864e5);
-  const ordre = [...mots].sort((a, b) => hacher(a.id) - hacher(b.id) || (a.id < b.id ? -1 : 1));
+  const ordre = [...seuls].sort((a, b) => hacher(a.id) - hacher(b.id) || (a.id < b.id ? -1 : 1));
   return ordre[jour % ordre.length].mot;
 }
 
-export const article = (mot) => (mot.match(/^(de|het)\s/i)?.[1] || '').toLowerCase();
+// Une phrase (« Het regent. ») n'est pas un nom avec son article : le point final la distingue.
+export const article = (mot) => (mot.match(/^(de|het)\s[^.!?]*$/i)?.[1] || '').toLowerCase();
 export const sansArticle = (mot) => mot.replace(/^(de|het)\s+/i, '');
 const aUnVisuel = (m) => m.ind.type !== 'francais';
 
@@ -126,6 +129,11 @@ export function planMelange(dispo, nombre) {
 
 export function planDeHet(dispo, nombre) {
   return tirer(dispo['de-het'], nombre).map((cible) => ({ variante: 'de-het', cible }));
+}
+
+// « Het is… » : chaque manche une fois, dans le désordre.
+export function planFins(fins) {
+  return tirer(fins, fins.length).map((cible) => ({ variante: 'fin-phrase', cible }));
 }
 
 // Je m'entraîne : 10 questions, ou autant que de mots disponibles.
@@ -212,6 +220,16 @@ export function question(q, ctx, verifie, rang, total, fin) {
       el('p', { class: 'phrase', lang: langue }, c.phrase.slice(0, i), trou, c.phrase.slice(i + c.reponse.length)),
       lecteur || '');
     choix = propositions(c.reponse, c.faux, n).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.reponse }));
+  } else if (q.variante === 'fin-phrase') {
+    // Le nombre de propositions vient du fichier : 3 en P4 aussi (choix de l'enseignant du 2026-10-30).
+    const trou = el('span', { class: 'trou' }, '…');
+    trou.setAttribute('aria-label', 'fin de la phrase');
+    apres = () => { trou.textContent = c.fin; trou.removeAttribute('aria-label'); trou.classList.add('rempli'); };
+    enonce = el('div', { class: 'pile' },
+      visuel(c.ref, c.ref.ind, langue),
+      el('p', { class: 'phrase', lang: langue }, `${c.debut} `, trou));
+    choix = propositions(c.fin, c.faux, c.faux.length + 1).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.fin }));
+    lecteur = son(c.ref);
   } else {
     // De ou het : le nom sans article ; le son (qui dit l'article) seulement après la réponse.
     const art = el('span', { class: 'trou' }, '…');
@@ -451,7 +469,8 @@ function dicteeDates(d, ctx) {
 }
 
 // Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ordre, couleurs ou dictees).
-const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'] };
+// shortcut: le nom « Het is… » est fixe, à rendre variable si un chapitre commence ses phrases autrement.
+const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], 'fin-phrase': ['Het is…', 'image'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'] };
 function choixExercice(choix, actif) {
   const lien = (valeur) => {
     const params = new URLSearchParams(location.search);
@@ -470,7 +489,8 @@ function lancerOrdre(zone, donnees, ctx) {
   // (jamais le français, demande du 2026-10-26). Comparaison sans article, majuscule ni ponctuation.
   const nu = (t) => t.toLowerCase().replace(/^(de|het) /, '').replace(/[.,!?]/g, '');
   const image = (o) => {
-    const m = o.intrus.length && ctx.mots.find((x) => x.ind.type === 'image' && o.cases.some((c) => nu(c) === nu(x.mot)));
+    // Le son de la 3e colonne peut être celui d'une phrase de [mots] (« Het is zonnig. ») : son dessin vaut alors pour toute la manche.
+    const m = o.intrus.length && ctx.mots.find((x) => x.ind.type === 'image' && (x.id === o.son || o.cases.some((c) => nu(c) === nu(x.mot))));
     return m ? visuel(m, m.ind, langue) : null;
   };
   // Un son de la 3e colonne propre à une seule manche se joue après elle ; partagé, il reste pour la fin (2026-10-26).
@@ -505,16 +525,17 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const avecDeHet = dispo['de-het'].length > 0;
   const avecOrdre = !verifie && donnees.ordre.length > 0; // « Mots en ordre » : seulement dans « Je m'entraîne »
   const couleurs = verifie ? null : await preparerCouleurs(donnees, mots, langue, annee); // exercice « Couleurs » (ligne couleurs:)
+  const fins = verifie ? [] : donnees.finsDePhrase.map((f) => ({ ...f, ref: mots.find((m) => m.id === f.mot) })).filter((f) => f.ref); // « Het is… » : seulement dans « Je m'entraîne »
   const dictees = verifie ? [] : donnees.dictees.filter((d) => (d.dates ? datesPossibles(piecesDates(mots)) : aSon(d))); // dictées : leur propre entrée (demande du 2026-10-20)
   // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
   // Seules les entrées possibles restent (une condition fausse donne false ou null, jamais un nom d'entrée).
-  const choix = [avecMelange && '', avecDeHet && 'de-het', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
+  const choix = [avecMelange && '', avecDeHet && 'de-het', fins.length > 0 && 'fin-phrase', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
   const actif = choix.includes(exercice) ? exercice : choix[0];
   const deHet = actif === 'de-het';
   if (!verifie && choix.length > 1) parties.push(choixExercice(choix, actif));
 
   const zone = el('div', { class: 'zone-exercice' });
-  const plan = () => (verifie ? planVerifie(dispo) : planEntraine(dispo, deHet));
+  const plan = () => (verifie ? planVerifie(dispo) : actif === 'fin-phrase' ? planFins(fins) : planEntraine(dispo, deHet));
   const lancer = () => {
     if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
     if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });

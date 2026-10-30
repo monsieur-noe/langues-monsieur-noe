@@ -15,8 +15,9 @@ const BOUCLES = {
   'fin-annee-difficile': [14, 67.151667],
   'fin-annee-difficile-un-coeur': [0.5, 55.620146],
 };
-const VOLUME = 0.35;
-const BAS = 0.07; // pendant un mot : encore là, mais le mot s'entend bien
+// Les enregistrements sont peu forts (moyenne autour de -38 dB, voir tests/mesurer-sons.py) : ces deux réglages gardent la voix nettement au-dessus.
+const VOLUME = 0.15;
+const BAS = 0.015; // pendant un mot : encore là, mais le mot s'entend bien
 
 let ctx = null;
 let piste = null; // { source, gain } de la musique en cours
@@ -77,16 +78,19 @@ function debloquer() {
 // Joue la musique `nom` ; `direct` : à sa boucle, en fondu enchaîné avec la précédente (plus qu'un cœur).
 export function jouer(nom, direct = false) {
   if (!ctx) {
+    // iPhone en mode silencieux : sans cela, la musique se tait jusqu'au premier son du lecteur (les voix, elles, passent).
+    // shortcut: iOS 16.3 et avant n'ont pas ce réglage, la musique y attend ce premier son ; à revoir si des familles s'en plaignent.
+    if (navigator.audioSession) navigator.audioSession.type = 'playback';
     ctx = new AudioContext();
     // Page cachée (autre onglet, écran éteint) : la musique se tait, et reprend au retour.
     document.addEventListener('visibilitychange', () => (document.hidden ? ctx.suspend() : ctx.resume()));
+    // Les gestes qui autorisent le son. Écoutés sans fin : sur iPhone, un doigt qui glisse ou qui se pose ne compte pas, il faut réessayer au suivant.
+    for (const geste of ['pointerup', 'pointerdown', 'touchend', 'click', 'keydown']) addEventListener(geste, debloquer);
   }
   enCours = nom;
   voulue = { nom, direct, fondu: direct ? 1.5 : 0.3 };
   if (ctx.state === 'running') lancer();
   else ctx.resume().then(lancer).catch(() => {}); // sans toucher, le navigateur refuse : on attend le premier
-  // Les gestes qui autorisent le son : doigt levé (téléphone), clic de souris, touche du clavier.
-  for (const geste of ['pointerup', 'pointerdown', 'keydown']) addEventListener(geste, debloquer, { once: true });
 }
 
 export function arreterMusique() {
@@ -103,5 +107,5 @@ export function couper(oui) {
 // Appelé par le lecteur unique (audio.js) : un mot ou une phrase commence ou finit.
 export function baisser(oui) {
   baisse = oui;
-  if (piste) fondre(piste.gain, niveau(), oui ? 0.2 : 0.6);
+  if (piste) fondre(piste.gain, niveau(), oui ? 0.08 : 0.6); // vite, pour ne pas couvrir le début d'un mot court
 }

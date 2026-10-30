@@ -1,17 +1,17 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=430d554b';
-import { cheminSon } from './donnees.js?v=430d554b';
-import { chercherFichiers } from './cartes.js?v=430d554b';
-import { chargerAvatar } from './avatar.js?v=430d554b';
-import juist from './jeu-juist.js?v=430d554b';
-import loto from './jeu-loto.js?v=430d554b';
-import memory from './jeu-memory.js?v=430d554b';
-import oie, { oieDifficile } from './jeu-oie.js?v=430d554b';
-import phrases from './jeu-phrases.js?v=430d554b';
-import boss, { bossDifficile } from './jeu-boss.js?v=430d554b';
-import qui from './jeu-qui.js?v=430d554b';
+import { el, icone } from './outils.js?v=b65db263';
+import { cheminSon } from './donnees.js?v=b65db263';
+import { chercherFichiers } from './cartes.js?v=b65db263';
+import { chargerAvatar } from './avatar.js?v=b65db263';
+import juist from './jeu-juist.js?v=b65db263';
+import loto from './jeu-loto.js?v=b65db263';
+import memory from './jeu-memory.js?v=b65db263';
+import oie, { oieDifficile } from './jeu-oie.js?v=b65db263';
+import phrases from './jeu-phrases.js?v=b65db263';
+import boss, { bossDifficile } from './jeu-boss.js?v=b65db263';
+import qui from './jeu-qui.js?v=b65db263';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.

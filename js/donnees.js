@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=430d554b';
+import { LANGUES } from './outils.js?v=b65db263';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -25,6 +25,7 @@ const SECTIONS = {
   dictees: [3, 4, 'id | titre | texte de la dictée | français (facultatif)'],
   ordre: [2, 4, 'id | cases séparées par « / » | son à écouter à la fin (facultatif) | intrus (facultatif)'],
   descriptions: [2, 3, 'id | texte de la description (« / » = nouvelle phrase) | français (facultatif)'],
+  'fin-de-phrase': [5, 5, 'id | début de la phrase | bonne fin | autres propositions | identifiant du mot'],
 };
 
 // Garde les lignes utiles avec leur numéro (lignes vides et # ignorées).
@@ -94,7 +95,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', reprend: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', reprend: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -106,7 +107,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       section = titreSection[1].trim().toLowerCase();
       liste = '';
       if (!SECTIONS[section]) {
-        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes], [dictees], [ordre] et [descriptions].`);
+        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes], [dictees], [ordre], [descriptions] et [fin-de-phrase].`);
         section = 'inconnue';
       }
       continue;
@@ -214,6 +215,9 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     } else if (section === 'descriptions') {
       // Jeu « Qui est-ce ? » (demande du 2026-10-28) : une personne décrite, son audio et son dessin images/<id>.png.
       resultat.descriptions.push({ id, phrases: c[1].split('/').map((x) => x.trim()).filter(Boolean), francais: c[2] || '', ligne: num });
+    } else if (section === 'fin-de-phrase') {
+      // Exercice « Het is… » (demande de l'enseignant) : la 5e colonne nomme le mot qui donne l'image et le son.
+      resultat.finsDePhrase.push({ id, debut: c[1], fin: c[2], faux: c[3].split(',').map((x) => x.trim()).filter(Boolean), mot: c[4], ligne: num });
     } else {
       const [, titre, texteD, francais = ''] = c;
       // « dates: » en 3e colonne : dictée de dates tirées au hasard, sans son à elle (demande du 2026-10-26).
@@ -221,6 +225,9 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     }
   }
 
+  for (const f of resultat.finsDePhrase) {
+    if (!resultat.mots.some((m) => m.id === f.mot)) err(f.ligne, `le mot « ${f.mot} » n'est pas dans [mots]. Recopie exactement son identifiant (1re colonne).`);
+  }
   if (!resultat.titre) err(1, 'il manque la ligne « titre: » en haut du fichier (exemple : titre: Kleuren).');
   return resultat;
 }
