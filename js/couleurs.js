@@ -1,12 +1,12 @@
 // Exercice « Couleurs » de « Je m'entraîne » (cahier 7.4, v1.15) : un dessin du chapitre repeint dans une couleur
-// d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. » à compléter :
-// le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
+// d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. »
+// (« The ____ is ____. » en anglais) à compléter : l'objet parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js?v=22778f70';
-import { creerLecteur } from './audio.js?v=22778f70';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=22778f70';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=22778f70';
-import { avatar } from './avatar.js?v=22778f70';
+import { el, icone } from './outils.js?v=491f0158';
+import { creerLecteur } from './audio.js?v=491f0158';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=491f0158';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=491f0158';
+import { avatar } from './avatar.js?v=491f0158';
 
 const NOMBRE = 10;
 const CHOIX = 5;
@@ -27,12 +27,22 @@ export function couleurHublot(fond) {
   return 0.299 * r + 0.587 * g + 0.114 * b > 150 ? '#1f2a44' : '#dde3ec';
 }
 
+// Le début et le verbe de la phrase, ou null si le mot ne peut pas y entrer.
+// Néerlandais : l'article du mot (« Het … is … »). Anglais : les mots sont sans article, et le français
+// en « les » dit le pluriel (« les ciseaux » : « The … are … »), car « scissors » seul ne le dit pas ;
+// « shorts » et « trousers » sont pluriels en anglais seulement (« le short », « le pantalon »).
+export function debutPhrase(m, langue) {
+  if (langue === 'en') return { debut: 'The', verbe: m.francais?.startsWith('les ') || ['shorts', 'trousers'].includes(m.mot) ? 'are' : 'is' };
+  const art = article(m.mot);
+  return art ? { debut: `${art[0].toUpperCase()}${art.slice(1)}`, verbe: 'is' } : null;
+}
+
 // Cherche les dessins repeignables du chapitre et les couleurs de l'autre chapitre.
 // Renvoie null (pas d'exercice, sans message à l'enfant) s'il en manque.
 export async function preparerCouleurs(donnees, mots, langue, annee) {
   if (!donnees.couleurs) return null;
   const vehicules = [];
-  const candidats = mots.filter((m) => m.ind.type === 'image' && m.ind.src.endsWith('.svg') && article(m.mot));
+  const candidats = mots.filter((m) => m.ind.type === 'image' && m.ind.src.endsWith('.svg') && debutPhrase(m, langue));
   await Promise.all(candidats.map(async (m) => {
     try {
       const svg = await chargerTexte(m.ind.src);
@@ -71,7 +81,7 @@ function dessin(vehicule, fond) {
 
 function question(q, ctx, rang, total, fin) {
   const { langue, dossier } = ctx;
-  const art = article(q.vehicule.mot);
+  const { debut, verbe } = debutPhrase(q.vehicule, langue);
   const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('crayon'), 'Complète la phrase.');
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const av = avatar('neutre');
@@ -138,7 +148,7 @@ function question(q, ctx, rang, total, fin) {
   const zone = el('div', { class: 'exercice ex-couleurs' },
     el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
     el('div', { class: 'enonce' }, dessin(q.vehicule, q.couleur.fond)),
-    el('p', { class: 'phrase', lang: langue }, `${art[0].toUpperCase()}${art.slice(1)} `, trous[0], ' is ', trous[1], '.'),
+    el('p', { class: 'phrase', lang: langue }, `${debut} `, trous[0], ` ${verbe} `, trous[1], '.'),
     ...blocs, message, ecoute, suite);
   zone.titre = titre;
   zone.suite = suite;

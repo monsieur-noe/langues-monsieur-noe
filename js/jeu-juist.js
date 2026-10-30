@@ -1,11 +1,11 @@
 // Jeu « Juist of fout ? » (cahier 7.9) : une image, un mot entendu ; l'enfant dit s'ils vont ensemble.
 // Un seul essai par question (deux boutons), puis le bon mot est montré et joué. 8 questions.
-import { el, icone } from './outils.js?v=22778f70';
-import { cheminSon } from './donnees.js?v=22778f70';
-import { creerLecteur, arreter } from './audio.js?v=22778f70';
-import { visuel } from './cartes.js?v=22778f70';
-import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=22778f70';
-import { avatar } from './avatar.js?v=22778f70';
+import { el, icone } from './outils.js?v=491f0158';
+import { cheminSon } from './donnees.js?v=491f0158';
+import { creerLecteur, arreter } from './audio.js?v=491f0158';
+import { visuel } from './cartes.js?v=491f0158';
+import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=491f0158';
+import { avatar } from './avatar.js?v=491f0158';
 
 const NOMBRE = 8;
 const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
@@ -88,6 +88,7 @@ export default {
   id: 'juist-of-fout',
   nom: 'Juist of fout ?',
   lang: 'nl',
+  anglais: 'True or false?',
   icone: 'pouce',
   // Au moins 4 mots avec un indice visuel (dessin, couleur, chiffre) et un son.
   possible: (contenu) => avecImageEtSon(contenu).length >= 4,

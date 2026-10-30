@@ -1,10 +1,10 @@
 // Jeu « Les phrases en désordre » (cahier 7.9) : les mots d'une phrase sont mélangés sur de gros boutons ;
 // l'enfant les touche un par un pour les ranger sur une ligne (toucher un mot de la ligne le renvoie en bas).
 // Phrase complète : son enregistrement à écouter pour vérifier ; si l'ordre n'est pas bon, on réessaie.
-import { el } from './outils.js?v=22778f70';
-import { cheminSon } from './donnees.js?v=22778f70';
-import { melanger } from './exercices.js?v=22778f70';
-import { serieOrdre } from './ordre.js?v=22778f70';
+import { el } from './outils.js?v=491f0158';
+import { cheminSon } from './donnees.js?v=491f0158';
+import { melanger } from './exercices.js?v=491f0158';
+import { serieOrdre } from './ordre.js?v=491f0158';
 
 const MAX_MOTS = 5;
 const MAX_PHRASES = 6;

@@ -1,0 +1,46 @@
+# Chapitre 1 (anglais, P3) : Introduce yourself (se présenter, les nombres de 0 à 10)
+# Version anglaise du chapitre néerlandais P3 « Zich voorstellen » (PAS la version P5).
+# Anglais britannique.
+# BROUILLON, comme le chapitre néerlandais : nombres, dictées et piste seulement.
+
+titre: Introduce yourself
+# Même monstre et même décor que Zich voorstellen.
+boss: Bla-Bla le Bavard
+arene: presentation
+
+[mots]
+# id | mot | français | indice
+# POUR CLAUDE CODE : ces 11 sons existent déjà dans le chapitre anglais Birthday
+# (mêmes ids, découpés de numbers-0-10.m4a). Réutilise-les, rien à enregistrer.
+zero | zero | zéro | texte:0
+un | one | un | texte:1
+deux | two | deux | texte:2
+trois | three | trois | texte:3
+quatre | four | quatre | texte:4
+cinq | five | cinq | texte:5
+six | six | six | texte:6
+sept | seven | sept | texte:7
+huit | eight | huit | texte:8
+neuf | nine | neuf | texte:9
+dix | ten | dix | texte:10
+
+[pistes]
+# id | titre | texte | français
+savoir-se-presenter-en | Savoir se présenter | Hello! I am Thomas and I am 8 years old. I live in Charleroi. I am a boy (or girl) and I am in Year 3. | Bonjour ! Je suis Thomas et j'ai 8 ans. J'habite à Charleroi. Je suis un garçon (ou une fille) et je suis en 3e primaire.
+
+[dictees]
+# id | titre | texte | français
+# Noé lit chiffre par chiffre ; un seul fichier par dictée, jamais découpé.
+# Sons reçus le 2026-10-30 (dossier audio/), ids avec « -en » choisis par Noé.
+dictee-1-en | Dictée 1 | 58321 / 04796 / 72164 / 39608 / 81537
+dictee-2-en | Dictée 2 | 26490 / 73815 / 05183 / 94627 / 31075
+dictee-3-en | Dictée 3 | 62941 / 08532 / 47196 / 15380 / 82754
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus (un nombre du chapitre)
+# Les phrases sont exactement celles de la piste anglaise.
+presenter-1 | Hello! / I / am / Thomas. | savoir-se-presenter-en | four
+presenter-2 | I / am / 8 / years / old. | savoir-se-presenter-en | two
+presenter-3 | I / live / in / Charleroi. | savoir-se-presenter-en | three
+presenter-4 | I / am / a boy (or girl). | savoir-se-presenter-en | seven
+presenter-5 | I / am / in / Year / 3. | savoir-se-presenter-en | five

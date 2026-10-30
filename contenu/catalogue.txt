@@ -17,3 +17,11 @@ nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
 nl | p3 | uiterlijk | 6 | Het uiterlijk
 nl | p3 | herhaling | 7 | Herhaling | révision
 nl | p4 | weer | 7 | Het weer
+
+en | p3 | introduce-yourself | 1 | Introduce yourself
+en | p3 | colours-en | 2 | Colours
+en | p3 | transport-en | 3 | Means of transport
+en | p3 | birthday | 4 | Birthday
+en | p3 | school-en | 5 | At school
+en | p3 | appearance-en | 6 | Appearance
+en | p3 | revision-en | 7 | Revision | révision

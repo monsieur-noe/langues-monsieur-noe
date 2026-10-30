@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=22778f70';
-import { creerLecteur, arreter } from './audio.js?v=22778f70';
-import { chercherFichiers, visuel } from './cartes.js?v=22778f70';
-import { positionReponse, cheminSon } from './donnees.js?v=22778f70';
-import { avatar, chargerAvatar } from './avatar.js?v=22778f70';
-import { serieOrdre } from './ordre.js?v=22778f70';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=22778f70';
+import { el, icone } from './outils.js?v=491f0158';
+import { creerLecteur, arreter } from './audio.js?v=491f0158';
+import { chercherFichiers, visuel } from './cartes.js?v=491f0158';
+import { positionReponse, cheminSon } from './donnees.js?v=491f0158';
+import { avatar, chargerAvatar } from './avatar.js?v=491f0158';
+import { serieOrdre } from './ordre.js?v=491f0158';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=491f0158';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -426,15 +426,19 @@ function dictee(d, ctx) {
 
 // Dictée de dates (ligne « id | titre | dates: ») : un jour, un nombre de 1 à 31 et un mois du chapitre,
 // tirés au hasard et joués à la suite. Seuls les mots qui ont leur son servent ; jamais de « 31 februari ».
-const JOURS = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag'];
-const MOIS = { januari: 31, februari: 29, maart: 31, april: 30, mei: 31, juni: 30, juli: 31, augustus: 31, september: 30, oktober: 31, november: 30, december: 31 };
-const valeur = (m) => Number(m.image.slice(6)); // « texte:12 » -> 12
+// Un chapitre qui a des ordinaux (anglais, texte:1st à texte:31st) les emploie à la place des nombres.
+const JOURS = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag',
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const MOIS = { januari: 31, februari: 29, maart: 31, april: 30, mei: 31, juni: 30, juli: 31, augustus: 31, september: 30, oktober: 31, november: 30, december: 31,
+  January: 31, February: 29, March: 31, April: 30, May: 31, June: 30, July: 31, August: 31, September: 30, October: 31, November: 30, December: 31 };
+const valeur = (m) => parseInt(m.image.slice(6), 10); // « texte:12 » -> 12, « texte:3rd » -> 3
 export function piecesDates(mots) {
   const avecSon = mots.filter((m) => m.son);
+  const ordinaux = avecSon.filter((m) => /^texte:([1-9]|[12]\d|3[01])(st|nd|rd|th)$/.test(m.image));
   return {
     jours: avecSon.filter((m) => JOURS.includes(m.mot)),
     mois: avecSon.filter((m) => MOIS[m.mot]),
-    nombres: avecSon.filter((m) => /^texte:([1-9]|[12]\d|3[01])$/.test(m.image)),
+    nombres: ordinaux.length ? ordinaux : avecSon.filter((m) => /^texte:([1-9]|[12]\d|3[01])$/.test(m.image)),
   };
 }
 export const datesPossibles = ({ jours, mois, nombres }) => jours.length > 0 && mois.length > 0 && nombres.length > 0;
@@ -458,7 +462,7 @@ function dicteeDates(d, ctx) {
       creerLecteur(date.map((m) => cheminSon(m, ctx.dossier)), { nom: 'la date', avecBarre: false }),
       el('details', { class: 'traduction' },
         el('summary', {}, icone('oeil'), 'Voir la correction'),
-        el('p', { lang: ctx.langue }, `${date[0].mot} ${valeur(date[1])} ${date[2].mot}`),
+        el('p', { lang: ctx.langue }, `${date[0].mot} ${date[1].image.slice(6)} ${date[2].mot}`),
         // Traduction, comme pour les autres dictées (« lundi 1er janvier » : « 1er » en français).
         el('p', { class: 'fr' }, `${date[0].francais} ${valeur(date[1]) === 1 ? '1er' : valeur(date[1])} ${date[2].francais}`)),
       autre);

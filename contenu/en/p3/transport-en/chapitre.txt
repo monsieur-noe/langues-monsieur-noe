@@ -1,0 +1,34 @@
+# Chapitre 3 (anglais) : Transport (les moyens de transport)
+# Version anglaise du chapitre néerlandais « Vervoermiddelen » (dossier vervoermiddelen).
+# Mêmes mots, mêmes phrases, mêmes exercices, traduits en anglais britannique.
+
+titre: Means of transport
+quizlet: https://quizlet.com/be/1228789630/means-of-transport-flash-cards/?i=7d7v8x&x=1jqt
+# Même monstre et même décor que Vervoermiddelen.
+boss: Tut-Tut
+arene: transports
+# couleurs: active l'exercice « Couleurs » (Je m'entraîne) avec les couleurs du chapitre indiqué.
+couleurs: colours-en
+
+[mots]
+# id | mot (sans article) | français | image
+# Choix de Noé (2026-10-29) : ids et noms de fichiers en anglais, mots sans « the ».
+# Les dessins sont ceux de Vervoermiddelen, avec leurs noms néerlandais.
+plane | plane | l'avion | vliegtuig.svg
+on-foot | on foot | à pied | te-voet.svg
+bus | bus | le bus | bus.svg
+train | train | le train | trein.svg
+bicycle | bicycle | le vélo | fiets.svg
+taxi | taxi | le taxi | taxi.svg
+boat | boat | le bateau | boot.svg
+car | car | la voiture | auto.svg
+metro | metro | le métro | metro.svg
+motorcycle | motorcycle | la moto | motor.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Pas de texte à trous, comme dans Vervoermiddelen.
+# Choix de Noé (2026-10-29) : la 2e phrase garde les « ... », l'enfant complète avec son moyen
+# de transport. C'est pourquoi ce chapitre n'a pas de « Mots en ordre ».
+transport-p1 | How do you go to school? | Comment vas-tu à l'école ?
+transport-p2 | I go to school... | Je vais à l'école en vélo / à pied.

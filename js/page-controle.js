@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=22778f70';
-import { chercherFichiers, cheminImage } from './cartes.js?v=22778f70';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=22778f70';
-import { el } from './outils.js?v=22778f70';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=22778f70';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=491f0158';
+import { chercherFichiers, cheminImage } from './cartes.js?v=491f0158';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=491f0158';
+import { el } from './outils.js?v=491f0158';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=491f0158';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };
@@ -137,7 +137,8 @@ async function controlerChapitre(c) {
   const n = c.annee === 'p3' ? 3 : 4;
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
   const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p) }));
-  const manque = variantesManquantes(disponibles(mots, phrases, n), mots, phrases, n);
+  const manque = variantesManquantes(disponibles(mots, phrases, n), mots, phrases, n)
+    .filter((m) => c.langue === 'nl' || !m.nom.includes('De ou het')); // pas de sens hors du néerlandais
   const aCorriger = manque.filter((m) => !m.normal);
   const detail = manque.map((m) => `${m.nom} : ${m.message}`);
   constats.push(aCorriger.length

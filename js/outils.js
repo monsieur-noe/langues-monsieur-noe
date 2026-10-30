@@ -2,8 +2,8 @@
 
 // Langues connues du site. Une langue sans chapitre au catalogue s'affiche « Bientôt ».
 export const LANGUES = [
-  { code: 'nl', nom: 'Nederlands', bulle: 'Hallo!', drapeau: 'drapeau-nl' },
-  { code: 'en', nom: 'English', bulle: 'Hello!', drapeau: 'drapeau-gb' },
+  { code: 'nl', nom: 'Nederlands', francais: 'Néerlandais', bulle: 'Hallo!', drapeau: 'drapeau-nl' },
+  { code: 'en', nom: 'English', francais: 'Anglais', bulle: 'Hello!', drapeau: 'drapeau-gb' },
 ];
 
 // Lit un paramètre de l'adresse (?langue=nl&annee=p3…). Valeur douteuse = absente.

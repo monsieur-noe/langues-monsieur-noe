@@ -1,10 +1,10 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone } from './outils.js?v=22778f70';
-import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=22778f70';
-import { creerLecteur, arreter } from './audio.js?v=22778f70';
-import { melanger } from './exercices.js?v=22778f70';
+import { el, icone, LANGUES } from './outils.js?v=491f0158';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=491f0158';
+import { creerLecteur, arreter } from './audio.js?v=491f0158';
+import { melanger } from './exercices.js?v=491f0158';
 
 export function cheminImage(mot, dossier) {
   return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;
@@ -103,14 +103,14 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
 }
 
 // Les deux sens de révision, gardés dans l'adresse (?sens=indice), comme les rubriques.
-function choixSens(indiceDabord, avecVisuel) {
+function choixSens(indiceDabord, avecVisuel, langue) {
   const lien = (sens, nom, ic) => {
     const params = new URLSearchParams(location.search);
     if (sens) params.set('sens', sens); else params.delete('sens');
     return el('a', { class: 'seg', href: `?${params}`, 'aria-current': (sens === 'indice') === indiceDabord && 'page' }, icone(ic), nom);
   };
   return el('nav', { class: 'segments sens', 'aria-label': 'Sens des cartes' },
-    lien('', 'Néerlandais d\'abord', 'bulle'),
+    lien('', `${LANGUES.find((l) => l.code === langue).francais} d'abord`, 'bulle'),
     lien('indice', avecVisuel ? 'Image d\'abord' : 'Français d\'abord', avecVisuel ? 'image' : 'oeil'));
 }
 
@@ -183,7 +183,7 @@ export async function afficherDecouvre(conteneur, donnees, dossier, langue, indi
   const actif = !listes.length || demandee === 'tout' ? 'tout' : (listes[demandee - 1] ? demandee : '1');
   const dansListe = (x) => actif === 'tout' || x.liste === listes[actif - 1];
   if (mots.length) {
-    parties.push(choixSens(indiceDabord, indices.some((i) => i.type !== 'francais')));
+    parties.push(choixSens(indiceDabord, indices.some((i) => i.type !== 'francais'), langue));
     const garder = mots.map(dansListe);
     if (listes.length) parties.push(choixListe(listes, actif));
     parties.push(cartes(mots.filter((_, k) => garder[k]), indices.filter((_, k) => garder[k]), dossier, langue, presents, indiceDabord));

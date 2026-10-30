@@ -1,0 +1,97 @@
+# Chapitre 6 (anglais) : Appearance (les vêtements et l'apparence)
+# Version anglaise du chapitre néerlandais « Het uiterlijk » (dossier uiterlijk) :
+# mêmes mots, mêmes descriptions, mêmes exercices, traduits en anglais britannique.
+
+titre: Appearance
+
+# Les 2 listes Quizlet du chapitre.
+quizlet: Les vêtements | https://quizlet.com/be/1229295482/vetements-anglais-flash-cards/
+quizlet: L'apparence | https://quizlet.com/be/1228794985/vetements-anglais-flash-cards/
+boss: Chaussette-Chipie
+arene: apparence
+
+[mots]
+# id | mot | français | image (facultatif)
+# Les dessins (images/<id>.svg) sont ceux de Het uiterlijk, copiés sous les noms anglais.
+# Deux listes de vocabulaire : « Les vêtements » et « L'apparence ».
+
+liste: Les vêtements
+cap | cap | la casquette | cap.svg
+boots | boots | les bottes | boots.svg
+skirt | skirt | la jupe | skirt.svg
+shoes | shoes | les chaussures | shoes.svg
+shorts | shorts | le short | shorts.svg
+trousers | trousers | le pantalon | trousers.svg
+jacket | jacket | la veste | jacket.svg
+t-shirt | T-shirt | le t-shirt | t-shirt.svg
+socks | socks | les chaussettes | socks.svg
+shirt | shirt | la chemise | shirt.svg
+dress | dress | la robe | dress.svg
+scarf | scarf | l'écharpe | scarf.svg
+jumper | jumper | le pull | jumper.svg
+
+liste: L'apparence
+chubby | chubby | fort | chubby.svg
+slim | slim | mince | slim.svg
+glasses | glasses | les lunettes | glasses.svg
+tall | tall | grand | tall.svg
+short | short | petit | short.svg
+blond-hair | blond hair | les cheveux blonds | blond-hair.svg
+short-hair | short hair | les cheveux courts | short-hair.svg
+long-hair | long hair | les cheveux longs | long-hair.svg
+brown-hair | brown hair | les cheveux bruns | brown-hair.svg
+red-hair | red hair | les cheveux roux | red-hair.svg
+black-hair | black hair | les cheveux noirs | black-hair.svg
+curly-hair | curly hair | les cheveux bouclés | curly-hair.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Les quatre mêmes descriptions de personnes que dans Het uiterlijk (a, b, c, d),
+# avec seulement les mots du chapitre et les couleurs.
+# Ids préfixés par « appearance- » pour ne pas confondre avec les sons du chapitre néerlandais.
+
+# Description A
+appearance-a1 | He is tall and slim. | Il est grand et mince. | tall
+appearance-a2 | He has short brown hair. | Il a des cheveux bruns et courts. | brown
+appearance-a3 | He wears glasses. | Il porte des lunettes. | glasses
+appearance-a4 | He wears a red jumper. | Il porte un pull rouge. | jumper
+appearance-a5 | His trousers are blue. | Son pantalon est bleu. | trousers
+
+# Description B
+appearance-b1 | She is short. | Elle est petite. | short
+appearance-b2 | She has long blond hair. | Elle a des cheveux blonds et longs. | long
+appearance-b3 | She wears a yellow dress. | Elle porte une robe jaune. | dress
+appearance-b4 | Her shoes are white. | Ses chaussures sont blanches. | shoes
+appearance-b5 | She wears a pink scarf. | Elle porte une écharpe rose. | scarf
+
+# Description C
+appearance-c1 | He is short and chubby. | Il est petit et fort. | chubby
+appearance-c2 | He has curly black hair. | Il a des cheveux noirs et bouclés. | curly
+appearance-c3 | He wears a green cap. | Il porte une casquette verte. | cap
+appearance-c4 | His T-shirt is orange. | Son t-shirt est orange. | T-shirt
+appearance-c5 | He wears blue shorts. | Il porte un short bleu. | shorts
+
+# Description D
+appearance-d1 | She is tall. | Elle est grande. | tall
+appearance-d2 | She has short red hair. | Elle a des cheveux roux et courts. | red
+appearance-d3 | She wears a purple skirt. | Elle porte une jupe mauve. | skirt
+appearance-d4 | She wears grey socks. | Elle porte des chaussettes grises. | socks
+appearance-d5 | Her jacket is black. | Sa veste est noire. | jacket
+
+[descriptions]
+# id | texte de la description (« / » = nouvelle phrase) | français
+# Jeu « Qui est-ce ? », le même que dans Het uiterlijk.
+appearance-a | He is tall and slim. / He has short brown hair. / He wears glasses. / He wears a red jumper. / His trousers are blue. | Il est grand et mince. Il a des cheveux bruns et courts. Il porte des lunettes. Il porte un pull rouge. Son pantalon est bleu.
+appearance-b | She is short. / She has long blond hair. / She wears a yellow dress. / Her shoes are white. / She wears a pink scarf. | Elle est petite. Elle a des cheveux blonds et longs. Elle porte une robe jaune. Ses chaussures sont blanches. Elle porte une écharpe rose.
+appearance-c | He is short and chubby. / He has curly black hair. / He wears a green cap. / His T-shirt is orange. / He wears blue shorts. | Il est petit et fort. Il a des cheveux noirs et bouclés. Il porte une casquette verte. Son t-shirt est orange. Il porte un short bleu.
+appearance-d | She is tall. / She has short red hair. / She wears a purple skirt. / She wears grey socks. / Her jacket is black. | Elle est grande. Elle a des cheveux roux et courts. Elle porte une jupe mauve. Elle porte des chaussettes grises. Sa veste est noire.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Intrus : un mot du chapitre, qui ne forme pas une autre phrase correcte (voir consignes-claude-code.md).
+order-1 | He / is / tall / and / slim. | appearance-a1 | dress
+order-2 | She / has / long / blond / hair. | appearance-b2 | skirt
+order-3 | She / wears / a / yellow / dress. | appearance-b3 | chubby
+order-4 | He / has / curly / black / hair. | appearance-c2 | jumper
+order-5 | He / wears / a / green / cap. | appearance-c3 | tall
+order-6 | She / wears / a / purple / skirt. | appearance-d3 | slim

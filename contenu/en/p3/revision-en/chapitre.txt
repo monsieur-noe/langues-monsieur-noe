@@ -1,0 +1,10 @@
+# Chapitre de révision de P3 (anglais, 2026-10-30) : il reprend tout le contenu des six chapitres
+# ci-dessous, sans rien copier. Sons et images restent dans le dossier de leur chapitre :
+# une correction faite là-bas arrive toute seule ici. Voir le modèle commenté contenu/_modele/chapitre.txt.
+
+titre: Revision
+reprend: introduce-yourself, colours-en, transport-en, birthday, school-en, appearance-en
+couleurs: colours-en
+boss: Bouquin-Glouton
+arene: revision1
+

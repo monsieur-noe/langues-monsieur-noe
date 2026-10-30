@@ -1,0 +1,203 @@
+# Chapitre 4 : Birthday (les mois, les jours, les nombres de 0 à 100, les dates)
+# Version anglaise du chapitre néerlandais « Verjaardag ». Anglais britannique.
+
+titre: Birthday
+# Même monstre et même décor que Verjaardag.
+boss: Croque-Gâteau
+arene: anniversaire
+
+# Les 4 listes Quizlet du chapitre.
+quizlet: Les jours de la semaine | https://quizlet.com/be/1228792709/jours-de-la-semaine-anglais-flash-cards/
+quizlet: Les mois | https://quizlet.com/be/1228793036/mois-de-lannee-anglais-flash-cards/
+quizlet: Les nombres de 0 à 100 | https://quizlet.com/be/1228793355/nombres-0-100-anglais-flash-cards/
+quizlet: Les dates (1st à 31st) | https://quizlet.com/be/1228793763/dates-1-31-anglais-flash-cards/
+
+[mots]
+# id | mot | français | indice (facultatif)
+
+# --- Les mois ---
+liste: Les mois
+january | January | janvier
+february | February | février
+march | March | mars
+april | April | avril
+may | May | mai
+june | June | juin
+july | July | juillet
+august | August | août
+september | September | septembre
+october | October | octobre
+november | November | novembre
+december | December | décembre
+
+# --- Les jours ---
+liste: Les jours de la semaine
+monday | Monday | lundi
+tuesday | Tuesday | mardi
+wednesday | Wednesday | mercredi
+thursday | Thursday | jeudi
+friday | Friday | vendredi
+saturday | Saturday | samedi
+sunday | Sunday | dimanche
+
+# --- Les nombres de 0 à 100 ---
+liste: Les nombres de 0 à 100
+# Les id restent en français (comme dans Verjaardag), par facilité pour Noé.
+zero | zero | | texte:0
+un | one | | texte:1
+deux | two | | texte:2
+trois | three | | texte:3
+quatre | four | | texte:4
+cinq | five | | texte:5
+six | six | | texte:6
+sept | seven | | texte:7
+huit | eight | | texte:8
+neuf | nine | | texte:9
+dix | ten | | texte:10
+onze | eleven | | texte:11
+douze | twelve | | texte:12
+treize | thirteen | | texte:13
+quatorze | fourteen | | texte:14
+quinze | fifteen | | texte:15
+seize | sixteen | | texte:16
+dix-sept | seventeen | | texte:17
+dix-huit | eighteen | | texte:18
+dix-neuf | nineteen | | texte:19
+vingt | twenty | | texte:20
+vingt-et-un | twenty-one | | texte:21
+vingt-deux | twenty-two | | texte:22
+vingt-trois | twenty-three | | texte:23
+vingt-quatre | twenty-four | | texte:24
+vingt-cinq | twenty-five | | texte:25
+vingt-six | twenty-six | | texte:26
+vingt-sept | twenty-seven | | texte:27
+vingt-huit | twenty-eight | | texte:28
+vingt-neuf | twenty-nine | | texte:29
+trente | thirty | | texte:30
+trente-et-un | thirty-one | | texte:31
+trente-deux | thirty-two | | texte:32
+trente-trois | thirty-three | | texte:33
+trente-quatre | thirty-four | | texte:34
+trente-cinq | thirty-five | | texte:35
+trente-six | thirty-six | | texte:36
+trente-sept | thirty-seven | | texte:37
+trente-huit | thirty-eight | | texte:38
+trente-neuf | thirty-nine | | texte:39
+quarante | forty | | texte:40
+quarante-et-un | forty-one | | texte:41
+quarante-deux | forty-two | | texte:42
+quarante-trois | forty-three | | texte:43
+quarante-quatre | forty-four | | texte:44
+quarante-cinq | forty-five | | texte:45
+quarante-six | forty-six | | texte:46
+quarante-sept | forty-seven | | texte:47
+quarante-huit | forty-eight | | texte:48
+quarante-neuf | forty-nine | | texte:49
+cinquante | fifty | | texte:50
+cinquante-et-un | fifty-one | | texte:51
+cinquante-deux | fifty-two | | texte:52
+cinquante-trois | fifty-three | | texte:53
+cinquante-quatre | fifty-four | | texte:54
+cinquante-cinq | fifty-five | | texte:55
+cinquante-six | fifty-six | | texte:56
+cinquante-sept | fifty-seven | | texte:57
+cinquante-huit | fifty-eight | | texte:58
+cinquante-neuf | fifty-nine | | texte:59
+soixante | sixty | | texte:60
+soixante-et-un | sixty-one | | texte:61
+soixante-deux | sixty-two | | texte:62
+soixante-trois | sixty-three | | texte:63
+soixante-quatre | sixty-four | | texte:64
+soixante-cinq | sixty-five | | texte:65
+soixante-six | sixty-six | | texte:66
+soixante-sept | sixty-seven | | texte:67
+soixante-huit | sixty-eight | | texte:68
+soixante-neuf | sixty-nine | | texte:69
+septante | seventy | | texte:70
+septante-et-un | seventy-one | | texte:71
+septante-deux | seventy-two | | texte:72
+septante-trois | seventy-three | | texte:73
+septante-quatre | seventy-four | | texte:74
+septante-cinq | seventy-five | | texte:75
+septante-six | seventy-six | | texte:76
+septante-sept | seventy-seven | | texte:77
+septante-huit | seventy-eight | | texte:78
+septante-neuf | seventy-nine | | texte:79
+quatre-vingts | eighty | | texte:80
+quatre-vingt-un | eighty-one | | texte:81
+quatre-vingt-deux | eighty-two | | texte:82
+quatre-vingt-trois | eighty-three | | texte:83
+quatre-vingt-quatre | eighty-four | | texte:84
+quatre-vingt-cinq | eighty-five | | texte:85
+quatre-vingt-six | eighty-six | | texte:86
+quatre-vingt-sept | eighty-seven | | texte:87
+quatre-vingt-huit | eighty-eight | | texte:88
+quatre-vingt-neuf | eighty-nine | | texte:89
+nonante | ninety | | texte:90
+nonante-et-un | ninety-one | | texte:91
+nonante-deux | ninety-two | | texte:92
+nonante-trois | ninety-three | | texte:93
+nonante-quatre | ninety-four | | texte:94
+nonante-cinq | ninety-five | | texte:95
+nonante-six | ninety-six | | texte:96
+nonante-sept | ninety-seven | | texte:97
+nonante-huit | ninety-eight | | texte:98
+nonante-neuf | ninety-nine | | texte:99
+cent | one hundred | | texte:100
+
+# --- Les dates : les nombres ordinaux de 1st à 31st ---
+liste: Les dates
+# Ajouté par rapport à Verjaardag : en anglais, une date se dit avec « first, second, third... ».
+1st | first | | texte:1st
+2nd | second | | texte:2nd
+3rd | third | | texte:3rd
+4th | fourth | | texte:4th
+5th | fifth | | texte:5th
+6th | sixth | | texte:6th
+7th | seventh | | texte:7th
+8th | eighth | | texte:8th
+9th | ninth | | texte:9th
+10th | tenth | | texte:10th
+11th | eleventh | | texte:11th
+12th | twelfth | | texte:12th
+13th | thirteenth | | texte:13th
+14th | fourteenth | | texte:14th
+15th | fifteenth | | texte:15th
+16th | sixteenth | | texte:16th
+17th | seventeenth | | texte:17th
+18th | eighteenth | | texte:18th
+19th | nineteenth | | texte:19th
+20th | twentieth | | texte:20th
+21st | twenty-first | | texte:21st
+22nd | twenty-second | | texte:22nd
+23rd | twenty-third | | texte:23rd
+24th | twenty-fourth | | texte:24th
+25th | twenty-fifth | | texte:25th
+26th | twenty-sixth | | texte:26th
+27th | twenty-seventh | | texte:27th
+28th | twenty-eighth | | texte:28th
+29th | twenty-ninth | | texte:29th
+30th | thirtieth | | texte:30th
+31st | thirty-first | | texte:31st
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+birthday-p1 | When is your birthday? | Quand est ton anniversaire ? | When | Where, Who
+birthday-p2 | My birthday is in ... | Mon anniversaire est en ...
+birthday-p3 | My favourite day is Saturday. | Mon jour préféré est le samedi. | Saturday
+birthday-p4 | My favourite month is July. | Mon mois préféré est juillet. | July
+
+[dictees]
+# Même dictée de dates au hasard que dans Verjaardag.
+# Le site colle 3 sons déjà enregistrés : un jour (monday.m4a...) + une date de 1st à 31st (1st.m4a... 31st.m4a)
+# + un mois (january.m4a...). Il ne tire que des dates qui existent (pas de 31st February).
+# La correction s'affiche ensuite, écrite comme « Monday 3rd February ».
+# id | titre | texte | français
+dates | Les dates | dates:
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+days | Monday / Tuesday / Wednesday / Thursday / Friday / Saturday / Sunday | | July
+months-1 | January / February / March / April / May / June | | Monday
+months-2 | July / August / September / October / November / December | | Sunday
+sentence-1 | When / is / your / birthday? | birthday-p1 | March

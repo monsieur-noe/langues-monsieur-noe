@@ -1,0 +1,29 @@
+# Chapitre 2 (anglais) : Colours (les couleurs)
+# Version anglaise du chapitre néerlandais « Kleuren » (dossier kleuren).
+# Mêmes mots et mêmes phrases, traduits en anglais britannique (grey, favourite, colour).
+
+titre: Colours
+
+# Même monstre et même décor que Kleuren. Pas de lien Quizlet (décision de l'enseignant).
+boss: Gribouille
+arene: couleurs
+
+[mots]
+# id | mot | français | indice
+red | red | rouge | couleur:red
+orange | orange | orange | couleur:orange
+pink | pink | rose | couleur:pink
+yellow | yellow | jaune | couleur:yellow
+black | black | noir | couleur:black
+green | green | vert | couleur:green
+purple | purple | mauve | couleur:purple
+blue | blue | bleu | couleur:blue
+white | white | blanc | couleur:white
+grey | grey | gris | couleur:gray
+brown | brown | brun | couleur:brown
+
+[phrases]
+# id | phrase | français
+# Pas de texte à trous pour l'instant, comme dans Kleuren.
+colours-question | What is your favourite colour? | Quelle est ta couleur préférée ?
+colours-answer | My favourite colour is ... | Ma couleur préférée est ...

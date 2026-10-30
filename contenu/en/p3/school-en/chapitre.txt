@@ -1,0 +1,70 @@
+# Chapitre 5 (anglais) : At school (le matériel scolaire et la classe)
+# Version anglaise du chapitre néerlandais « Schoolmateriaal » (dossier schoolmateriaal).
+# Mêmes mots, mêmes phrases, mêmes exercices, traduits en anglais britannique.
+
+titre: At school
+
+# Les 2 listes Quizlet du chapitre.
+quizlet: Le matériel scolaire | https://quizlet.com/be/1228790607/materiel-scolaire-anglais-flash-cards/
+quizlet: Le mobilier scolaire | https://quizlet.com/be/1228791652/mobilier-scolaire-anglais-flash-cards/
+
+# Exercice « Couleurs » (« The schoolbag is red. »), comme dans Schoolmateriaal.
+# Les couleurs viennent du chapitre anglais des couleurs (dossier colours-en).
+couleurs: colours-en
+boss: Trousse-Trouille
+arene: materiel-scolaire
+
+[mots]
+# id | mot | français | image (facultatif)
+# Mêmes dessins que Schoolmateriaal, copiés dans images/ sous les noms anglais.
+# Pour l'exercice « Couleurs » : un français en « les » (« les ciseaux ») donne « The scissors are red. »
+# Deux listes de vocabulaire : « Le matériel scolaire » et « La classe ».
+
+liste: Le matériel scolaire
+book | book | le livre | book.svg
+binder | binder | le classeur | binder.svg
+pen | pen | le stylo | pen.svg
+schoolbag | schoolbag | le cartable | schoolbag.svg
+pencil-case | pencil case | le plumier | pencil-case.svg
+scissors | scissors | les ciseaux | scissors.svg
+ruler | ruler | la latte | ruler.svg
+glue-stick | glue stick | le bâton de colle | glue-stick.svg
+marker | marker | le marqueur | marker.svg
+pencil-sharpener | pencil sharpener | le taille-crayon | pencil-sharpener.svg
+rubber | rubber | la gomme | rubber.svg
+pencil | pencil | le crayon | pencil.svg
+coloured-pencil | coloured pencil | le crayon de couleur | coloured-pencil.svg
+
+liste: La classe
+cupboard | cupboard | l'armoire | cupboard.svg
+desk | desk | le banc | desk.svg
+teachers-desk | teacher's desk | le bureau | teachers-desk.svg
+chair | chair | la chaise | chair.svg
+classroom | classroom | la classe | classroom.svg
+school | school | l'école | school.svg
+window | window | la fenêtre | window.svg
+clock | clock | l'horloge | clock.svg
+door | door | la porte | door.svg
+coat-rack | coat rack | le portemanteau | coat-rack.svg
+table | table | la table | table.svg
+board | board | le tableau | board.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+school-en-p1 | Can I have your pencil sharpener? | Je peux avoir ton taille-crayon ? | pencil sharpener
+school-en-p2 | Can I have your scissors? | Je peux avoir tes ciseaux ? | scissors
+school-en-p3 | My schoolbag is blue. | Mon cartable est bleu. | schoolbag
+school-en-p4 | My pencil case is big. | Mon plumier est grand. | pencil case
+school-en-p5 | I have a red rubber. | J'ai une gomme rouge. | rubber
+school-en-p6 | My ruler is yellow. | Ma latte est jaune. | ruler
+school-en-p7 | The board is green. | Le tableau est vert. | board
+school-en-p8 | There is a cupboard. | Il y a une armoire. | cupboard
+school-en-p9 | There are three windows. | Il y a trois fenêtres. | are | is
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+sentence-1 | Can / I / have / your / pencil sharpener? | school-en-p1 | scissors
+sentence-2 | My / schoolbag / is / blue. | school-en-p3 | pencil case
+sentence-3 | I / have / a / red / rubber. | school-en-p5 | ruler
+sentence-4 | There / is / a / cupboard. | school-en-p8 | chair
+sentence-5 | There / are / three / windows. | school-en-p9 | door
