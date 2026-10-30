@@ -1,7 +1,7 @@
 # Liste de tous les chapitres du site.
 # Une ligne par chapitre : langue | année | chapitre | ordre | titre affiché | vignette (facultative)
 #   langue  : nl ou en
-#   année   : p3 ou p4
+#   année   : p3, p4, p5 ou p6
 #   chapitre: le nom du dossier du chapitre (minuscules, sans accent, tirets)
 #   ordre   : la place du chapitre dans la liste (1, 2, 3…)
 #   vignette: une image du dossier images/ du chapitre (facultatif) ;
@@ -17,6 +17,7 @@ nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
 nl | p3 | uiterlijk | 6 | Het uiterlijk
 nl | p3 | herhaling | 7 | Herhaling | révision
 nl | p4 | weer | 7 | Het weer
+nl | p5 | zich-voorstellen-p5 | 1 | Zich voorstellen
 
 en | p3 | introduce-yourself | 1 | Introduce yourself
 en | p3 | colours-en | 2 | Colours

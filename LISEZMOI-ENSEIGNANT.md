@@ -164,7 +164,7 @@ Faites-le avec **GitHub Desktop** (partie 2 B) : un chapitre compte souvent plus
 5. Créez le dossier `kleren/audio` et copiez-y les sons, un fichier par mot, nommé comme l'identifiant : `broek.m4a`, `hemd.m4a`…
 6. Ouvrez `contenu/catalogue.txt` et ajoutez une ligne à la fin :
    `nl | p3 | kleren | 6 | Kleren`
-   Dans l'ordre : langue (`nl`), année (`p3` ou `p4`), nom du dossier (exactement le même qu'à l'étape 2), place dans la liste, titre affiché.
+   Dans l'ordre : langue (`nl`), année (`p3`, `p4`, `p5` ou `p6`), nom du dossier (exactement le même qu'à l'étape 2), place dans la liste, titre affiché.
 7. GitHub Desktop : **« Commit to main »**, puis **« Push origin »**.
 8. Règle d'or : 5 minutes, puis la page de contrôle. Ensuite, ouvrez le chapitre sur le site et essayez toutes les rubriques.
 

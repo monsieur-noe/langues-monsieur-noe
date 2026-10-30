@@ -1,0 +1,55 @@
+# Chapitre P5 : Zich voorstellen (version avancée du chapitre P3), premier chapitre de P5.
+# Source : fiche « Zich voorstellen 5-6e », pages 2-3 (phrases modèles) et 4-5 (pays et langues).
+
+titre: Zich voorstellen
+
+quizlet: https://quizlet.com/be/1228053527/se-presenter-p5-flash-cards/
+# Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.png et boss-difficile.png dans ce dossier.
+boss: Polyglotron
+arene: aeroport
+
+[mots]
+# id | mot | français | image (facultatif)
+# Les drapeaux (images/<id>.svg) sont de Claude (demande de l'enseignant du 2026-10-30), avec « land » ou « taal » écrit dessous.
+# Pays et langues n'ont pas d'article : ils ne vont pas dans « De ou het ? ». Pour en changer un, dépose un fichier du même nom.
+
+liste: Les pays
+belgie | België | la Belgique | belgie.svg
+frankrijk | Frankrijk | la France | frankrijk.svg
+nederland | Nederland | les Pays-Bas | nederland.svg
+spanje | Spanje | l'Espagne | spanje.svg
+duitsland | Duitsland | l'Allemagne | duitsland.svg
+china | China | la Chine | china.svg
+verenigd-koninkrijk | het Verenigd Koninkrijk | le Royaume-Uni | verenigd-koninkrijk.svg
+
+liste: Les langues
+frans | Frans | le français | frans.svg
+nederlands | Nederlands | le néerlandais | nederlands.svg
+spaans | Spaans | l'espagnol | spaans.svg
+duits | Duits | l'allemand | duits.svg
+chinees | Chinees | le chinois | chinees.svg
+engels | Engels | l'anglais | engels.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Phrases modèles sans réponse personnelle (« ... » = l'élève complète à l'oral).
+# « cartes: » : les phrases suivantes sont les cartes de cette liste dans « Je découvre » (devant la phrase et la voix, au dos le français).
+# Avec leurs « ... », elles ne vont pas dans le jeu « Les phrases en désordre ». Les autres exercices restent.
+cartes: Je me présente
+voorstel-p1 | Ik heet ... | Je m'appelle ... | heet | spreek, leer
+voorstel-p2 | Mijn familienaam is ... | Mon nom de famille est ... | familienaam | voornaam, verjaardag
+voorstel-p3 | Ik ben ... jaar oud. | J'ai ... ans. | jaar | dag, broers
+voorstel-p4 | Ik ben een jongen/meisje. | Je suis un garçon / une fille. | ben | heb, spreek
+voorstel-p5 | Ik ben geboren in ... | Je suis né(e) à / en ... | geboren | verjaar, spreek
+voorstel-p6 | Ik verjaar op ... | Mon anniversaire est le ... | verjaar | heet, leer
+voorstel-p7 | Ik spreek ... thuis. | Je parle ... à la maison. | thuis | school, jaar
+voorstel-p8 | Ik heb ... broers/zussen. | J'ai ... frères / sœurs. | heb | ben, heet
+voorstel-p9 | Ik leer Nederlands op school. | J'apprends le néerlandais à l'école. | leer | spreek, heet
+
+[ordre]
+# id | cases séparées par « / » | son à écouter à la fin | intrus
+zin-1 | Ik / spreek / ... / thuis. | voorstel-p7 | Spanje
+zin-2 | Ik / ben / geboren / in / ... | voorstel-p5 | Engels
+zin-3 | Ik / leer / Nederlands / op / school. | voorstel-p9 | België
+zin-4 | Ik / ben / ... / jaar / oud. | voorstel-p3 | China
+zin-5 | Ik / heb / ... / broers/zussen. | voorstel-p8 | Duits

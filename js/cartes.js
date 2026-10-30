@@ -1,10 +1,10 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone, LANGUES } from './outils.js?v=491f0158';
-import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=491f0158';
-import { creerLecteur, arreter } from './audio.js?v=491f0158';
-import { melanger } from './exercices.js?v=491f0158';
+import { el, icone, LANGUES } from './outils.js?v=85e87c78';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=85e87c78';
+import { creerLecteur, arreter } from './audio.js?v=85e87c78';
+import { melanger } from './exercices.js?v=85e87c78';
 
 export function cheminImage(mot, dossier) {
   return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;
@@ -171,7 +171,9 @@ export async function chercherFichiers(donnees, dossier, autres = []) {
 export async function afficherDecouvre(conteneur, donnees, dossier, langue, indiceDabord) {
   // Chapitre de révision (« reprend: ») : cartes et phrases de tous les chapitres mélangées (demande du 2026-10-28).
   const melange = (l) => (donnees.reprend?.length ? melanger(l) : l);
-  const [mots, liste] = [melange(donnees.mots), melange(donnees.phrases)];
+  // Phrases avec « cartes: » : cartes de leur liste, sans image, au lieu du bloc « Les phrases ».
+  const enCartes = donnees.phrases.filter((p) => p.carte).map((p) => ({ ...p, mot: p.phrase, image: '', liste: p.carte }));
+  const [mots, liste] = [melange([...donnees.mots, ...enCartes]), melange(donnees.phrases.filter((p) => !p.carte))];
   const { pistes } = donnees;
   const { presents, indices } = await chercherFichiers({ ...donnees, mots }, dossier);
 

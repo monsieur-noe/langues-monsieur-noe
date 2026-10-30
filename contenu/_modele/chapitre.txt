@@ -63,6 +63,8 @@ titre: Titre du chapitre
 
 [phrases]
 # id | phrase | français | mot à masquer (facultatif) | autres propositions (facultatif)
+# Cartes (facultatif) : une ligne « cartes: Je me présente » ; les phrases suivantes deviennent les cartes
+# de cette liste dans « Je découvre » (devant la phrase et sa voix, au dos le français).
 # Listes (facultatif) : une ligne « liste: » avec le nom exact d'une liste de [mots] ;
 # les phrases qui suivent s'affichent dans « Je découvre » avec cette liste.
 # Une phrase sans liste s'affiche avec toutes les listes.

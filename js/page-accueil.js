@@ -1,9 +1,9 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=491f0158';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=491f0158';
-import { avatar, chargerAvatar } from './avatar.js?v=491f0158';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=85e87c78';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=85e87c78';
+import { avatar, chargerAvatar } from './avatar.js?v=85e87c78';
 
 const langue = parametre('langue');
 const annee = parametre('annee');
@@ -75,8 +75,8 @@ async function afficherBienvenue() {
 
 function afficherAnnees(chapitres) {
   preparerEtape('Choisis ton année.', 'index.html', el('span', { lang: langue }, nomLangue));
-  // P3 et P4 toujours montrées ; une autre année (p5…) apparaît dès qu'elle est au catalogue.
-  const annees = [...new Set(['p3', 'p4', ...chapitres.filter((c) => c.langue === langue).map((c) => c.annee)])].sort();
+  // P3 à P6 toujours montrées (une année sans chapitre : « bientôt » dans les deux langues).
+  const annees = [...new Set(['p3', 'p4', 'p5', 'p6', ...chapitres.filter((c) => c.langue === langue).map((c) => c.annee)])].sort();
   montrer('annees', annees.map((a, i) => carte(
     chapitres.some((c) => c.langue === langue && c.annee === a) && `index.html?langue=${langue}&annee=${a}`,
     couleur(i + 2),

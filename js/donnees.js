@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=491f0158';
+import { LANGUES } from './outils.js?v=85e87c78';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -100,6 +100,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
   let liste = ''; // liste en cours dans [mots] ou [phrases] (ligne « liste: »), remise à zéro à chaque section
+  let carte = ''; // liste de cartes en cours dans [phrases] (ligne « cartes: »)
 
   for (const { num, texte: ligne } of lignesUtiles(texte)) {
     const titreSection = ligne.match(/^\[(.*)\]$/);
@@ -154,6 +155,12 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       }
       continue;
     }
+    // « cartes: Je me présente » dans [phrases] : les phrases suivantes sont les cartes de cette liste de « Je découvre » (demande du 2026-10-30).
+    const ligneCartes = section === 'phrases' && ligne.match(/^cartes\s*:\s*(.*)$/);
+    if (ligneCartes) {
+      carte = ligneCartes[1].trim();
+      continue;
+    }
 
     const [min, max, modele] = SECTIONS[section];
     const c = colonnes(ligne);
@@ -184,7 +191,8 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       continue;
     }
     // [ordre] : « / » sépare les cases ; ce qui est entre deux « / » forme une seule case.
-    const cases = section === 'ordre' ? c[1].split('/').map((x) => x.trim()).filter(Boolean) : [];
+    // Le « / » sans espaces reste dans la case (« broers/zussen. »).
+    const cases = section === 'ordre' ? c[1].split(/\s\/\s/).map((x) => x.trim()).filter(Boolean) : [];
     if (section === 'ordre' && cases.length < 2) {
       err(num, 'il faut au moins 2 cases, séparées par « / » (exemple : Ik / woon / in / Charleroi.).');
       continue;
@@ -204,7 +212,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
         err(num, `la réponse à masquer « ${reponse} » n'apparaît pas dans la phrase. Recopie-la exactement comme dans la phrase.`);
       }
       const propositions = autres ? autres.split(',').map((p) => p.trim()).filter(Boolean) : [];
-      resultat.phrases.push({ id, phrase, francais, reponse, propositions, liste, ligne: num });
+      resultat.phrases.push({ id, phrase, francais, reponse, propositions, liste, carte, ligne: num });
     } else if (section === 'pistes') {
       const [, titre, texteP = '', francais = ''] = c;
       resultat.pistes.push({ id, titre, texte: texteP, francais, ligne: num });

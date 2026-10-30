@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=491f0158';
-import { creerLecteur, arreter } from './audio.js?v=491f0158';
-import { chercherFichiers, visuel } from './cartes.js?v=491f0158';
-import { positionReponse, cheminSon } from './donnees.js?v=491f0158';
-import { avatar, chargerAvatar } from './avatar.js?v=491f0158';
-import { serieOrdre } from './ordre.js?v=491f0158';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=491f0158';
+import { el, icone } from './outils.js?v=85e87c78';
+import { creerLecteur, arreter } from './audio.js?v=85e87c78';
+import { chercherFichiers, visuel } from './cartes.js?v=85e87c78';
+import { positionReponse, cheminSon } from './donnees.js?v=85e87c78';
+import { avatar, chargerAvatar } from './avatar.js?v=85e87c78';
+import { serieOrdre } from './ordre.js?v=85e87c78';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=85e87c78';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -103,7 +103,8 @@ export function disponibles(mots, phrases, n) {
     'mot-image': images.length >= n ? images : [],
     // Écoute : on choisit parmi des images si assez de mots en ont, sinon parmi des mots écrits.
     ecoute: sonoresImages.length >= n ? sonoresImages : sonores.length >= n ? sonores : [],
-    trous: phrases.filter((p) => p.reponse).map((p) => ({ ...p, faux: fauxTrous(p, phrases) })).filter((p) => p.faux.length >= n - 1),
+    // Propositions écrites dans le fichier : 2 suffisent, même en P4 et après (3 choix, comme « Het is… »).
+    trous: phrases.filter((p) => p.reponse).map((p) => ({ ...p, faux: fauxTrous(p, phrases) })).filter((p) => p.faux.length >= (p.propositions.length ? 2 : n - 1)),
     'de-het': noms.length >= 4 ? noms : [],
   };
 }
