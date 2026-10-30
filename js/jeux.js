@@ -1,17 +1,18 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=b65db263';
-import { cheminSon } from './donnees.js?v=b65db263';
-import { chercherFichiers } from './cartes.js?v=b65db263';
-import { chargerAvatar } from './avatar.js?v=b65db263';
-import juist from './jeu-juist.js?v=b65db263';
-import loto from './jeu-loto.js?v=b65db263';
-import memory from './jeu-memory.js?v=b65db263';
-import oie, { oieDifficile } from './jeu-oie.js?v=b65db263';
-import phrases from './jeu-phrases.js?v=b65db263';
-import boss, { bossDifficile } from './jeu-boss.js?v=b65db263';
-import qui from './jeu-qui.js?v=b65db263';
+import { el, icone } from './outils.js?v=22778f70';
+import { cheminSon } from './donnees.js?v=22778f70';
+import { chercherFichiers } from './cartes.js?v=22778f70';
+import { chargerAvatar } from './avatar.js?v=22778f70';
+import { amorcer } from './musique.js?v=22778f70';
+import juist from './jeu-juist.js?v=22778f70';
+import loto from './jeu-loto.js?v=22778f70';
+import memory from './jeu-memory.js?v=22778f70';
+import oie, { oieDifficile } from './jeu-oie.js?v=22778f70';
+import phrases from './jeu-phrases.js?v=22778f70';
+import boss, { bossDifficile } from './jeu-boss.js?v=22778f70';
+import qui from './jeu-qui.js?v=22778f70';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
@@ -67,9 +68,21 @@ export async function afficherJeux(conteneur, contenu, jeu) {
   }
   conteneur.replaceChildren(
     el('h2', { class: 'consigne' }, icone('puzzle'), 'Choisis un jeu.'),
-    el('ul', { class: 'liste' }, ...possibles.map((j) => el('li', {},
-      el('a', { class: 'choix', href: lienJeu(j.id) },
+    el('ul', { class: 'liste' }, ...possibles.map((j) => {
+      const lien = el('a', { class: 'choix', href: lienJeu(j.id) },
         el('span', { class: 'num' }, icone(j.icone)),
         el('span', { class: 'titre', lang: j.lang }, j.nom),
-        el('span', { class: 'fleche' }, icone('droite')))))));
+        el('span', { class: 'fleche' }, icone('droite')));
+      // Combat : ouvert sans changer de page. Sur iPhone, un nouveau chargement perdrait ce toucher, et la musique attendrait le suivant.
+      if (j.pleinEcran) {
+        lien.addEventListener('click', (e) => {
+          e.preventDefault();
+          amorcer();
+          history.pushState(null, '', lienJeu(j.id));
+          addEventListener('popstate', () => location.reload(), { once: true }); // bouton « retour » du navigateur
+          afficherJeux(conteneur, contenu, j.id);
+        });
+      }
+      return el('li', {}, lien);
+    })));
 }

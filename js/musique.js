@@ -73,20 +73,54 @@ async function lancer() {
 // Au premier toucher sur la page, le navigateur permet le son : la musique demandée démarre alors.
 function debloquer() {
   ctx.resume().then(lancer);
+  if (piste) return;
+  // Un son vide pendant le toucher lui-même : sur iPhone, c'est lui qui ouvre vraiment la sortie du son.
+  const vide = ctx.createBufferSource();
+  vide.buffer = ctx.createBuffer(1, 1, 22050);
+  vide.connect(ctx.destination);
+  vide.start();
+}
+
+// Page cachée (autre onglet, écran éteint) : la musique se tait, et reprend au retour.
+// Fondu d'abord : un arrêt net fait un « biip » sur iPhone.
+function veille() {
+  if (document.hidden) {
+    if (piste) fondre(piste.gain, 0, 0.05);
+    setTimeout(() => document.hidden && ctx.suspend(), 80);
+  } else ctx.resume().then(() => piste && fondre(piste.gain, niveau(), 0.3));
+}
+
+// Lien du site touché pendant la musique : même fondu, puis départ.
+function quitter(e) {
+  const lien = e.target.closest('a[href]');
+  if (!piste || !lien || lien.target) return;
+  e.preventDefault();
+  eteindre(0.08);
+  setTimeout(() => { location.href = lien.href; }, 120);
+}
+
+function preparer() {
+  if (ctx) return;
+  // iPhone en mode silencieux : sans cela, la musique se tait jusqu'au premier son du lecteur (les voix, elles, passent).
+  // shortcut: iOS 16.3 et avant n'ont pas ce réglage, la musique y attend ce premier son ; à revoir si des familles s'en plaignent.
+  if (navigator.audioSession) navigator.audioSession.type = 'playback';
+  ctx = new AudioContext();
+  document.addEventListener('visibilitychange', veille);
+  addEventListener('click', quitter, true);
+  // Les gestes qui autorisent le son. Écoutés sans fin : sur iPhone, un doigt qui glisse ou qui se pose ne compte pas, il faut réessayer au suivant.
+  for (const geste of ['pointerup', 'pointerdown', 'touchend', 'click', 'keydown']) addEventListener(geste, debloquer);
+}
+
+// À appeler pendant le toucher qui ouvre le combat : la musique peut alors partir dès son début.
+export function amorcer() {
+  preparer();
+  debloquer();
 }
 
 // Joue la musique `nom` ; `direct` : à sa boucle, en fondu enchaîné avec la précédente (plus qu'un cœur).
 export function jouer(nom, direct = false) {
-  if (!ctx) {
-    // iPhone en mode silencieux : sans cela, la musique se tait jusqu'au premier son du lecteur (les voix, elles, passent).
-    // shortcut: iOS 16.3 et avant n'ont pas ce réglage, la musique y attend ce premier son ; à revoir si des familles s'en plaignent.
-    if (navigator.audioSession) navigator.audioSession.type = 'playback';
-    ctx = new AudioContext();
-    // Page cachée (autre onglet, écran éteint) : la musique se tait, et reprend au retour.
-    document.addEventListener('visibilitychange', () => (document.hidden ? ctx.suspend() : ctx.resume()));
-    // Les gestes qui autorisent le son. Écoutés sans fin : sur iPhone, un doigt qui glisse ou qui se pose ne compte pas, il faut réessayer au suivant.
-    for (const geste of ['pointerup', 'pointerdown', 'touchend', 'click', 'keydown']) addEventListener(geste, debloquer);
-  }
+  preparer();
+  charger(nom).catch(() => {}); // déjà prête au premier toucher, pour qu'elle parte sans attendre
   enCours = nom;
   voulue = { nom, direct, fondu: direct ? 1.5 : 0.3 };
   if (ctx.state === 'running') lancer();

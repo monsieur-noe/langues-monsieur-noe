@@ -3,13 +3,13 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone } from './outils.js?v=b65db263';
-import { arreter } from './audio.js?v=b65db263';
-import { jouer, arreterMusique, couper, coupee } from './musique.js?v=b65db263';
-import { avatar } from './avatar.js?v=b65db263';
-import { disponibles, question, fete } from './exercices.js?v=b65db263'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=b65db263';
-import oie, { planOie } from './jeu-oie.js?v=b65db263';
+import { el, icone } from './outils.js?v=22778f70';
+import { arreter } from './audio.js?v=22778f70';
+import { jouer, arreterMusique, couper, coupee } from './musique.js?v=22778f70';
+import { avatar } from './avatar.js?v=22778f70';
+import { disponibles, question, fete } from './exercices.js?v=22778f70'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=22778f70';
+import oie, { planOie } from './jeu-oie.js?v=22778f70';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6'];

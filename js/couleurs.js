@@ -2,11 +2,11 @@
 // d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. » à compléter :
 // le moyen de transport parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js?v=b65db263';
-import { creerLecteur } from './audio.js?v=b65db263';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=b65db263';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=b65db263';
-import { avatar } from './avatar.js?v=b65db263';
+import { el, icone } from './outils.js?v=22778f70';
+import { creerLecteur } from './audio.js?v=22778f70';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=22778f70';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=22778f70';
+import { avatar } from './avatar.js?v=22778f70';
 
 const NOMBRE = 10;
 const CHOIX = 5;
