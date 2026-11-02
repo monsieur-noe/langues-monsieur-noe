@@ -1,0 +1,100 @@
+# Chapitre 3 (anglais, P5) : Food and drinks (la nourriture et les boissons)
+# Source : la leçon de Monsieur Noé « Food and drinks » (PDF), anglais britannique.
+
+titre: Food and drinks
+
+# Les 3 listes Quizlet du chapitre.
+quizlet: Les aliments | https://quizlet.com/be/1229435026/aliments-anglais-flash-cards/
+quizlet: Les magasins | https://quizlet.com/be/1229435487/magasins-anglais-flash-cards/
+quizlet: Les repas | https://quizlet.com/be/1229435562/repas-anglais-flash-cards/
+# Le français s'affiche aussi sous le dessin, sur les cartes.
+cartes_francais: oui
+boss: Goinfrax
+arene: marche
+
+[mots]
+# id | mot | français | image (facultatif)
+# Les 30 dessins de Food (images/<id>.svg) sont de Claude. Shops et Meals : le français seul.
+
+liste: Food
+apple | apple | la pomme | apple.svg
+pear | pear | la poire | pear.svg
+lemon | lemon | le citron | lemon.svg
+strawberry | strawberry | la fraise | strawberry.svg
+mango | mango | la mangue | mango.svg
+apricot | apricot | l'abricot | apricot.svg
+tomato | tomato | la tomate | tomato.svg
+carrot | carrot | la carotte | carrot.svg
+lettuce | lettuce | la laitue | lettuce.svg
+cauliflower | cauliflower | le chou-fleur | cauliflower.svg
+cheese | cheese | le fromage | cheese.svg
+bread | bread | le pain | bread.svg
+ham | ham | le jambon | ham.svg
+jam | jam | la confiture | jam.svg
+honey | honey | le miel | honey.svg
+yogurt | yogurt | le yaourt | yogurt.svg
+rice | rice | le riz | rice.svg
+soup | soup | la soupe | soup.svg
+fries | fries | les frites | fries.svg
+crisps | crisps | les chips | crisps.svg
+sausage | sausage | la saucisse | sausage.svg
+salmon | salmon | le saumon | salmon.svg
+tuna | tuna | le thon | tuna.svg
+biscuits | biscuits | les biscuits | biscuits.svg
+chocolate-spread | chocolate spread | la pâte à tartiner | chocolate-spread.svg
+salt | salt | le sel | salt.svg
+water | water | l'eau | water.svg
+milk | milk | le lait | milk.svg
+tea | tea | le thé | tea.svg
+coffee | coffee | le café | coffee.svg
+
+liste: Shops
+market | market | le marché
+bakers | baker's | la boulangerie
+butchers | butcher's | la boucherie
+fish-shop | fish shop | la poissonnerie
+grocers | grocer's | l'épicerie
+greengrocers | greengrocer's | le marchand de légumes
+cheese-shop | cheese shop | la fromagerie
+supermarket | supermarket | le supermarché
+candy-shop | candy shop | le magasin de bonbons
+
+liste: Meals
+breakfast | breakfast | le petit-déjeuner
+lunch | lunch | le dîner (midi)
+dinner | dinner | le souper (soir)
+snack | snack | la collation
+appetizer | appetizer | l'apéritif
+starter | starter | l'entrée
+main-course | main course | le plat principal
+dessert | dessert | le dessert
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Ids préfixés par « food- ».
+food-p1 | I love salmon. | J'adore le saumon. | love
+food-p2 | I like rice. | J'aime le riz. | rice
+food-p3 | I don't like milk. | Je n'aime pas le lait. | milk
+food-p4 | I hate biscuits. | Je déteste les biscuits. | hate
+food-p5 | I can't stand tuna. | Je ne supporte pas le thon. | tuna
+food-p6 | My favourite drink is tea. | Ma boisson préférée est le thé. | favourite
+food-p7 | Do you like soup? | Est-ce que tu aimes la soupe ? | soup
+food-p8 | Lemons are sour. | Les citrons sont acides. | Lemons
+food-p9 | Honey is sweet. | Le miel est sucré. | Honey
+food-p10 | A bottle of water, please. | Une bouteille d'eau, s'il te plaît. | water
+food-p11 | A slice of ham, please. | Une tranche de jambon, s'il te plaît. | ham
+food-p12 | I buy bread at the baker's. | J'achète du pain à la boulangerie. | baker's
+food-p13 | I buy salmon at the fish shop. | J'achète du saumon à la poissonnerie. | fish
+food-p14 | For breakfast, I eat bread and jam. | Au petit-déjeuner, je mange du pain et de la confiture. | breakfast
+food-p15 | Add the salt. | Ajoute le sel. | salt
+food-p16 | Cut the carrots. | Coupe les carottes. | carrots
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Un intrus par manche, toujours un mot du chapitre.
+order-1 | I / don't / like / milk. | food-p3 | pear
+order-2 | My / favourite / drink / is / tea. | food-p6 | cheese
+order-3 | Do / you / like / soup? | food-p7 | honey
+order-4 | A / bottle / of / water, / please. | food-p10 | lunch
+order-5 | I / buy / bread / at / the / baker's. | food-p12 | apple
+order-6 | For / breakfast, / I / eat / bread / and / jam. | food-p14 | dinner

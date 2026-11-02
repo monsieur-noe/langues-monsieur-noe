@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=85e87c78';
-import { creerLecteur, arreter } from './audio.js?v=85e87c78';
-import { chercherFichiers, visuel } from './cartes.js?v=85e87c78';
-import { positionReponse, cheminSon } from './donnees.js?v=85e87c78';
-import { avatar, chargerAvatar } from './avatar.js?v=85e87c78';
-import { serieOrdre } from './ordre.js?v=85e87c78';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=85e87c78';
+import { el, icone } from './outils.js?v=de5c665b';
+import { creerLecteur, arreter } from './audio.js?v=de5c665b';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=de5c665b';
+import { positionReponse, cheminSon } from './donnees.js?v=de5c665b';
+import { avatar, chargerAvatar } from './avatar.js?v=de5c665b';
+import { serieOrdre } from './ordre.js?v=de5c665b';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=de5c665b';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -96,17 +96,23 @@ export function fauxTrous(phrase, phrases) {
 export function disponibles(mots, phrases, n) {
   const images = mots.filter(aUnVisuel);
   const sonores = mots.filter((m) => m.son);
-  const sonoresImages = sonores.filter(aUnVisuel);
   const noms = mots.filter((m) => article(m.mot));
   return {
     'image-mot': images.length >= n ? images : [],
     'mot-image': images.length >= n ? images : [],
-    // Écoute : on choisit parmi des images si assez de mots en ont, sinon parmi des mots écrits.
-    ecoute: sonoresImages.length >= n ? sonoresImages : sonores.length >= n ? sonores : [],
+    // Écoute : tous les mots avec un son, même sans dessin (choixEcoute dit parmi quoi on choisit).
+    ecoute: sonores.length >= n ? sonores : [],
     // Propositions écrites dans le fichier : 2 suffisent, même en P4 et après (3 choix, comme « Het is… »).
     trous: phrases.filter((p) => p.reponse).map((p) => ({ ...p, faux: fauxTrous(p, phrases) })).filter((p) => p.faux.length >= (p.propositions.length ? 2 : n - 1)),
     'de-het': noms.length >= 4 ? noms : [],
   };
+}
+
+// Écoute : on choisit parmi les mots qui ont un dessin si le mot en a un et qu'il y en a assez,
+// sinon parmi les mots écrits, pour qu'un mot sans dessin ne se reconnaisse pas à ce seul détail.
+export function choixEcoute(cible, ecoute, n) {
+  const pareils = ecoute.filter((m) => aUnVisuel(m) === aUnVisuel(cible));
+  return pareils.length >= n ? pareils : ecoute;
 }
 
 // Mots ou phrases interrogeables par les variantes 1 à 4, avec les variantes possibles pour chacun.
@@ -208,8 +214,9 @@ export function question(q, ctx, verifie, rang, total, fin) {
     lecteur = creerLecteur(cheminSon(c, ctx.dossier), { nom: 'le mot à écouter' });
     lecteurDansEnonce = true;
     enonce = lecteur;
-    const images = dispo.ecoute.every(aUnVisuel);
-    choix = propositions(c, dispo.ecoute, n).map((x) => ({ noeud: images ? visuel(x, x.ind, langue) : mot(x), juste: x === c }));
+    const parmi = choixEcoute(c, dispo.ecoute, n);
+    const images = parmi.every(aUnVisuel);
+    choix = propositions(c, parmi, n).map((x) => ({ noeud: images ? visuel(x, x.ind, langue) : mot(x), juste: x === c }));
   } else if (q.variante === 'trous') {
     const i = positionReponse(c.phrase, c.reponse);
     const trou = el('span', { class: 'trou' }, '…');
@@ -218,6 +225,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
     lecteur = son(c);
     lecteurDansEnonce = true;
     enonce = el('div', { class: 'pile' },
+      dessinPhrase(c.dessin),
       el('p', { class: 'phrase', lang: langue }, c.phrase.slice(0, i), trou, c.phrase.slice(i + c.reponse.length)),
       lecteur || '');
     choix = propositions(c.reponse, c.faux, n).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.reponse }));
@@ -494,6 +502,9 @@ function lancerOrdre(zone, donnees, ctx) {
   // (jamais le français, demande du 2026-10-26). Comparaison sans article, majuscule ni ponctuation.
   const nu = (t) => t.toLowerCase().replace(/^(de|het) /, '').replace(/[.,!?]/g, '');
   const image = (o) => {
+    // Dessin de la phrase du son de fin, sinon celui de la manche : il remplace l'image du mot (demande du 2026-11-02).
+    const src = ctx.phrases.find((p) => p.id === o.son && p.dossier === o.dossier && p.dessin)?.dessin || (presents.has(cheminDessin(o, dossier)) ? cheminDessin(o, dossier) : '');
+    if (src) return dessinPhrase(src);
     // Le son de la 3e colonne peut être celui d'une phrase de [mots] (« Het is zonnig. ») : son dessin vaut alors pour toute la manche.
     const m = o.intrus.length && ctx.mots.find((x) => x.ind.type === 'image' && (x.id === o.son || o.cases.some((c) => nu(c) === nu(x.mot))));
     return m ? visuel(m, m.ind, langue) : null;
@@ -521,9 +532,9 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const aSon = (x) => presents.has(cheminSon(x, dossier));
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
-  const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p) }));
+  const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p), dessin: presents.has(cheminDessin(p, dossier)) ? cheminDessin(p, dossier) : '' }));
   const dispo = disponibles(mots, phrases, n);
-  const ctx = { langue, dossier, n, dispo, presents, mots };
+  const ctx = { langue, dossier, n, dispo, presents, mots, phrases };
 
   const parties = [];
   const avecMelange = unites(dispo).size > 0;

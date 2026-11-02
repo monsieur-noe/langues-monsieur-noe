@@ -1,18 +1,18 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=85e87c78';
-import { cheminSon } from './donnees.js?v=85e87c78';
-import { chercherFichiers } from './cartes.js?v=85e87c78';
-import { chargerAvatar } from './avatar.js?v=85e87c78';
-import { amorcer } from './musique.js?v=85e87c78';
-import juist from './jeu-juist.js?v=85e87c78';
-import loto from './jeu-loto.js?v=85e87c78';
-import memory from './jeu-memory.js?v=85e87c78';
-import oie, { oieDifficile } from './jeu-oie.js?v=85e87c78';
-import phrases from './jeu-phrases.js?v=85e87c78';
-import boss, { bossDifficile } from './jeu-boss.js?v=85e87c78';
-import qui from './jeu-qui.js?v=85e87c78';
+import { el, icone } from './outils.js?v=de5c665b';
+import { cheminSon } from './donnees.js?v=de5c665b';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=de5c665b';
+import { chargerAvatar } from './avatar.js?v=de5c665b';
+import { amorcer } from './musique.js?v=de5c665b';
+import juist from './jeu-juist.js?v=de5c665b';
+import loto from './jeu-loto.js?v=de5c665b';
+import memory from './jeu-memory.js?v=de5c665b';
+import oie, { oieDifficile } from './jeu-oie.js?v=de5c665b';
+import phrases from './jeu-phrases.js?v=de5c665b';
+import boss, { bossDifficile } from './jeu-boss.js?v=de5c665b';
+import qui from './jeu-qui.js?v=de5c665b';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
@@ -31,7 +31,7 @@ export async function contenuJeux(donnees, dossier, langue, annee) {
     revision: donnees.reprend.length > 0, // chapitre de révision : musique du boss de fin d'année
     n: annee === 'p3' ? 3 : 4, // 3 choix en P3, 4 en P4, comme les exercices
     mots: donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) })),
-    phrases: donnees.phrases.map((p) => ({ ...p, son: aSon(p) })),
+    phrases: donnees.phrases.map((p) => ({ ...p, son: aSon(p), dessin: presents.has(cheminDessin(p, dossier)) ? cheminDessin(p, dossier) : '' })),
     // « Qui est-ce ? » : seulement les personnes dont le dessin existe.
     descriptions: donnees.descriptions.filter((d) => presents.has(dessin(d))).map((d) => ({ ...d, src: dessin(d), son: aSon(d) })),
   };

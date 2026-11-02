@@ -255,6 +255,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 }
 .mot { font-size: 2rem; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
 .francais { font-size: 2.25rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.francais.sous-dessin { font-size: 1.5rem; } /* français sous le dessin (ligne « cartes_francais: oui ») */
 .coin {
   position: absolute; top: .25rem; right: .25rem;
   width: 3.5rem; height: 3.5rem; display: grid; place-items: center;

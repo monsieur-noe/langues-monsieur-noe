@@ -1,0 +1,43 @@
+# Chapitre 4 (anglais, P5) : Means of transport (les moyens de transport, version P5)
+# Source : fiche « Means of transport and travel » 5-6e (ex. 3, 4, 10). 12 mots choisis par Noé.
+# Différent du chapitre de P3 (dossier transport-en) : ids distincts pour les phrases.
+
+titre: Means of transport
+
+# Lien Quizlet reçu le 2026-11-02.
+quizlet: https://quizlet.com/be/1230366117/moyens-de-transport-p5-anglais-flash-cards/?i=7d7v8x&x=1qqt
+boss: Bouchonator
+arene: carrefour
+
+[mots]
+# id | mot | français | image (facultatif)
+# 8 dessins et 8 sons repris du chapitre de P3 (transport-en) ; scooter, coach, truck, helicopter : dessins de Claude.
+# Pas d'article en anglais : pas de « De ou het ? ».
+car | car | la voiture | auto.svg
+bus | bus | le bus | bus.svg
+metro | metro | le métro | metro.svg
+boat | boat | le bateau | boot.svg
+plane | plane | l'avion | vliegtuig.svg
+motorcycle | motorcycle | la moto | motor.svg
+scooter | scooter | la trottinette | scooter.svg
+coach | coach | l'autocar | coach.svg
+train | train | le train | trein.svg
+on-foot | on foot | à pied | te-voet.svg
+truck | truck | le camion | truck.svg
+helicopter | helicopter | l'hélicoptère | helicopter.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Propositions choisies pour n'avoir qu'une bonne réponse (« by car », « by boat », « by foot » vont aussi).
+transport-p5-1 | I go to school by bus. | Je vais à l'école en bus. | bus | holiday, work
+transport-p5-2 | I go to school on foot. | Je vais à l'école à pied. | on | in, at
+transport-p5-3 | We go on holiday by plane. | Nous partons en vacances en avion. | by | on, in
+transport-p5-4 | My dad goes to work by train. | Mon papa va au travail en train. | train | school, holiday
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Intrus choisis pour ne pas former une autre phrase correcte.
+order-1 | I / go / to / school / by / bus. | transport-p5-1 | on foot
+order-2 | I / go / to / school / on foot. | transport-p5-2 | metro
+order-3 | We / go / on / holiday / by / plane. | transport-p5-3 | on foot
+order-4 | My / dad / goes / to / work / by / train. | transport-p5-4 | on foot

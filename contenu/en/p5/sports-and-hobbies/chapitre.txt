@@ -1,0 +1,73 @@
+# Chapitre 2 (anglais, P5) : Sports and hobbies (les sports et les loisirs)
+# Source : fiche « Sports and hobbies 5-6 » : ex. 1 (activités), ex. 5-6 (sports),
+# page « Likes and dislikes » et tableau du present simple (he plays, he watches).
+# Les phrases sports-p2 à sports-p7 iront aussi dans le futur chapitre de grammaire.
+# Anglais britannique : « football » (la fiche écrit parfois « soccer »).
+
+titre: Sports and hobbies
+
+# Les 2 listes Quizlet du chapitre.
+quizlet: Sports | https://quizlet.com/be/1229436902/sports-anglais-flash-cards/
+quizlet: Hobbies | https://quizlet.com/be/1229436626/hobbies-anglais-flash-cards/
+boss: Musclor-Pinceau
+arene: gymnase
+
+[mots]
+# id | mot | français | image (facultatif)
+# Les 24 dessins (images/<id>.svg) sont de Claude. Pas d'article en anglais : pas de « De ou het ? ».
+
+liste: Sports
+play-football | to play football | jouer au foot | play-football.svg
+play-basketball | to play basketball | jouer au basket | play-basketball.svg
+play-tennis | to play tennis | jouer au tennis | play-tennis.svg
+play-volleyball | to play volleyball | jouer au volley | play-volleyball.svg
+play-baseball | to play baseball | jouer au baseball | play-baseball.svg
+play-badminton | to play badminton | jouer au badminton | play-badminton.svg
+swim | to swim | nager | swim.svg
+dive | to dive | plonger | dive.svg
+run | to run | courir | run.svg
+cycle | to cycle | faire du vélo | cycle.svg
+climb | to climb | faire de l'escalade | climb.svg
+skate | to skate | patiner | skate.svg
+ski | to ski | skier | ski.svg
+box | to box | faire de la boxe | box.svg
+fence | to fence | faire de l'escrime | fence.svg
+
+liste: Hobbies
+read | to read | lire | read.svg
+draw | to draw | dessiner | draw.svg
+paint | to paint | peindre | paint.svg
+cook | to cook | cuisiner | cook.svg
+dance | to dance | danser | dance.svg
+sing | to sing | chanter | sing.svg
+listen-to-music | to listen to music | écouter de la musique | listen-to-music.svg
+watch-tv | to watch TV | regarder la télé | watch-tv.svg
+play-video-games | to play video games | jouer aux jeux vidéo | play-video-games.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# sports-p1, p11 et p12 : propositions choisies pour n'avoir qu'une bonne réponse (« sport » et « hobby » vont tous les deux).
+sports-p1 | What are your hobbies? | Quels sont tes loisirs ? | hobbies | colours, names
+sports-p2 | I like reading. | J'aime lire. | reading | read, reads
+sports-p3 | I love swimming. | J'adore nager. | love | loves, loving
+sports-p4 | I don't like cooking. | Je n'aime pas cuisiner. | cooking | cook, cooks
+sports-p5 | My favourite sport is tennis. | Mon sport préféré est le tennis. | favourite | least, hobby
+sports-p6 | My favourite hobby is drawing. | Mon loisir préféré est le dessin. | drawing | draw, draws
+sports-p7 | My least favourite sport is boxing. | Le sport que j'aime le moins, c'est la boxe. | least | favourite, like
+sports-p8 | My sister plays volleyball. | Ma sœur joue au volley. | plays | play, playing
+sports-p9 | He watches TV. | Il regarde la télé. | watches | watch, watching
+sports-p10 | Do you play tennis? Yes, I do. | Tu joues au tennis ? Oui. | Do | Does, Are
+# Questions (réponses : sports-p5 et sports-p6)
+sports-p11 | What's your favourite sport? | Quel est ton sport préféré ? | sport | colour, food
+sports-p12 | What's your favourite hobby? | Quel est ton loisir préféré ? | hobby | colour, food
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Un intrus par manche, toujours un mot du chapitre.
+order-1 | I / like / reading. | sports-p2 | dive
+order-2 | I / don't / like / cooking. | sports-p4 | swim
+order-3 | My / favourite / sport / is / tennis. | sports-p5 | ski
+order-4 | My / sister / plays / volleyball. | sports-p8 | dance
+order-5 | He / watches / TV. | sports-p9 | cycle
+order-6 | What / are / your / hobbies? | sports-p1 | draw
+order-7 | What's / your / favourite / sport? | sports-p11 | run

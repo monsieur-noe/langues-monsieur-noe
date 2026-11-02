@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=85e87c78';
+import { LANGUES } from './outils.js?v=de5c665b';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -95,7 +95,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', reprend: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', cartes_francais: '', reprend: [], listes: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -118,7 +118,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       // En-tête : lignes « clé: valeur » avant la première section.
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
-        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: » ou « reprend: ».');
+        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: » ou « reprend: ».');
       } else if (m[1] === 'quizlet') {
         // Plusieurs lignes possibles, chacune « quizlet: lien » ou « quizlet: nom | lien » (demande du 2026-10-26).
         const [nom, lien] = m[2].includes('|') ? colonnes(m[2]) : ['', m[2].trim()];
@@ -136,10 +136,10 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
           err(num, `« ${resultat.arene} » n'est pas un nom d'arène. Écris le nom du fichier sans « .jpg », en minuscules, sans accent ni espace (exemple : arene: couleurs).`);
           resultat.arene = '';
         }
-      } else if (['titre', 'note_parents', 'couleurs', 'boss'].includes(m[1])) {
+      } else if (['titre', 'note_parents', 'couleurs', 'boss', 'cartes_francais'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: » et « reprend: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: » et « reprend: ».`);
       }
       continue;
     }
@@ -149,6 +149,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     const ligneListe = (section === 'mots' || section === 'phrases') && ligne.match(/^liste\s*:\s*(.*)$/);
     if (ligneListe) {
       liste = ligneListe[1].trim();
+      if (section === 'mots') resultat.listes.push(liste);
       if (section === 'phrases' && !resultat.mots.some((m) => m.liste === liste)) {
         err(num, `la liste « ${liste} » n'existe pas dans [mots]. Recopie exactement le nom d'une ligne « liste: » de [mots].`);
         liste = '';

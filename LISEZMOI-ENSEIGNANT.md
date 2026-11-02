@@ -105,6 +105,7 @@ Exemple : le chapitre « Kleuren », fichier `contenu/nl/p3/kleuren/chapitre.txt
   `pet | de pet | la casquette`
 - **Ajouter une phrase** : ajoutez une ligne sous `[phrases]`, par exemple :
   `p3 | Ik draag een rode pet. | Je porte une casquette rouge. | rode`
+  Chaque phrase a un dessin, montré au-dessus d'elle dans les exercices : `images/<identifiant>.svg` (ici `images/p3.svg`). Demandez-le à Claude Code ; sans dessin, la phrase s'affiche quand même.
 
 Enregistrez (partie 2), puis ajoutez le son du nouveau mot (partie 4), sous le nom `<identifiant>.m4a`, par exemple `pet.m4a`. Sans son, le mot s'affiche quand même, simplement sans haut-parleur.
 

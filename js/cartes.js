@@ -1,15 +1,20 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone, LANGUES } from './outils.js?v=85e87c78';
-import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=85e87c78';
-import { creerLecteur, arreter } from './audio.js?v=85e87c78';
-import { melanger } from './exercices.js?v=85e87c78';
+import { el, icone, LANGUES } from './outils.js?v=de5c665b';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=de5c665b';
+import { creerLecteur, arreter } from './audio.js?v=de5c665b';
+import { melanger } from './exercices.js?v=de5c665b';
 
 export function cheminImage(mot, dossier) {
   return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;
 
 }
+
+// Dessin d'une phrase (ou d'une manche de « Mots en ordre ») : images/<id>.svg, montré au-dessus d'elle dans les exercices (2026-11-02).
+export const cheminDessin = (x, dossier) => `${x.dossier || dossier}images/${x.id}.svg`;
+// `alt` vide : la phrase est écrite juste dessous, et le dessin ne doit pas donner le mot qui manque.
+export const dessinPhrase = (src) => (src ? el('img', { class: 'image', src, alt: '', loading: 'lazy' }) : '');
 
 // Ce qui représente le mot. `images` = chemins d'images qui existent vraiment.
 export function indice(mot, dossier, images) {
@@ -43,11 +48,13 @@ export function visuel(mot, ind, langue) {
 }
 
 // Face « indice » : seulement ce qui représente le mot, jamais le mot lui-même.
-function faceIndice(mot, ind, langue) {
-  return el('div', { class: 'face' }, visuel(mot, ind, langue));
+// `avecFrancais` (ligne « cartes_francais: oui ») : le français sous le dessin.
+function faceIndice(mot, ind, langue, avecFrancais) {
+  return el('div', { class: 'face' }, visuel(mot, ind, langue),
+    avecFrancais && ind.type !== 'francais' ? el('span', { class: 'francais sous-dessin' }, mot.francais) : '');
 }
 
-function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
+function cartes(mots, indices, dossier, langue, sons, indiceDabord, avecFrancais) {
   let index = 0;
   const zone = el('div', { class: 'zone-carte' });
   const compteur = el('p', { class: 'compteur', 'aria-live': 'polite' });
@@ -62,7 +69,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord) {
     const chemin = cheminSon(mot, dossier);
     // Sur les cartes, le bouton d'écoute seul : un mot dure une seconde, une barre n'y servirait pas.
     const recto = faceMot(mot, langue, sons.has(chemin) ? creerLecteur(chemin, { nom: mot.mot, avecBarre: false }) : '');
-    const verso = faceIndice(mot, indices[index], langue);
+    const verso = faceIndice(mot, indices[index], langue, avecFrancais);
     const [avant, arriere] = indiceDabord ? [verso, recto] : [recto, verso];
     avant.classList.add('avant');
     arriere.classList.add('arriere');
@@ -160,11 +167,12 @@ function piste(p, dossier, langue, sons) {
 
 // Cherche quels audios et images du chapitre existent (plus d'autres chemins), et l'indice de chaque mot.
 export async function chercherFichiers(donnees, dossier, autres = []) {
-  const { mots, phrases, pistes, dictees } = donnees;
+  const { mots, phrases, pistes, dictees, ordre = [] } = donnees;
   const audios = [...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates)].map((x) => cheminSon(x, dossier));
   // Les images ne sont cherchées que pour les mots sans « texte: » ni « couleur: ».
   const images = mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => cheminImage(m, dossier));
-  const presents = await fichiersPresents([...audios, ...images, ...autres]);
+  const dessins = [...phrases, ...ordre].map((x) => cheminDessin(x, dossier));
+  const presents = await fichiersPresents([...audios, ...images, ...dessins, ...autres]);
   return { presents, indices: mots.map((m) => indice(m, dossier, presents)) };
 }
 
@@ -180,7 +188,8 @@ export async function afficherDecouvre(conteneur, donnees, dossier, langue, indi
 
   const parties = [];
   // Sans précision dans l'adresse, la première liste ; sans ligne « liste: », toutes les cartes comme avant.
-  const listes = [...new Set(mots.map((m) => m.liste).filter(Boolean))];
+  // L'ordre des lignes « liste: » de [mots] d'abord : une liste vide y réserve la place de cartes faites de phrases.
+  const listes = [...new Set([...(donnees.listes ?? []), ...mots.map((m) => m.liste)])].filter((nom) => nom && mots.some((m) => m.liste === nom));
   const demandee = new URLSearchParams(location.search).get('liste');
   const actif = !listes.length || demandee === 'tout' ? 'tout' : (listes[demandee - 1] ? demandee : '1');
   const dansListe = (x) => actif === 'tout' || x.liste === listes[actif - 1];
@@ -188,7 +197,7 @@ export async function afficherDecouvre(conteneur, donnees, dossier, langue, indi
     parties.push(choixSens(indiceDabord, indices.some((i) => i.type !== 'francais'), langue));
     const garder = mots.map(dansListe);
     if (listes.length) parties.push(choixListe(listes, actif));
-    parties.push(cartes(mots.filter((_, k) => garder[k]), indices.filter((_, k) => garder[k]), dossier, langue, presents, indiceDabord));
+    parties.push(cartes(mots.filter((_, k) => garder[k]), indices.filter((_, k) => garder[k]), dossier, langue, presents, indiceDabord, donnees.cartes_francais === 'oui'));
   }
   // Une phrase sans liste s'affiche avec toutes les listes (demande du 2026-10-26).
   const phrasesVues = liste.filter((p) => !p.liste || dansListe(p));

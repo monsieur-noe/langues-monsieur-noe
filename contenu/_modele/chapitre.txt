@@ -20,6 +20,9 @@ titre: Titre du chapitre
 # Un conseil pour les parents (facultatif ; enlève le # pour l'activer) :
 # note_parents: Écrivez ici votre conseil.
 
+# Sur les cartes, le français écrit sous le dessin (facultatif ; enlève le # pour l'activer) :
+# cartes_francais: oui
+
 # Exercice « Couleurs » (facultatif ; enlève le # pour l'activer) : « De bus is rood. »
 # Les dessins SVG de Claude dont une partie est marquée class="teinte" sont repeints
 # dans les couleurs du chapitre indiqué ici (son nom de dossier).
@@ -65,9 +68,12 @@ titre: Titre du chapitre
 # id | phrase | français | mot à masquer (facultatif) | autres propositions (facultatif)
 # Cartes (facultatif) : une ligne « cartes: Je me présente » ; les phrases suivantes deviennent les cartes
 # de cette liste dans « Je découvre » (devant la phrase et sa voix, au dos le français).
+# Pour la placer entre deux listes : écris aussi « liste: Je me présente », sans mot, à sa place dans [mots].
 # Listes (facultatif) : une ligne « liste: » avec le nom exact d'une liste de [mots] ;
 # les phrases qui suivent s'affichent dans « Je découvre » avec cette liste.
 # Une phrase sans liste s'affiche avec toutes les listes.
+# Dessin : chaque phrase reçoit un dessin de son sens, images/<id>.svg (même nom que la phrase),
+# montré au-dessus d'elle dans les exercices (textes à trous, phrases en désordre, Mots en ordre).
 # Exemple :
 # p1 | Ik draag een rode pet. | Je porte une casquette rouge. | rode
 
@@ -89,6 +95,7 @@ titre: Titre du chapitre
 # id | cases séparées par « / » | son à écouter (facultatif : l'identifiant d'un audio du chapitre) | intrus (facultatif)
 # Jeu « Mots en ordre » de « Je m'entraîne » : l'enfant remet les cases dans le bon ordre.
 # Ce qui est entre deux « / » forme une seule case. Une ligne = une manche (au moins 2 cases).
+# Dessin : celui de la phrase du son de la 3e colonne ; sinon images/<id de la manche>.svg s'il existe.
 # Le son de la 3e colonne : s'il sert à une seule manche, il est joué juste après elle ;
 # s'il sert à plusieurs manches, il est proposé à la fin (« Écoute tout le texte »).
 # Intrus : un ou plusieurs mots en trop, séparés par des virgules, mélangés avec les cases ;

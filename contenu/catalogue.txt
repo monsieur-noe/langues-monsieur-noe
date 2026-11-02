@@ -26,3 +26,7 @@ en | p3 | birthday | 4 | Birthday
 en | p3 | school-en | 5 | At school
 en | p3 | appearance-en | 6 | Appearance
 en | p3 | revision-en | 7 | Revision | révision
+en | p5 | introduce-yourself-p5 | 1 | Introduce yourself
+en | p5 | sports-and-hobbies | 2 | Sports and hobbies
+en | p5 | food-and-drinks | 3 | Food and drinks
+en | p5 | transport | 4 | Means of transport

@@ -16,8 +16,9 @@ const BOUCLES = {
   'fin-annee-difficile-un-coeur': [0.5, 55.620146],
 };
 // Les enregistrements sont peu forts (moyenne autour de -38 dB, voir tests/mesurer-sons.py) : ces deux réglages gardent la voix nettement au-dessus.
-const VOLUME = 0.15;
-const BAS = 0.015; // pendant un mot : encore là, mais le mot s'entend bien
+// Réglés pour des voix à -20 LUFS (tests/normaliser-sons.py) : musique un peu au-dessus de la voix, 20 dB sous elle pendant un mot.
+const VOLUME = 0.9;
+const BAS = 0.09; // pendant un mot : encore là, mais le mot s'entend bien
 
 let ctx = null;
 let piste = null; // { source, gain } de la musique en cours
