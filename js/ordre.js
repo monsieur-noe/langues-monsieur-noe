@@ -2,10 +2,10 @@
 // et à « Mots en ordre » (Je m'entraîne, section [ordre] de chapitre.txt).
 // Les cases sont mélangées sur de gros boutons ; un toucher les range sur la ligne, un toucher sur la ligne
 // les renvoie en bas. Ligne complète : bon ordre = bravo et suite ; sinon on réessaie, sans limite.
-import { el, icone } from './outils.js?v=de5c665b';
-import { creerLecteur, arreter } from './audio.js?v=de5c665b';
-import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=de5c665b';
-import { avatar } from './avatar.js?v=de5c665b';
+import { el, icone } from './outils.js?v=5d01e26e';
+import { creerLecteur, arreter } from './audio.js?v=5d01e26e';
+import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=5d01e26e';
+import { avatar } from './avatar.js?v=5d01e26e';
 
 // Les cases dans le désordre, jamais dans le bon ordre (sinon il n'y aurait rien à faire).
 export function desordre(cases) {

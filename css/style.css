@@ -685,6 +685,17 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   border: 2px solid var(--trait); border-radius: 1.25rem; padding: .6rem;
 }
 .etoile-super { position: absolute; opacity: 0; pointer-events: none; }
+/* Coup d'épée : trait courbe placé et tourné par jeu-boss.js, de l'avatar vers le monstre. */
+.coup-epee {
+  position: absolute; height: 1.5rem; margin-top: -.75rem; transform-origin: left center; opacity: 0; pointer-events: none;
+  border-top: 4px solid #f59e0b; border-radius: 50% / 100% 100% 0 0;
+}
+/* Moment de tension (combat normal, plus qu'un cœur pour moi) : cadre rouge qui s'avive et s'adoucit très lentement
+   (2 s par aller-retour, demande de l'enseignant du 2026-11-02 : une lueur, pas un clignotement ; fixe si moins d'animations). */
+.arene { transition: box-shadow .6s, border-color .6s; }
+.arene.tension { box-shadow: 0 0 0 3px #f87171; border-color: #dc2626; }
+.arene.tension { animation: lueur 1s ease-in-out infinite alternate; }
+@keyframes lueur { to { box-shadow: 0 0 0 4px #dc2626, 0 0 1rem rgb(220 38 38 / .45); } }
 /* Couper ou rallumer la musique du combat (56 px), à droite dans l'encadré de l'intention. */
 .bouton-musique {
   margin-left: auto; flex: none;
@@ -697,6 +708,15 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .parade-boss .ic { color: #6b4fa0; }
 .soin-boss { position: absolute; left: 50%; top: -.75rem; translate: -50% 0; opacity: 0; pointer-events: none; }
 .soin-boss .ic { width: 2.25rem; height: 2.25rem; color: var(--c4); fill: #dcfce7; }
+.perte-boss .ic { color: #be123c; fill: var(--surface); } /* le cœur perdu, vide, s'envole */
+/* Étoile du coup qui touche (sur le monstre). */
+.paf-boss { position: absolute; left: 50%; top: 45%; translate: -50% -50%; opacity: 0; pointer-events: none; }
+.paf-boss .ic { width: 3rem; height: 3rem; color: #b45309; fill: #fde68a; stroke-width: 2; }
+/* Fumée de la victoire : volutes floues placées dans l'arène par jeu-boss.js. */
+.fumee {
+  position: absolute; width: 3.5rem; height: 3.5rem; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, rgb(120 120 120 / .85) 0 35%, rgb(150 150 150 / .45) 58%, transparent 72%);
+}
 .place-prof .avatar { height: 6.5rem; }
 .cadre-vies {
   justify-self: stretch; display: flex; flex-direction: column; gap: .2rem; padding: .45rem .7rem;

@@ -3,13 +3,13 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone } from './outils.js?v=de5c665b';
-import { arreter } from './audio.js?v=de5c665b';
-import { jouer, arreterMusique, couper, coupee } from './musique.js?v=de5c665b';
-import { avatar } from './avatar.js?v=de5c665b';
-import { disponibles, question, fete } from './exercices.js?v=de5c665b'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=de5c665b';
-import oie, { planOie } from './jeu-oie.js?v=de5c665b';
+import { el, icone } from './outils.js?v=5d01e26e';
+import { arreter } from './audio.js?v=5d01e26e';
+import { jouer, arreterMusique, couper, coupee } from './musique.js?v=5d01e26e';
+import { avatar } from './avatar.js?v=5d01e26e';
+import { disponibles, question, fete } from './exercices.js?v=5d01e26e'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=5d01e26e';
+import oie, { planOie } from './jeu-oie.js?v=5d01e26e';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6'];
@@ -83,6 +83,11 @@ const ESQUIVE = [{ transform: 'none' }, { transform: 'translate(.75rem, -1.25rem
 const MONTE = [ // cœur « + » qui s'élève au-dessus du monstre quand il se soigne
   { opacity: 0, transform: 'translateY(.5rem) scale(.6)' }, { opacity: 1, transform: 'translateY(-.5rem) scale(1)', offset: 0.3 },
   { opacity: 0, transform: 'translateY(-2.25rem) scale(1)' }];
+const PAF = [{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1.25)', offset: 0.4 }, { opacity: 0, transform: 'scale(1)' }]; // étoile du coup qui touche
+// Victoire : le monstre tourne en rétrécissant et disparaît dans des volutes de fumée ; fuite (P5-P6) : il part par la droite.
+const DISPARAIT = [{ transform: 'none' }, { transform: 'rotate(360deg) scale(.2)', opacity: 0 }];
+const FUITE = [{ transform: 'none' }, { transform: 'translateX(-.5rem)', offset: 0.25 }, { transform: 'translateX(60vw)', opacity: 0 }];
+const TREMBLE = [{ transform: 'none' }, { transform: 'translateX(-.15rem)' }, { transform: 'translateX(.15rem)' }, { transform: 'none' }]; // super-attaque : l'arène tremble à peine
 const RECUL = [{ transform: 'none' }, { transform: 'translateX(-.75rem) rotate(-6deg)' }, { transform: 'none' }];
 const DE_DROITE = [{ transform: 'translateX(60vw)', opacity: 0 }, { transform: 'translateX(-.4rem)', opacity: 1, offset: 0.8 }, { transform: 'none' }];
 const DE_GAUCHE = [{ transform: 'translateX(-60vw)', opacity: 0 }, { transform: 'translateX(.4rem)', opacity: 1, offset: 0.8 }, { transform: 'none' }];
@@ -97,6 +102,15 @@ const PREPARE = {
   attaque: PENCHE, soin: GONFLE, renforce: GONFLE,
   protege: [{ transform: 'none' }, { transform: 'scale(.9, 1.06)' }, { transform: 'none' }],
 };
+// En même temps, le pictogramme de l'annonce fait son geste : l'épée frappe, le bouclier se lève, le cœur « + » gonfle.
+const GESTE = {
+  attaque: [{ transform: 'none' }, { transform: 'rotate(-25deg)' }, { transform: 'rotate(12deg)' }, { transform: 'none' }],
+  protege: [{ transform: 'none' }, { transform: 'translateY(-.3rem) scale(1.15)' }, { transform: 'none' }],
+  soin: [{ transform: 'none' }, { transform: 'scale(1.3)' }, { transform: 'none' }],
+};
+GESTE.renforce = GESTE.soin;
+const SAUTE = [{ transform: 'none' }, { transform: 'translateY(-.5rem) scale(1.2)' }, { transform: 'none' }]; // victoire : mes cœurs sauvés
+const APPROCHE = [{ transform: 'scale(.95)' }, { transform: 'none' }]; // début : l'arène s'avance un peu, comme une caméra
 export const SUPER = 3; // bonnes réponses d'affilée pour une super-attaque (traînée d'étoiles, mêmes règles)
 
 
@@ -119,6 +133,7 @@ function lancer(zone, contenu, difficile) {
   let retourNeutre = 0;
   let serie = 0; // bonnes réponses d'affilée
   let preparation = null;
+  let geste = null; // pictogramme de l'annonce
   // Musique (demande du 2026-10-28) : celle des chapitres ou celle du boss de fin d'année, normale ou difficile ;
   // à mi-combat, sa version stressante. Elle part au premier toucher (exigence des navigateurs).
   const musique = `${contenu.revision ? 'fin-annee' : 'combat'}${difficile ? '-difficile' : ''}`;
@@ -128,9 +143,12 @@ function lancer(zone, contenu, difficile) {
   // Bouclier du monstre (P5-P6) et cœur « + » de son soin : invisibles hors de leur animation.
   const bouclierBoss = el('span', { class: 'parade parade-boss', 'aria-hidden': 'true' }, icone('bouclier'));
   const soinBoss = el('span', { class: 'soin-boss', 'aria-hidden': 'true' }, icone('coeur-plus'));
+  // Étoile du coup qui touche et cœur perdu qui s'envole : invisibles eux aussi.
+  const pafBoss = el('span', { class: 'paf-boss', 'aria-hidden': 'true' }, icone('etoile'));
+  const perteBoss = el('span', { class: 'soin-boss perte-boss', 'aria-hidden': 'true' }, icone('coeur'));
   // Le monstre : son dessin `boss.svg` (ou `.png`) dans le dossier du chapitre ; en attendant, la forme provisoire.
   // Version difficile : `boss-difficile.svg` (ou `.png`) ; sans lui, le dessin de base assombri (CSS `.de-base`).
-  const monstre = el('div', { class: 'monstre' }, icone(difficile ? 'monstre-fort' : 'monstre'), bouclierBoss, soinBoss);
+  const monstre = el('div', { class: 'monstre' }, icone(difficile ? 'monstre-fort' : 'monstre'), bouclierBoss, soinBoss, pafBoss, perteBoss);
   const fichiers = (n) => [`${contenu.dossier}${n}.svg`, `${contenu.dossier}${n}.png`];
   fichiersPresents([...(difficile ? fichiers('boss-difficile') : []), ...fichiers('boss')]).then((p) => {
     const dessin = [...p][0];
@@ -215,8 +233,11 @@ function lancer(zone, contenu, difficile) {
       }
       poser('attaque', true);
       bouger(prof, ELAN, { duration: 350, delay: parade });
+      coupEpee(parade + 100);
       if (serie % SUPER === 0) trainee(parade);
-      if (vies.boss) bouger(monstre, TOUCHE, { duration: 350, delay: parade + 150 }); // au dernier cœur, il tombe à la renverse (CSS .vaincu)
+      if (vies.boss) bouger(monstre, TOUCHE, { duration: 350, delay: parade + 150 }); // au dernier cœur, il disparaît (fin du combat)
+      bouger(pafBoss, PAF, { duration: 350, delay: parade + 150 });
+      bouger(perteBoss, MONTE, { duration: 800, delay: parade + 200 });
       bouger(coeursBoss.children[vies.boss], POP, { duration: 350, delay: parade + 150 });
     }
     if (vies.boss > avant.boss) {
@@ -227,6 +248,25 @@ function lancer(zone, contenu, difficile) {
       bouger(coeursBoss.children[vies.boss - 1], NAIT, { duration: 400, delay: s + 350, fill: 'backwards' });
     }
     return parade;
+  }
+
+  // Trait courbe et léger, comme un coup d'épée, qui passe un instant de l'avatar au monstre.
+  function coupEpee(delai) {
+    if (calme()) return;
+    const centre = (n) => { const r = n.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+    const { left: ax, top: ay } = arene.getBoundingClientRect();
+    const [px, py] = centre(placeProf);
+    const [mx, my] = centre(monstre);
+    const c = el('span', { class: 'coup-epee', 'aria-hidden': 'true' });
+    c.style.left = `${px - ax}px`;
+    c.style.top = `${py - ay}px`;
+    c.style.width = `${Math.hypot(mx - px, my - py)}px`;
+    const tourne = `rotate(${Math.atan2(my - py, mx - px)}rad)`;
+    arene.append(c);
+    c.animate([
+      { transform: `${tourne} scaleX(.2)`, opacity: 0 }, { transform: `${tourne} scaleX(1)`, opacity: .9, offset: 0.4 },
+      { transform: `${tourne} scaleX(1)`, opacity: 0 }],
+    { duration: 350, delay: delai, easing: 'ease-out', fill: 'backwards' }).onfinish = () => c.remove();
   }
 
   // Super-attaque (après SUPER bonnes réponses d'affilée) : trois étoiles filent de l'avatar vers le monstre.
@@ -246,10 +286,33 @@ function lancer(zone, contenu, difficile) {
         { transform: `translate(calc(${mx - px}px - 50%), calc(${my - py}px - 50%)) scale(1)`, opacity: 0 }],
       { duration: 500, delay: delai + k * 90, easing: 'ease-in', fill: 'backwards' }).onfinish = () => s.remove();
     }
+    bouger(arene, TREMBLE, { duration: 250, delay: delai + 450 }); // quand les étoiles arrivent
+  }
+
+  // Victoire : le monstre tourne en rétrécissant et part en fumée (volutes grises qui montent en s'étalant,
+  // chacune sur son chemin, demande du 2026-11-02 : pas un nuage dessiné). Moins d'animations : il penche (CSS .vaincu).
+  function vaincre(delai) {
+    if (calme()) return setTimeout(() => monstre.classList.add('vaincu'), delai);
+    const r = monstre.getBoundingClientRect();
+    const a = arene.getBoundingClientRect();
+    bouger(monstre, DISPARAIT, { duration: 600, delay: delai + 300, easing: 'ease-in', fill: 'forwards' });
+    for (let k = 0; k < 10; k++) {
+      const f = el('span', { class: 'fumee', 'aria-hidden': 'true' });
+      f.style.left = `${r.left - a.left + r.width / 2 + (Math.random() - 0.5) * r.width * 0.5}px`;
+      f.style.top = `${r.top - a.top + r.height * 0.6}px`;
+      arene.append(f);
+      const dx = (Math.random() - 0.5) * 3; // en rem : chaque volute dérive de son côté
+      f.animate([
+        { transform: 'translate(-50%, -50%) scale(.3)', opacity: 0 },
+        { transform: `translate(calc(-50% + ${dx / 3}rem), calc(-50% - .75rem)) scale(.9)`, opacity: .85, offset: 0.3 },
+        { transform: `translate(calc(-50% + ${dx}rem), calc(-50% - ${2.5 + Math.random() * 1.5}rem)) scale(${1.6 + Math.random() * 0.8})`, opacity: 0 }],
+      { duration: 1100 + Math.random() * 400, delay: delai + 550 + k * 60, easing: 'ease-out', fill: 'backwards' }).onfinish = () => f.remove();
+    }
   }
 
   // Début du combat : le monstre arrive par la droite, l'avatar par la gauche, puis les cadres et leurs cœurs.
   function entree() {
+    bouger(arene, APPROCHE, { duration: 900 });
     bouger(monstre, DE_DROITE, { duration: 600 });
     bouger(prof, DE_GAUCHE, { duration: 600 });
     [cadreBoss, cadreNoe].forEach((c) => bouger(c, [{ opacity: 0 }, { opacity: 1 }], { duration: 250, delay: 400, fill: 'backwards' }));
@@ -262,6 +325,7 @@ function lancer(zone, contenu, difficile) {
     annonce.replaceChildren(icone(ic), el('p', {}, el('strong', {}, titre), el('span', { class: but === 'protege' ? '' : 'explication' }, el('br'),
       but === 'protege' && bouclier ? 'Encore une bonne réponse pour le toucher !' : explication)), boutonMusique);
   }
+
 
   // Fin du combat : l'avatar de l'arène prend la pose, l'écran de fin n'en ajoute pas un second.
   function fin(pose, ic, titreTexte, phrase, bouton) {
@@ -278,6 +342,7 @@ function lancer(zone, contenu, difficile) {
   function tour(_premierCoup, juste) {
     arreter();
     preparation?.cancel(); // le monstre ne se prépare plus : on vient de répondre
+    geste?.cancel();
     let parade = 0;
     if (juste !== undefined) {
       serie = juste ? serie + 1 : 0;
@@ -293,18 +358,24 @@ function lancer(zone, contenu, difficile) {
       // Plus qu'un cœur pour moi (combat normal) ou monstre à mi-vie (difficile) : la musique devient stressante.
       if (!stressante && vies.boss && vies.noe && (difficile ? vies.boss <= 2 : vies.noe === 1)) {
         stressante = true;
+        if (!difficile) arene.classList.add('tension'); // cadre rouge, fixe (CSS) ; pas dans le combat difficile
         jouer(`${musique}-un-coeur`, true);
       }
     }
     if (!vies.boss) {
-      setTimeout(() => monstre.classList.add('vaincu'), parade);
+      vaincre(parade);
       fin('bravo', 'sourire', difficile ? 'Incroyable, bravo !' : 'C\'est fini, bravo !',
         `On a ${difficile ? 'vaincu' : 'battu'} ${nom} ensemble !`, 'Recommencer');
       bouger(prof, DANSE, { duration: 900, delay: parade + 450 });
+      [...coeursNoe.querySelectorAll('.plein')].forEach((c, k) => bouger(c, SAUTE, { duration: 400, delay: parade + 1400 + k * 150 }));
       return fete(zone);
     }
     if (!vies.noe || questions === LIMITE) {
       fin('encourage', 'bulle', vies.noe ? `${Nom} s'est enfui !` : `${Nom} ${difficile ? 'était trop fort' : 'a gagné'} cette fois.`, 'On réessaie ?', 'Réessayer');
+      // Fuite (P5-P6) : le monstre part par la droite, après les animations de la réponse ; moins d'animations : il disparaît.
+      if (vies.noe && !bouger(monstre, FUITE, { duration: 700, delay: 1100, easing: 'ease-in', fill: 'forwards' })) monstre.style.visibility = 'hidden';
+      // Défaite : le monstre sautille deux fois, content, sans se moquer (version douce demandée le 2026-11-02).
+      if (!vies.noe) bouger(monstre, DANSE, { duration: 900, delay: 1100 });
       return bouger(prof, RELEVE, { duration: 600, delay: 1300 }); // je me relève, prêt pour la revanche
     }
     // Le bouclier reste annoncé tant qu'il n'est pas cassé (deux bonnes réponses d'affilée).
@@ -312,7 +383,9 @@ function lancer(zone, contenu, difficile) {
     if (juste !== undefined) zone.classList.add('suite');
     annoncer();
     // Une fois les animations de la réponse finies (ou l'entrée du combat), le monstre montre ce qu'il prépare.
-    preparation = bouger(monstre, PREPARE[but], { duration: 600, delay: juste === undefined ? 1300 : 1800 });
+    const d = juste === undefined ? 1300 : 1800;
+    preparation = bouger(monstre, PREPARE[but], { duration: 600, delay: d });
+    geste = bouger(annonce.firstChild, GESTE[but], { duration: 600, delay: d });
     questions += 1;
     if (!plan.length) plan = planOie(ctx.dispo, 20);
     const q = question(plan.shift(), ctx, true, 1, 0, tour); // un seul essai ; total 0 : ni compteur ni « Terminer »

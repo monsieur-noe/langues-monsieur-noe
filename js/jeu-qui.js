@@ -1,11 +1,11 @@
 // Jeu « Qui est-ce ? » (cahier 7.9, demande du 2026-10-28) : l'enfant écoute et lit une description,
 // puis touche la bonne personne parmi les dessins. Chaque personne une fois, dans le désordre.
 // « Essaie encore ! » et une seconde chance, puis la bonne personne est montrée.
-import { el, icone } from './outils.js?v=de5c665b';
-import { cheminSon } from './donnees.js?v=de5c665b';
-import { creerLecteur, arreter } from './audio.js?v=de5c665b';
-import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=de5c665b';
-import { avatar } from './avatar.js?v=de5c665b';
+import { el, icone } from './outils.js?v=5d01e26e';
+import { cheminSon } from './donnees.js?v=5d01e26e';
+import { creerLecteur, arreter } from './audio.js?v=5d01e26e';
+import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=5d01e26e';
+import { avatar } from './avatar.js?v=5d01e26e';
 
 const CHOIX = 4; // 4 personnes à l'écran, même en P3 (demande de l'enseignant)
 
