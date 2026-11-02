@@ -96,7 +96,8 @@ h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: bala
   text-decoration: none;
   transition: transform var(--duree) var(--ease), border-color var(--duree);
 }
-.retour:hover { transform: translateX(-3px); border-color: var(--encre); }
+/* Survol seulement avec une souris : sur iPhone, le survol reste « collé » à l'endroit touché et encadrait la réponse de la question suivante (2026-11-02). */
+@media (hover: hover) { .retour:hover { transform: translateX(-3px); border-color: var(--encre); } }
 /* Dans l'en-tête du chapitre, la règle « .marque > a » (nom du site) s'applique aussi : on recentre la flèche. */
 .marque > .retour { display: grid; padding: 0; }
 
@@ -129,7 +130,7 @@ h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: bala
 .liste > li:nth-child(4) { animation-delay: .18s; }
 .liste > li:nth-child(n+5) { animation-delay: .24s; }
 @keyframes arrive { from { transform: translateY(.75rem); opacity: 0; } }
-a.choix:hover { transform: translateY(-3px); box-shadow: var(--ombre-haute); border-color: var(--acc); }
+@media (hover: hover) { a.choix:hover { transform: translateY(-3px); box-shadow: var(--ombre-haute); border-color: var(--acc); } }
 a.choix:active { transform: scale(.985); box-shadow: var(--ombre); }
 .choix .titre { min-width: 0; font-size: 1.375rem; font-weight: 700; line-height: 1.15; hyphens: auto; overflow-wrap: anywhere; }
 .fleche {
@@ -139,7 +140,7 @@ a.choix:active { transform: scale(.985); box-shadow: var(--ombre); }
   background: var(--fond);
   transition: transform var(--duree) var(--ease), background-color var(--duree), color var(--duree);
 }
-a.choix:hover .fleche { transform: translateX(4px); background: var(--acc); color: var(--surface); }
+@media (hover: hover) { a.choix:hover .fleche { transform: translateX(4px); background: var(--acc); color: var(--surface); } }
 .num {
   flex: none;
   width: 3.25rem; height: 3.25rem; border-radius: 1rem;
@@ -149,7 +150,7 @@ a.choix:hover .fleche { transform: translateX(4px); background: var(--acc); colo
   transition: transform var(--duree) var(--ease);
 }
 img.num { object-fit: contain; background: var(--surface); border: 1.5px solid var(--trait); }
-a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
+@media (hover: hover) { a.choix:hover .num { transform: rotate(-6deg) scale(1.06); } }
 .bulle {
   position: relative; flex: none;
   padding: .3rem .75rem; border-radius: .9rem;
@@ -185,7 +186,7 @@ a.choix:hover .num { transform: rotate(-6deg) scale(1.06); }
   color: var(--gris); font-size: 1.25rem; line-height: 1.1; text-align: center; text-decoration: none;
   transition: color var(--duree), background-color var(--duree) var(--ease), box-shadow var(--duree) var(--ease);
 }
-.seg:hover { color: var(--encre); background: rgba(255, 255, 255, .55); }
+@media (hover: hover) { .seg:hover { color: var(--encre); background: rgba(255, 255, 255, .55); } }
 .seg[aria-current] { color: var(--encre); background: var(--surface); box-shadow: var(--ombre); font-weight: 700; }
 .seg[aria-current] .ic { color: var(--acc); }
 .seg:active { color: var(--encre); background: var(--surface); box-shadow: var(--ombre); } /* l'onglet touché s'allume aussitôt, avant le changement de page */
@@ -238,7 +239,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .arriere { transform: rotateY(180deg); border-color: var(--acc); }
 .retournee .avant { transform: rotateY(-180deg); }
 .retournee .arriere { transform: rotateY(0); }
-.carte:hover .face { border-color: var(--acc); }
+@media (hover: hover) { .carte:hover .face { border-color: var(--acc); } }
 .tuile, .image, .carre { width: 9.5rem; height: 9.5rem; max-width: 100%; border-radius: 1.25rem; }
 .tuile {
   display: grid; place-items: center; padding: .75rem;
@@ -275,7 +276,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   transition: transform var(--duree) var(--ease);
 }
 .lire .ic { width: 2rem; height: 2rem; }
-.lire:hover { transform: scale(1.06); }
+@media (hover: hover) { .lire:hover { transform: scale(1.06); } }
 .lire:active { transform: scale(.94); }
 /* Bouton « tortue » : réécouter plus lentement (56 px, plus discret que le bouton principal). */
 .tortue {
@@ -286,7 +287,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   transition: transform var(--duree) var(--ease), border-color var(--duree);
 }
 .tortue .ic { width: 2rem; height: 2rem; }
-.tortue:hover { border-color: var(--acc); }
+@media (hover: hover) { .tortue:hover { border-color: var(--acc); } }
 .tortue:active { transform: scale(.94); }
 /* Pendant le son : des ondes douces s'éloignent du bouton, comme des ronds dans l'eau (aucun flash). */
 .lire.joue { animation: ondes 1.4s ease-out infinite; }
@@ -318,7 +319,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   border: 1.5px solid var(--trait); border-radius: 1.25rem; cursor: pointer;
   transition: border-color var(--duree), transform var(--duree) var(--ease);
 }
-.defile:hover:not(:disabled) { border-color: var(--acc); }
+@media (hover: hover) { .defile:hover:not(:disabled) { border-color: var(--acc); } }
 .defile:active:not(:disabled) { transform: scale(.94); }
 .defile:disabled { opacity: .35; cursor: default; }
 .defile .ic { width: 2rem; height: 2rem; }
@@ -399,7 +400,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   background: var(--surface); border: 2px solid var(--trait); border-radius: 1.25rem; box-shadow: var(--ombre); cursor: pointer;
   transition: border-color var(--duree), transform var(--duree) var(--ease);
 }
-.reponse:hover:not(:disabled) { border-color: var(--acc); }
+@media (hover: hover) { .reponse:hover:not(:disabled) { border-color: var(--acc); } }
 .reponse:active:not(:disabled) { transform: scale(.97); }
 .reponse:disabled { cursor: default; }
 .reponse:disabled:not(.juste):not(.faux) { opacity: .5; }
@@ -570,7 +571,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   border: 1.5px solid var(--trait); border-radius: 1rem;
   font-weight: 700; text-decoration: none;
 }
-.retour-jeux:hover { border-color: var(--encre); }
+@media (hover: hover) { .retour-jeux:hover { border-color: var(--encre); } }
 /* Juist of fout : deux grands boutons, pictogramme au-dessus du texte. */
 .juist .reponse { flex-direction: column; min-height: 6rem; font-size: 1.25rem; font-weight: 700; }
 .juist .reponse .ic { width: 2.5rem; height: 2.5rem; color: var(--acc); }
