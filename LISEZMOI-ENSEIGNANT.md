@@ -244,6 +244,11 @@ Gardez aussi vos enregistrements d'origine chez vous : ils ne sont pas dans le d
 2. Rechargez la page sans mémoire : **Ctrl** + **F5** (sur téléphone : fermez l'onglet et rouvrez le site).
 3. Ouvrez https://github.com/monsieur-noe/langues-monsieur-noe/actions : la ligne du haut, « pages build and deployment », montre une coche verte quand la publication est finie, un rond jaune quand elle est en cours, une croix rouge si elle a échoué (attendez 10 minutes, puis demandez à Claude).
 4. Avec GitHub Desktop : vérifiez que vous avez bien cliqué sur « Push origin » (partie 2 B, étape 6).
+5. Croix rouge sur la ligne « deploy » avec « Timeout reached » : GitHub a mis trop de temps, le site n'y est pour rien. Un nouvel envoi (même une petite correction) relance la publication.
+
+**Changer de logo**
+
+Remplacer `contenu/logo.svg` change l'icône de l'onglet, pas celle de l'écran d'accueil des téléphones (les images de `icones/`). Demandez à Claude de les refaire.
 
 **GitHub Desktop : « Push origin » n'apparaît pas**
 
