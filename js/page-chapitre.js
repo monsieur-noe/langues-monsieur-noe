@@ -1,11 +1,11 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=e79681db';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=e79681db';
-import { afficherDecouvre } from './cartes.js?v=e79681db';
-import { afficherExercices } from './exercices.js?v=e79681db';
-import { avatar, chargerAvatar } from './avatar.js?v=e79681db';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=e79681db';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=bc11117c';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=bc11117c';
+import { afficherDecouvre } from './cartes.js?v=bc11117c';
+import { afficherExercices } from './exercices.js?v=bc11117c';
+import { avatar, chargerAvatar } from './avatar.js?v=bc11117c';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=bc11117c';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },

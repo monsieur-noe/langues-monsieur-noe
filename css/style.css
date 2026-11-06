@@ -123,6 +123,10 @@ h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: bala
   text-decoration: none;
   transition: transform var(--duree) var(--ease), box-shadow var(--duree) var(--ease), border-color var(--duree) var(--ease);
 }
+/* Accueil : lien vers « Sur mon téléphone ou ma tablette », aux couleurs du logo ; inutile sur un ordinateur (souris). */
+#raccourci { margin-top: 1rem; min-height: 3.5rem; background: #fff4e5; border-color: #f08a24; }
+#raccourci > .ic { width: 2rem; height: 2rem; flex: none; }
+@media (hover: hover) and (pointer: fine) { #raccourci { display: none; } }
 /* Les cartes de choix (langue, année, chapitre) arrivent l'une après l'autre en glissant. */
 .liste > li { animation: arrive .3s var(--ease) backwards; }
 .liste > li:nth-child(2) { animation-delay: .06s; }
@@ -433,8 +437,8 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 /* Taille réglée par la hauteur : un personnage en pied est plus haut que large. */
 .avatar { flex: none; height: 7rem; width: auto; max-width: 25vw; object-fit: contain; }
 .tete-bilan .avatar { height: 9rem; }
-#langues + .avatar { display: block; height: 15rem; max-width: 50vw; margin: 1.5rem auto 0; } /* accueil : « bonjour » sous les langues */
-#langues + .avatar[hidden] { display: none; }.avatar.fondu { animation: fondu .2s ease-out; }
+#raccourci + .avatar { display: block; height: 15rem; max-width: 50vw; margin: 1.5rem auto 0; } /* accueil : « bonjour » sous les langues */
+#raccourci + .avatar[hidden] { display: none; }.avatar.fondu { animation: fondu .2s ease-out; }
 @keyframes fondu { from { opacity: 0; } }
 /* « Bravo » : en plus du fondu, un seul petit saut. */
 .avatar.fondu[src*="bravo."] { animation: fondu .2s ease-out, saut .45s ease-out; }
@@ -512,8 +516,8 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 /* ---------- Pages de texte (parents, confidentialité) ---------- */
 
 .prose h2 { margin-top: 1.75rem; font-size: 1.5rem; }
-.prose p, .prose ul { margin-top: .6rem; max-width: 36rem; }
-.prose ul { padding-left: 1.25rem; }
+.prose p, .prose ul, .prose ol { margin-top: .6rem; max-width: 36rem; }
+.prose ul, .prose ol { padding-left: 1.25rem; }
 .prose li + li { margin-top: .5rem; }
 .prose a { overflow-wrap: anywhere; }
 
