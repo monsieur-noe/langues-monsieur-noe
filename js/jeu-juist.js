@@ -1,11 +1,11 @@
 // Jeu « Juist of fout ? » (cahier 7.9) : une image, un mot entendu ; l'enfant dit s'ils vont ensemble.
 // Un seul essai par question (deux boutons), puis le bon mot est montré et joué. 8 questions.
-import { el, icone } from './outils.js?v=bc11117c';
-import { cheminSon } from './donnees.js?v=bc11117c';
-import { creerLecteur, arreter } from './audio.js?v=bc11117c';
-import { visuel } from './cartes.js?v=bc11117c';
-import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=bc11117c';
-import { avatar } from './avatar.js?v=bc11117c';
+import { el, icone } from './outils.js?v=02dcbcb3';
+import { cheminSon } from './donnees.js?v=02dcbcb3';
+import { creerLecteur, arreter } from './audio.js?v=02dcbcb3';
+import { visuel } from './cartes.js?v=02dcbcb3';
+import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=02dcbcb3';
+import { avatar } from './avatar.js?v=02dcbcb3';
 
 const NOMBRE = 8;
 const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
