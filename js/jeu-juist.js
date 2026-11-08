@@ -1,14 +1,14 @@
 // Jeu « Juist of fout ? » (cahier 7.9) : une image, un mot entendu ; l'enfant dit s'ils vont ensemble.
 // Un seul essai par question (deux boutons), puis le bon mot est montré et joué. 8 questions.
-import { el, icone } from './outils.js?v=02dcbcb3';
-import { cheminSon } from './donnees.js?v=02dcbcb3';
-import { creerLecteur, arreter } from './audio.js?v=02dcbcb3';
-import { visuel } from './cartes.js?v=02dcbcb3';
-import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=02dcbcb3';
-import { avatar } from './avatar.js?v=02dcbcb3';
+import { el, icone, muet } from './outils.js?v=03811efd';
+import { cheminSon } from './donnees.js?v=03811efd';
+import { creerLecteur, arreter } from './audio.js?v=03811efd';
+import { visuel } from './cartes.js?v=03811efd';
+import { melanger, tirer, bilanEntraine, compteur, bravo } from './exercices.js?v=03811efd';
+import { avatar } from './avatar.js?v=03811efd';
 
 const NOMBRE = 8;
-const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && m.son);
+const avecImageEtSon = (contenu) => contenu.mots.filter((m) => m.ind.type !== 'francais' && (m.son || muet)); // version muette : le mot est écrit
 
 // `nombre` questions : chaque image une fois avant toute répétition ; le mot entendu est le bon
 // une fois sur deux exactement, sinon un autre mot du chapitre.
@@ -22,8 +22,8 @@ export function planJuist(pool, nombre) {
 
 function question(q, ctx, rang, fin) {
   const { langue, dossier } = ctx;
-  const ecoute = creerLecteur(cheminSon(q.entendu, dossier), { nom: 'le mot à écouter' });
-  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('haut-parleur'), 'Écoute le mot. Est-ce bien cette image ?');
+  const ecoute = muet ? el('p', { class: 'mot mot-muet', lang: langue }, q.entendu.mot) : creerLecteur(cheminSon(q.entendu, dossier), { nom: 'le mot à écouter' });
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone(muet ? 'oeil' : 'haut-parleur'), muet ? 'Lis le mot. Est-ce bien cette image ?' : 'Écoute le mot. Est-ce bien cette image ?');
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const message = el('div', { class: 'message-ex' }, retour);
   const solution = el('div', { class: 'pile', hidden: '' });
@@ -31,7 +31,7 @@ function question(q, ctx, rang, fin) {
   const vaEnsemble = q.entendu === q.image;
   const boutons = [[true, 'pouce', 'Oui, ça va !'], [false, 'hesite', 'Non, pas ça']].map(([oui, ic, texte]) => {
     // Fermés jusqu'à la première écoute : on répond à ce qu'on a entendu, pas au hasard.
-    const b = el('button', { type: 'button', class: 'reponse', disabled: '' }, icone(ic), el('span', {}, texte));
+    const b = el('button', { type: 'button', class: 'reponse', disabled: !muet && '' }, icone(ic), el('span', {}, texte));
     b.juste = oui === vaEnsemble;
     return b;
   });
@@ -45,10 +45,10 @@ function question(q, ctx, rang, fin) {
       retour.replaceChildren(icone(b.juste ? 'sourire' : 'bulle'), b.juste ? bravo() : 'Pas grave, continue !');
       message.prepend(avatar(b.juste ? 'content' : 'encourage'));
       // Le bon mot de l'image, écrit et joué (après un toucher : permis sur iPhone).
-      const son = creerLecteur(cheminSon(q.image, dossier), { nom: q.image.mot });
+      const son = muet ? '' : creerLecteur(cheminSon(q.image, dossier), { nom: q.image.mot });
       solution.replaceChildren(el('p', {}, 'Sur l\'image : ', el('span', { class: 'mot', lang: langue }, q.image.mot)), son);
       solution.hidden = false;
-      son.jouer();
+      if (son) son.jouer();
       suite.hidden = false;
       suite.focus();
       suite.addEventListener('click', () => fin(b.juste));

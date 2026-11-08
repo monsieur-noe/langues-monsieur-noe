@@ -814,7 +814,9 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   .combat-boss .reponse .mot { font-size: 1.375rem; }
   /* P4 : 4 réponses. Mots sur deux colonnes, images sur une ligne : la même hauteur que les 3 réponses de P3. */
   .combat-boss .reponses.n4 { grid-template-columns: repeat(2, 1fr); max-width: none; }
-  .combat-boss .reponses.visuels.n4 { grid-template-columns: repeat(4, 1fr); max-width: none; }
+  /* minmax(0, 1fr) : quatre colonnes égales, même quand un nombre (« 100 », « 19th ») est plus large que sa case. */
+  .combat-boss .reponses.visuels.n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: none; }
+  .combat-boss .reponses.visuels.n4 .tuile.court { font-size: min(2.75rem, 6.5vw); } /* tient dans la case, 20 px au moins dès 308 px de large */
 }
 /* Téléphone : pendant le combat, la barre du titre du chapitre est cachée à l'œil (toujours lue par les lecteurs
    d'écran). Ainsi tout tient sans que la page doive remonter (iPhone). */
@@ -840,3 +842,9 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .oups .avatar { height: 9rem; }
 .oups-titre { font-size: 1.5rem; font-weight: 700; }
 .oups .action { margin-top: .75rem; }
+
+/* Version muette (cahier 7.10) : bandeau discret en haut de page ; le mot écrit remplace le son à écouter. */
+.bandeau-muet { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 1rem; margin: 0 0 1rem; padding: 0 1rem; border-radius: 1rem; background: var(--doux); color: var(--gris); font-size: 1.25rem; }
+.bandeau-muet a { display: inline-flex; align-items: center; min-height: 3.5rem; color: var(--encre); font-weight: 700; }
+.mot-muet { margin: 0; color: var(--acc); text-align: center; }
+.face-memory .mot { font-size: 1.5rem; }

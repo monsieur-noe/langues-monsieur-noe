@@ -12,6 +12,27 @@ export function parametre(nom) {
   return /^[a-z0-9-]+$/.test(v) ? v : '';
 }
 
+// Version muette (cahier 7.10) : « ?muet=1 » dans l'adresse. Rien n'est enregistré : c'est l'adresse qui porte le réglage.
+export const muet = typeof location !== 'undefined' && new URLSearchParams(location.search).get('muet') === '1';
+
+if (muet) {
+  // Chaque lien du site garde « muet=1 », au moment du toucher (les liens sont souvent créés après le chargement).
+  addEventListener('click', (e) => {
+    const a = e.target.closest?.('a[href]');
+    if (!a || a.target || a.hasAttribute('data-avec-son')) return;
+    const u = new URL(a.href);
+    if (u.origin !== location.origin || u.searchParams.has('muet')) return;
+    u.searchParams.set('muet', '1');
+    a.href = u.href;
+  }, true);
+  // Bandeau en haut de la page, pour que l'enseignant voie quelle version est ouverte.
+  const avecSon = new URL(location.href);
+  avecSon.searchParams.delete('muet');
+  // Une seule fois, même si une ancienne page gardée en mémoire charge ce fichier deux fois (deux numéros de version).
+  if (!document.querySelector('.bandeau-muet')) document.querySelector('main')?.prepend(el('p', { class: 'bandeau-muet' }, 'Version sans son',
+    el('a', { href: avecSon.href, 'data-avec-son': '' }, 'Remettre le son')));
+}
+
 // Couleur d'un chapitre (ou d'une année), d'après son rang dans la liste (classes du CSS).
 export function couleur(rang) {
   return `couleur-${rang % 5}`;

@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES } from './outils.js?v=02dcbcb3';
+import { LANGUES, muet } from './outils.js?v=03811efd';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -260,6 +260,8 @@ export async function chargerTexte(chemin) {
 // Chaque fichier n'est demandé qu'une fois par page, même si plusieurs parties de la page le cherchent.
 const dejaDemandes = new Map();
 export async function fichiersPresents(chemins) {
+  // Version muette : aucun son n'existe. Le site cache alors haut-parleurs, « Écoute » et dictées, comme pour un son absent.
+  if (muet) chemins = chemins.filter((c) => !c.endsWith('.m4a'));
   const reponses = await Promise.all(chemins.map((chemin) => {
     if (!dejaDemandes.has(chemin)) {
       // Hors connexion ou autre souci : le fichier compte comme absent, sans message.

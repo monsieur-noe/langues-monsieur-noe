@@ -1,16 +1,16 @@
 // Jeu « Le memory qui parle » (cahier 7.9) : des cartes retournées ; chaque paire = une carte « son »
 // (qui dit le mot quand on la retourne) et la carte de son indice (dessin, couleur, chiffre, ou le français).
 // Deux cartes qui ne vont pas ensemble se retournent seules après environ une seconde. Pas de limite de coups.
-import { el, icone } from './outils.js?v=02dcbcb3';
-import { cheminSon } from './donnees.js?v=02dcbcb3';
-import { creerLecteur, arreter } from './audio.js?v=02dcbcb3';
-import { visuel } from './cartes.js?v=02dcbcb3';
-import { melanger, bilanEntraine } from './exercices.js?v=02dcbcb3';
-import { avatar } from './avatar.js?v=02dcbcb3';
+import { el, icone, muet } from './outils.js?v=03811efd';
+import { cheminSon } from './donnees.js?v=03811efd';
+import { creerLecteur, arreter } from './audio.js?v=03811efd';
+import { visuel } from './cartes.js?v=03811efd';
+import { melanger, bilanEntraine } from './exercices.js?v=03811efd';
+import { avatar } from './avatar.js?v=03811efd';
 
 const PAIRES = 6;
 const PAUSE = 1000; // le temps de voir les deux cartes avant qu'elles se retournent (pas un chronomètre)
-const avecSon = (contenu) => contenu.mots.filter((m) => m.son);
+const avecSon = (contenu) => contenu.mots.filter((m) => m.son || muet); // version muette : la carte « son » montre le mot écrit
 
 // Les cartes : pour chaque mot tiré (6 au plus), une carte « son » et une carte « indice », mélangées.
 export function jeuMemory(mots, paires = PAIRES) {
@@ -26,8 +26,9 @@ function lancer(zone, contenu) {
   let bloque = false; // pendant la pause, on ne retourne rien d'autre
   let trouvees = 0;
 
-  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('haut-parleur'),
-    images ? 'Trouve les paires : le son et l\'image.' : 'Trouve les paires : le son et le mot.');
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone(muet ? 'cartes' : 'haut-parleur'),
+    muet ? (images ? 'Trouve les paires : le mot et l\'image.' : 'Trouve les paires : le mot et le français.')
+      : images ? 'Trouve les paires : le son et l\'image.' : 'Trouve les paires : le son et le mot.');
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const av = avatar('neutre');
   av.hidden = true; // l'avatar n'apparaît qu'après une paire trouvée
@@ -35,8 +36,8 @@ function lancer(zone, contenu) {
 
   const boutons = cartes.map((c) => {
     // Un son par carte « son », joué par le lecteur unique du site.
-    const lecteur = c.son ? creerLecteur(cheminSon(c.mot, dossier), { nom: 'le mot' }) : null;
-    const face = el('span', { class: 'face-memory' }, c.son ? icone('haut-parleur') : visuel(c.mot, c.mot.ind, langue));
+    const lecteur = c.son && !muet ? creerLecteur(cheminSon(c.mot, dossier), { nom: 'le mot' }) : null;
+    const face = el('span', { class: 'face-memory' }, c.son ? (muet ? el('span', { class: 'mot', lang: langue }, c.mot.mot) : icone('haut-parleur')) : visuel(c.mot, c.mot.ind, langue));
     face.querySelector('img')?.setAttribute('loading', 'eager'); // face cachée : l'image doit être prête avant qu'on la retourne
     const b = el('button', { type: 'button', class: 'reponse carte-memory', 'aria-label': 'Carte cachée' },
       el('span', { class: 'dos-memory', 'aria-hidden': 'true' }, '?'), face);
@@ -44,13 +45,13 @@ function lancer(zone, contenu) {
       b.classList.toggle('retournee', oui);
       if (!oui) b.classList.add('recachee'); // le « ? » revient avec le même retournement, à l'envers
       if (oui) b.removeAttribute('aria-label'); else b.setAttribute('aria-label', 'Carte cachée');
-      if (oui && c.son) b.setAttribute('aria-label', 'Carte son');
+      if (oui && c.son) b.setAttribute('aria-label', muet ? 'Carte mot' : 'Carte son');
     };
     b.addEventListener('click', () => {
-      if (c.son && (b.classList.contains('trouvee') || b === retournee?.b)) return lecteur.jouer(); // réécouter
+      if (c.son && (b.classList.contains('trouvee') || b === retournee?.b)) return lecteur?.jouer(); // réécouter
       if (bloque || b.classList.contains('retournee')) return;
       montrer(true);
-      if (c.son) lecteur.jouer(); // après un toucher : permis sur iPhone
+      if (c.son) lecteur?.jouer(); // après un toucher : permis sur iPhone
       if (!retournee) { retournee = { c, b, montrer }; return; }
       const premiere = retournee;
       retournee = null;
@@ -82,7 +83,7 @@ function lancer(zone, contenu) {
 
 export default {
   id: 'memory',
-  nom: 'Le memory qui parle',
+  nom: muet ? 'Le memory des mots' : 'Le memory qui parle',
   icone: 'cartes',
   // Au moins 3 mots avec un son (3 paires).
   possible: (contenu) => avecSon(contenu).length >= 3,

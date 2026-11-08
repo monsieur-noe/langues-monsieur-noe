@@ -1,17 +1,17 @@
 // Jeu « Qui est-ce ? » (cahier 7.9, demande du 2026-10-28) : l'enfant écoute et lit une description,
 // puis touche la bonne personne parmi les dessins. Chaque personne une fois, dans le désordre.
 // « Essaie encore ! » et une seconde chance, puis la bonne personne est montrée.
-import { el, icone } from './outils.js?v=02dcbcb3';
-import { cheminSon } from './donnees.js?v=02dcbcb3';
-import { creerLecteur, arreter } from './audio.js?v=02dcbcb3';
-import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=02dcbcb3';
-import { avatar } from './avatar.js?v=02dcbcb3';
+import { el, icone, muet } from './outils.js?v=03811efd';
+import { cheminSon } from './donnees.js?v=03811efd';
+import { creerLecteur, arreter } from './audio.js?v=03811efd';
+import { melanger, propositions, bilanEntraine, compteur, bravo } from './exercices.js?v=03811efd';
+import { avatar } from './avatar.js?v=03811efd';
 
 const CHOIX = 4; // 4 personnes à l'écran, même en P3 (demande de l'enseignant)
 
 function question(d, ctx, rang, total, fin) {
   const { langue, dossier, descriptions } = ctx;
-  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('loupe'), 'Écoute et choisis la bonne personne.');
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('loupe'), muet ? 'Lis et choisis la bonne personne.' : 'Écoute et choisis la bonne personne.');
   const texte = el('p', { class: 'description', lang: langue }, ...d.phrases.flatMap((p, k) => (k ? [el('br'), p] : [p])));
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const message = el('div', { class: 'message-ex' }, retour);

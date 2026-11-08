@@ -5,6 +5,8 @@
 
 // Introduction jouée une fois, puis boucle [début, fin] en secondes, trouvée par tests/boucler-musiques.py.
 // Les musiques « un-coeur » arrivent en plein combat : elles commencent directement à leur boucle.
+import { muet } from './outils.js?v=03811efd';
+
 const BOUCLES = {
   'combat': [8.85, 54.379583],
   'combat-un-coeur': [0.5, 45.668917],
@@ -120,6 +122,7 @@ export function amorcer() {
 
 // Joue la musique `nom` ; `direct` : à sa boucle, en fondu enchaîné avec la précédente (plus qu'un cœur).
 export function jouer(nom, direct = false) {
+  if (muet) return; // version muette : pas de musique
   preparer();
   charger(nom).catch(() => {}); // déjà prête au premier toucher, pour qu'elle parte sans attendre
   enCours = nom;

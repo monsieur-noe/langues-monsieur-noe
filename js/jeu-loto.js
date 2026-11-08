@@ -1,18 +1,18 @@
 // Jeu « Le loto des sons » (cahier 7.9) : une grille d'images ; on écoute un mot, on touche son image,
 // elle reçoit un jeton. La première ligne complète donne « Bingo ! » ; on peut continuer jusqu'à la grille pleine.
-import { el, icone } from './outils.js?v=02dcbcb3';
-import { cheminSon } from './donnees.js?v=02dcbcb3';
-import { creerLecteur, arreter } from './audio.js?v=02dcbcb3';
-import { visuel } from './cartes.js?v=02dcbcb3';
-import { melanger, bilanEntraine, bravo } from './exercices.js?v=02dcbcb3';
-import { avatar } from './avatar.js?v=02dcbcb3';
+import { el, icone, muet } from './outils.js?v=03811efd';
+import { cheminSon } from './donnees.js?v=03811efd';
+import { creerLecteur, arreter } from './audio.js?v=03811efd';
+import { visuel } from './cartes.js?v=03811efd';
+import { melanger, bilanEntraine, bravo } from './exercices.js?v=03811efd';
+import { avatar } from './avatar.js?v=03811efd';
 
 // Mots utilisables dans la grille : avec un indice visuel et un son, et jamais deux fois le même indice
 // (deux « texte:10 » ou deux fois la même couleur rendraient deux cases identiques : on n'en garde qu'une).
 export function motsDuLoto(mots) {
   const parIndice = new Map();
   for (const m of melanger(mots)) {
-    if (m.ind.type === 'francais' || !m.son) continue;
+    if (m.ind.type === 'francais' || !(m.son || muet)) continue; // version muette : le mot est écrit
     const cle = `${m.ind.type}:${m.ind.src || m.ind.fond || m.ind.texte}`;
     if (!parIndice.has(cle)) parIndice.set(cle, m);
   }
@@ -48,7 +48,7 @@ function lancer(zone, contenu) {
   let essais = 0;
   let lecteur;
 
-  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone('haut-parleur'), 'Écoute et touche la bonne image.');
+  const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone(muet ? 'oeil' : 'haut-parleur'), muet ? 'Lis et touche la bonne image.' : 'Écoute et touche la bonne image.');
   const ecoute = el('div', { class: 'ecoute-loto' });
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
   const av = avatar('neutre');
@@ -81,6 +81,12 @@ function lancer(zone, contenu) {
       return bilanEntraine(zone, () => lancer(zone, contenu), 'bravo', el('p', {}, 'Ta grille est pleine !'));
     }
     const mot = grille[appels[appel]];
+    if (muet) {
+      lecteur = el('p', { class: 'mot mot-muet', lang: langue }, mot.mot);
+      lecteur.jouer = () => {};
+      ecoute.replaceChildren(lecteur);
+      return ouvrir(true);
+    }
     lecteur = creerLecteur(cheminSon(mot, dossier), { nom: 'le mot à écouter' });
     // Les cases s'ouvrent à la première écoute : on touche ce qu'on a entendu, pas au hasard.
     lecteur.addEventListener('click', () => { if (suite.hidden) ouvrir(true); });
@@ -135,7 +141,7 @@ function lancer(zone, contenu) {
 
 export default {
   id: 'loto',
-  nom: 'Le loto des sons',
+  nom: muet ? 'Le loto des mots' : 'Le loto des sons',
   icone: 'grille',
   // Au moins 6 mots avec un indice visuel (dessin, couleur, chiffre) et un son.
   possible: (contenu) => tailleLoto(motsDuLoto(contenu.mots).length) > 0,
