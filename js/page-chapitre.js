@@ -1,11 +1,11 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=03811efd';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=03811efd';
-import { afficherDecouvre } from './cartes.js?v=03811efd';
-import { afficherExercices } from './exercices.js?v=03811efd';
-import { avatar, chargerAvatar } from './avatar.js?v=03811efd';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=03811efd';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=8e00c834';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=8e00c834';
+import { afficherDecouvre } from './cartes.js?v=8e00c834';
+import { afficherExercices } from './exercices.js?v=8e00c834';
+import { avatar, chargerAvatar } from './avatar.js?v=8e00c834';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=8e00c834';
 
 const RUBRIQUES = [
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
@@ -44,6 +44,8 @@ function afficherRubrique(donnees, jeux) {
 }
 
 function afficherExtras(donnees) {
+  // « Je joue » : ni conseil, ni Quizlet, ni pied de page (demande de l'enseignant du 2026-11-09).
+  if (rubrique.id === 'joue') { document.querySelector('.pied').hidden = true; return; }
   if (donnees.note_parents) {
     document.getElementById('note-parents').textContent = donnees.note_parents;
     document.getElementById('conseil').hidden = false;

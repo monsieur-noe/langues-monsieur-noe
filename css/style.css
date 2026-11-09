@@ -848,3 +848,13 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .bandeau-muet a { display: inline-flex; align-items: center; min-height: 3.5rem; color: var(--encre); font-weight: 700; }
 .mot-muet { margin: 0; color: var(--acc); text-align: center; }
 .face-memory .mot { font-size: 1.5rem; }
+
+/* Menu des jeux (2026-11-09) : onglets par famille, et choix « Normal » / « Difficile » sous un jeu qui a deux versions. */
+.familles { display: flex; flex-wrap: wrap; margin-top: 1rem; }
+.familles .seg { flex: 1 1 9rem; }
+button.choix { width: 100%; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+@media (hover: hover) { button.choix:hover { transform: translateY(-3px); box-shadow: var(--ombre-haute); border-color: var(--acc); } }
+button.choix[aria-expanded="true"] { border-color: var(--acc); }
+button.choix[aria-expanded="true"] .fleche { transform: rotate(90deg); }
+.versions { display: flex; gap: .75rem; margin-top: .5rem; animation: arrive .25s var(--ease) backwards; }
+.versions .choix { flex: 1; min-height: 3.5rem; justify-content: center; }

@@ -1,0 +1,46 @@
+/* Jeu « Les jumeaux » (js/jeu-jumeaux.js) : carte A (dessins à toucher) et carte B (sons ou mots écrits). */
+.cartes-jumeaux { display: grid; gap: .75rem; width: 100%; max-width: 40rem; }
+@media (min-width: 40rem) { .cartes-jumeaux { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+.carte-jumeaux { padding: .6rem; border: 2px solid var(--trait); border-radius: 1.25rem; background: var(--surface); box-shadow: var(--ombre); }
+.carte-jumeaux.b { background: var(--doux); }
+.grille-jumeaux { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; max-width: 16rem; margin: 0 auto; }
+.c6 .grille-jumeaux { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 20rem; }
+
+/* Carte A : dessins carrés ; le texte reste lisible (20 px au moins). */
+.dessin-jumeaux { padding: .35rem; min-height: 3.5rem; }
+.dessin-jumeaux .tuile.court { font-size: min(2.75rem, 9vw); }
+.c6 .dessin-jumeaux .tuile.court { font-size: min(2.5rem, 7vw); }
+.dessin-jumeaux .francais { font-size: 1.25rem; line-height: 1.15; overflow-wrap: anywhere; hyphens: auto; }
+.dessin-jumeaux.indique { outline: 5px solid var(--acc); outline-offset: 2px; } /* après deux essais : cadre épais, jamais clignotant */
+
+/* Carte B : une forme de couleur et son haut-parleur, ou le mot écrit. */
+.mot-jumeaux {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3rem;
+  min-height: 4rem; padding: .4rem; border: 2px solid transparent; border-radius: 1rem; background: var(--surface);
+}
+.carte-jumeaux.b .grille-jumeaux { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.c4 .carte-jumeaux.sons .grille-jumeaux { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 20rem; } /* les 4 sons sur une ligne : tout tient dans un téléphone */
+.c6 .carte-jumeaux.sons .grille-jumeaux { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.carte-jumeaux.sons .mot-jumeaux { padding: .3rem .1rem; }
+.carte-jumeaux.sons .lire { width: 3.5rem; height: 3.5rem; } /* 56 px : 4 sur une ligne dès 360 px */
+.carte-jumeaux.sons .lire .ic { width: 1.75rem; height: 1.75rem; }
+.mot-jumeaux .forme-jumeaux { width: 2rem; height: 2rem; }
+.mot-jumeaux .lecteur-audio { width: auto; }
+.mot-jumeaux .mot { font-size: 1.25rem; font-weight: 700; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
+.mot-jumeaux.juste { border: 4px solid var(--c4); background: #ecfdf3; }
+
+/* Animations (choisies par l'enseignant le 2026-11-09) : courtes, sans clignotement, coupées si l'appareil demande moins d'animations. */
+.cartes-jumeaux { position: relative; overflow-x: clip; } /* la carte B qui glisse ne fait pas défiler la page de côté */
+.lien-jumeaux { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.lien-jumeaux line { stroke: var(--acc); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 8; }
+@media (prefers-reduced-motion: no-preference) {
+  .carte-jumeaux { animation: glisse-gauche .3s var(--ease) backwards; } /* les cartes arrivent : A de la gauche… */
+  .carte-jumeaux.b { animation-name: glisse-droite; } /* … B de la droite */
+  .dessin-jumeaux { animation: arrive .3s var(--ease) backwards; animation-delay: calc(.15s + var(--rang, 0) * .05s); } /* dessins distribués */
+  .dessin-jumeaux.juste, .mot-jumeaux.juste { animation: grossit .4s var(--ease); } /* le dessin et son jumeau grandissent ensemble */
+  .dessin-jumeaux.faux { animation: secoue-jumeaux .3s ease-out; } /* petit « non » de la tête, une seule fois */
+  .lien-jumeaux { animation: lien-jumeaux .5s ease-out forwards; }
+}
+@keyframes secoue-jumeaux { 25% { transform: translateX(-.3rem); } 75% { transform: translateX(.3rem); } }
+@keyframes lien-jumeaux { 0%, 40% { opacity: 1; } 100% { opacity: 0; } }

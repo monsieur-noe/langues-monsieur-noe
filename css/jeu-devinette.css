@@ -1,0 +1,43 @@
+/* Jeu « Devinette à indices » (js/jeu-devinette.js). */
+.carte-dv {
+  width: 100%; max-width: 24rem; min-height: 9rem; padding: .9rem .6rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem;
+  background: var(--surface); border: 3px dashed var(--acc); border-radius: 1.25rem; box-shadow: var(--ombre);
+}
+.carte-dv.trouve-dv { border-style: solid; }
+.mystere-dv .ic { width: 5.5rem; height: 5.5rem; color: var(--acc); stroke-width: 1.8; }
+.haut-dv:empty, .bas-dv:empty { display: none; }
+.haut-dv .tuile, .haut-dv .image, .haut-dv .carre { width: 6.5rem; height: 6.5rem; }
+.haut-dv .tuile.court { font-size: 3.75rem; }
+.haut-dv .francais { font-size: 1.5rem; text-align: center; }
+.rangee-dv { display: flex; align-items: center; justify-content: center; gap: .5rem; width: 100%; }
+.article-dv { flex: none; font-size: 1.375rem; font-weight: 700; color: var(--acc); }
+/* Les mots passent à la ligne entre eux ; les cases rétrécissent pour les mots longs (« negenennegentig » à 360 px). */
+.cases-dv { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem .9rem; min-width: 0; }
+.groupe-dv { display: flex; gap: .15rem; }
+.case-dv, .signe-dv {
+  flex: none; width: min(1.75rem, calc((100vw - 5rem) / var(--n, 1) - .15rem)); height: 2.4rem;
+  display: grid; place-items: center; font-size: 1.25rem; font-weight: 700;
+}
+.case-dv { border-bottom: 3px solid var(--encre); background: rgba(0, 0, 0, .05); border-radius: .3rem .3rem 0 0; }
+.signe-dv { flex: none; }
+.fr-dv { margin: 0; font-size: 1.25rem; text-align: center; }
+.indice-dv { margin: 0 auto; }
+.devinette .reponse .mot { font-size: 1.375rem; overflow-wrap: anywhere; }
+.reponses.long-dv { grid-template-columns: 1fr; }
+/* Après deux erreurs : la bonne réponse entourée d'un cadre épais, fixe (jamais clignotant). */
+.reponse.cadre-dv { border: 5px solid var(--c4); }
+
+/* Animations (choisies par l'enseignant le 2026-11-09), toutes coupées si l'appareil demande moins d'animations. */
+@media (prefers-reduced-motion: no-preference) {
+  .carte-dv.tourne-dv { animation: tourne-dv .4s ease-out; }
+  .arrive-dv { animation: arrive-dv .3s ease-out; }
+  .case-dv.ecrit-dv { animation: ecrit-dv .25s ease-out backwards; }
+  .carte-dv.trouve-dv { animation: saut-dv .35s ease-out; }
+  .devinette .reponse.faux { animation: penche-dv .3s ease-in-out; }
+}
+@keyframes tourne-dv { from { transform: perspective(40rem) rotateY(90deg); } }
+@keyframes arrive-dv { from { transform: translateY(.5rem); opacity: 0; } }
+@keyframes ecrit-dv { from { transform: translateY(-.4rem); opacity: 0; } }
+@keyframes saut-dv { 40% { transform: translateY(-.6rem); } }
+@keyframes penche-dv { 30% { transform: rotate(-3deg); } 70% { transform: rotate(2deg); } }

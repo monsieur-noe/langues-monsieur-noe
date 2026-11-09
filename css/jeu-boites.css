@@ -1,0 +1,31 @@
+/* Jeu « Chacun sa boîte » : cartes avec l'indice et le mot écrit dessous. */
+.reponses.boites.n4 { grid-template-columns: repeat(2, 1fr); max-width: 22rem; }
+.reponses.boites.n8 { grid-template-columns: repeat(4, 1fr); max-width: 40rem; }
+@media (max-width: 40rem) {
+  .reponses.boites.n8 { grid-template-columns: repeat(2, 1fr); max-width: 22rem; gap: .6rem; }
+  .reponses.boites.n8 .carte-boite :is(.image, .carre, .tuile) { max-width: 4.75rem; } /* 8 cartes : moins de défilement */
+}
+.carte-boite { flex-direction: column; justify-content: flex-start; gap: .25rem; }
+.carte-boite .image, .carte-boite .carre, .carte-boite .tuile, .carte-boite .francais { max-width: 7rem; }
+.carte-boite .francais { min-height: 4rem; display: grid; place-items: center; font-size: 1.25rem; }
+.mot-boite { font-size: 1.25rem; font-weight: 700; line-height: 1.15; text-align: center; overflow-wrap: anywhere; hyphens: auto; }
+/* Après deux erreurs : cadre épais et fixe autour d'une bonne carte. */
+.carte-boite.aide { border-width: 5px; border-color: var(--acc); }
+.icone-theme { flex: none; display: flex; }
+.icone-theme .image, .icone-theme .carre, .icone-theme .tuile { width: 3rem; height: 3rem; border-radius: .6rem; }
+.icone-theme .tuile.court { font-size: 1.5rem; }
+.suite-boites { display: flex; justify-content: center; }
+
+/* Animations (choisies par l'enseignant le 2026-11-09) : courtes, jamais de clignotement ; coupées si l'appareil demande moins d'animations. */
+.zone-boites { position: relative; } /* la pluie d'étoiles de fin reste dans la zone du jeu */
+.niveau-boites { display: flex; align-items: center; justify-content: center; gap: .4rem; margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--acc); }
+@media (prefers-reduced-motion: no-preference) {
+  .carte-boite { animation: arrive .3s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 50ms); }
+  .carte-boite.juste { animation: saut-boite .4s var(--ease); animation-delay: 0s; }
+  .carte-boite.faux { animation: non-boite .3s ease-in-out; animation-delay: 0s; }
+  .boites.finie .carte-boite:not(.juste) { transition: opacity .4s ease-out; }
+  .niveau-boites.nouveau { animation: arrive .4s var(--ease); }
+}
+.boites.finie .carte-boite:not(.juste) { opacity: .35; }
+@keyframes saut-boite { 40% { transform: translateY(-.5rem) scale(1.04); } }
+@keyframes non-boite { 25% { transform: translateX(-.3rem) rotate(-2deg); } 75% { transform: translateX(.3rem) rotate(2deg); } }

@@ -1,0 +1,56 @@
+/* Jeu « Le dessin disparu » : 5 cases (3 + 2), le mot écrit sous chaque dessin, puis les mots à choisir. */
+.grille-dd { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; width: 100%; max-width: 30rem; }
+.case-dd {
+  flex: 0 0 calc((100% - 1.5rem) / 3); /* 3 par ligne, la seconde ligne centrée */
+  min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .3rem; padding: .3rem;
+  font: inherit; color: var(--encre);
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1.25rem; box-shadow: var(--ombre);
+}
+button.case-dd { cursor: pointer; transition: border-color var(--duree), transform var(--duree) var(--ease); }
+@media (hover: hover) { button.case-dd:hover { border-color: var(--acc); } }
+button.case-dd:active { transform: scale(.97); }
+.dessin-dd { position: relative; display: grid; width: 100%; }
+.dessin-dd > * { grid-area: 1 / 1; }
+.dessin-dd .tuile, .dessin-dd .image, .dessin-dd .carre { width: 100%; height: auto; aspect-ratio: 1; }
+.dessin-dd .tuile { font-size: 1.25rem; padding: .25rem; }
+.dessin-dd .tuile.court { font-size: 2.75rem; }
+.dessin-dd > :first-child { transition: opacity .5s ease; }
+.vide-dd {
+  display: grid; place-items: center; opacity: 0; transition: opacity .5s ease;
+  font-size: 3rem; font-weight: 700; color: var(--acc);
+  border: 3px dashed var(--trait); border-radius: 1.25rem;
+}
+.mot-dd { font-size: 1.25rem; text-align: center; overflow-wrap: break-word; hyphens: auto; } /* coupé seulement s'il ne tient pas seul */
+/* Phase 2 : les mots s'effacent (place gagnée sur téléphone) ; un dessin s'efface en fondu, le « ? » apparaît. */
+.phase2 .mot-dd { display: none; }
+.disparu .dessin-dd > :first-child { opacity: 0; }
+.disparu .vide-dd { opacity: 1; }
+.revenu { border-color: var(--c4); }
+
+.choix-dd { display: grid; gap: .75rem; width: 100%; max-width: 24rem; }
+.ligne-dd { display: flex; align-items: center; gap: .5rem; }
+.ligne-dd .reponse { flex: 1; }
+.ligne-dd .lecteur-audio { flex: none; width: auto; }
+/* Après deux erreurs : la bonne réponse entourée d'un cadre épais, fixe (jamais clignotant). */
+.reponse.entoure-dd { border: 5px solid var(--acc); }
+
+/* ---------- Animations (demande de l'enseignant du 2026-11-09), toutes coupées par « moins d'animations » (style.css) ---------- */
+/* 1. Les cases arrivent l'une après l'autre ; 4. les mots à choisir aussi. */
+.case-dd, .ligne-dd { animation: arrive .3s var(--ease) backwards; }
+.sans-arrivee > .case-dd { animation: none; } /* phase 2 : les cases ne refont pas leur entrée */
+.grille-dd > :nth-child(2), .ligne-dd:nth-child(2) { animation-delay: .06s; }
+.grille-dd > :nth-child(3), .ligne-dd:nth-child(3) { animation-delay: .12s; }
+.grille-dd > :nth-child(4), .ligne-dd:nth-child(4) { animation-delay: .18s; }
+.grille-dd > :nth-child(5) { animation-delay: .24s; }
+/* 2. Dessin touché : petit bond pendant que son mot est dit. */
+.bond-dd .dessin-dd { animation: bond-dd .3s var(--ease); }
+@keyframes bond-dd { 50% { transform: translateY(-.4rem); } }
+/* 3. Le « ? » grossit doucement pendant que le dessin s'efface. */
+.disparu .vide-dd { animation: grossit-dd .5s var(--ease) backwards; }
+@keyframes grossit-dd { from { transform: scale(.6); } }
+/* 5. Bonne réponse : le dessin revient en grossissant, avec un petit rebond. */
+.revenu .dessin-dd > :first-child { animation: revient-dd .45s var(--ease); }
+@keyframes revient-dd { 0% { transform: scale(.6); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+/* 6. Mauvaise réponse : le bouton bouge doucement de côté, une fois (la croix reste). */
+.choix-dd .reponse.faux { animation: secoue-dd .3s ease; }
+@keyframes secoue-dd { 25% { transform: translateX(-.35rem); } 75% { transform: translateX(.35rem); } }

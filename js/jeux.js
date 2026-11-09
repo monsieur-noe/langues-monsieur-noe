@@ -1,23 +1,36 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=03811efd';
-import { cheminSon } from './donnees.js?v=03811efd';
-import { chercherFichiers, cheminDessin } from './cartes.js?v=03811efd';
-import { chargerAvatar } from './avatar.js?v=03811efd';
-import { amorcer } from './musique.js?v=03811efd';
-import juist from './jeu-juist.js?v=03811efd';
-import loto from './jeu-loto.js?v=03811efd';
-import memory from './jeu-memory.js?v=03811efd';
-import oie, { oieDifficile } from './jeu-oie.js?v=03811efd';
-import phrases from './jeu-phrases.js?v=03811efd';
-import boss, { bossDifficile } from './jeu-boss.js?v=03811efd';
-import qui from './jeu-qui.js?v=03811efd';
+import { el, icone } from './outils.js?v=8e00c834';
+import { cheminSon } from './donnees.js?v=8e00c834';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=8e00c834';
+import { chargerAvatar } from './avatar.js?v=8e00c834';
+import { amorcer } from './musique.js?v=8e00c834';
+import juist from './jeu-juist.js?v=8e00c834';
+import loto from './jeu-loto.js?v=8e00c834';
+import memory from './jeu-memory.js?v=8e00c834';
+import oie, { oieDifficile } from './jeu-oie.js?v=8e00c834';
+import phrases from './jeu-phrases.js?v=8e00c834';
+import boss, { bossDifficile } from './jeu-boss.js?v=8e00c834';
+import qui from './jeu-qui.js?v=8e00c834';
+import phraseImages from './jeu-phrase-images.js?v=8e00c834';
+import motEnPieces from './jeu-mot-en-pieces.js?v=8e00c834';
+import ballons, { ballonsDifficile } from './jeu-ballons.js?v=8e00c834';
+import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=8e00c834';
+import motsCaches from './jeu-mots-caches.js?v=8e00c834';
+import sentier from './jeu-sentier.js?v=8e00c834';
+import panier from './jeu-panier.js?v=8e00c834';
+import boites from './jeu-boites.js?v=8e00c834';
+import devinette from './jeu-devinette.js?v=8e00c834';
+import cadenas from './jeu-cadenas.js?v=8e00c834';
+import robot, { robotDifficile } from './jeu-robot.js?v=8e00c834';
+import dessinDisparu from './jeu-dessin-disparu.js?v=8e00c834';
+import terriers from './jeu-terriers.js?v=8e00c834';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
 // Les jeux s'ajoutent ici un par un, quand ils sont prêts.
-export const JEUX = [juist, loto, memory, oie, oieDifficile, phrases, qui, boss, bossDifficile];
+export const JEUX = [juist, loto, memory, oie, oieDifficile, phrases, phraseImages, qui, motEnPieces, ballons, ballonsDifficile, jumeaux, jumeauxDifficile, motsCaches, panier, boites, sentier, cadenas, devinette, robot, robotDifficile, dessinDisparu, terriers, boss, bossDifficile];
 
 // Ce que les jeux utilisent : les mots avec leur indice (`ind`) et leur son (`son`), les phrases avec leur son.
 export async function contenuJeux(donnees, dossier, langue, annee) {
@@ -66,24 +79,56 @@ export async function afficherJeux(conteneur, contenu, jeu) {
     conteneur.replaceChildren(el('p', { class: 'bientot-ici' }, icone('puzzle'), 'Pas encore de jeu dans ce chapitre.'));
     return;
   }
+  // Combat : ouvert sans changer de page. Sur iPhone, un nouveau chargement perdrait ce toucher, et la musique attendrait le suivant.
+  const ouvrir = (lien, j) => {
+    if (j.pleinEcran) {
+      lien.addEventListener('click', (e) => {
+        e.preventDefault();
+        amorcer();
+        history.pushState(null, '', lienJeu(j.id));
+        addEventListener('popstate', () => location.reload(), { once: true }); // bouton « retour » du navigateur
+        afficherJeux(conteneur, contenu, j.id);
+      });
+    }
+    return lien;
+  };
+  const nomDe = (j) => (contenu.langue === 'en' && j.anglais ? [j.anglais, 'en'] : [j.nom, j.lang]);
+  // Les familles qui ont au moins un jeu ; l'onglet choisi reste dans l'adresse (retour au même onglet après un jeu).
+  const familles = FAMILLES.map((f) => ({ ...f, jeux: possibles.filter((j) => f.jeux.includes(j.id.replace(/-difficile$/, ''))) })).filter((f) => f.jeux.length);
+  const famille = familles.find((f) => f.id === new URLSearchParams(location.search).get('famille')) || familles[0];
+  const lienFamille = (id) => { const p = new URLSearchParams(location.search); p.set('famille', id); return `?${p}`; };
+  const vignette = (balise, attributs, j) => {
+    const [nom, lang] = nomDe(j);
+    return el(balise, { class: 'choix', ...attributs },
+      el('span', { class: 'num' }, icone(j.icone)),
+      el('span', { class: 'titre', lang }, nom),
+      el('span', { class: 'fleche' }, icone('droite')));
+  };
+  // Une vignette par jeu ; un jeu qui a une version difficile propose « Normal » et « Difficile » quand on le touche.
+  const normaux = famille.jeux.filter((j) => !j.id.endsWith('-difficile') || !famille.jeux.some((n) => `${n.id}-difficile` === j.id));
   conteneur.replaceChildren(
     el('h2', { class: 'consigne' }, icone('puzzle'), 'Choisis un jeu.'),
-    el('ul', { class: 'liste' }, ...possibles.map((j) => {
-      const [nom, lang] = contenu.langue === 'en' && j.anglais ? [j.anglais, 'en'] : [j.nom, j.lang];
-      const lien = el('a', { class: 'choix', href: lienJeu(j.id) },
-        el('span', { class: 'num' }, icone(j.icone)),
-        el('span', { class: 'titre', lang }, nom),
-        el('span', { class: 'fleche' }, icone('droite')));
-      // Combat : ouvert sans changer de page. Sur iPhone, un nouveau chargement perdrait ce toucher, et la musique attendrait le suivant.
-      if (j.pleinEcran) {
-        lien.addEventListener('click', (e) => {
-          e.preventDefault();
-          amorcer();
-          history.pushState(null, '', lienJeu(j.id));
-          addEventListener('popstate', () => location.reload(), { once: true }); // bouton « retour » du navigateur
-          afficherJeux(conteneur, contenu, j.id);
-        });
-      }
-      return el('li', {}, lien);
+    familles.length > 1 ? el('nav', { class: 'segments familles', 'aria-label': 'Familles de jeux' }, ...familles.map((f) =>
+      el('a', { class: 'seg', href: lienFamille(f.id), 'aria-current': f === famille && 'page' }, icone(f.icone), f.nom))) : '',
+    el('ul', { class: 'liste' }, ...normaux.map((j) => {
+      const dur = famille.jeux.find((d) => d.id === `${j.id}-difficile`);
+      if (!dur) return el('li', {}, ouvrir(vignette('a', { href: lienJeu(j.id) }, j), j));
+      const versions = el('div', { class: 'versions', hidden: true },
+        ouvrir(el('a', { class: 'choix', href: lienJeu(j.id) }, el('span', { class: 'titre' }, 'Normal')), j),
+        ouvrir(el('a', { class: 'choix', href: lienJeu(dur.id) }, el('span', { class: 'titre' }, 'Difficile')), dur));
+      const bouton = vignette('button', { type: 'button', 'aria-expanded': 'false' }, j);
+      bouton.addEventListener('click', () => {
+        versions.hidden = !versions.hidden;
+        bouton.setAttribute('aria-expanded', String(!versions.hidden));
+      });
+      return el('li', {}, bouton, versions);
     })));
 }
+
+// Familles du menu (choix de l'enseignant du 2026-11-09), avec l'identifiant de la version normale de chaque jeu.
+const FAMILLES = [
+  { id: 'mots', nom: 'Trouve le mot', icone: 'loupe', jeux: ['juist-of-fout', 'loto', 'ballons', 'jumeaux', 'boites', 'terriers', 'devinette'] },
+  { id: 'enigmes', nom: 'Mémoire et énigmes', icone: 'cle', jeux: ['memory', 'mot-en-pieces', 'mots-caches', 'panier', 'cadenas', 'robot', 'dessin-disparu'] },
+  { id: 'phrases', nom: 'Phrases', icone: 'bulle', jeux: ['phrases', 'phrase-images', 'qui-est-ce'] },
+  { id: 'aventures', nom: 'Aventures', icone: 'pion', jeux: ['oie', 'sentier', 'boss'] },
+];

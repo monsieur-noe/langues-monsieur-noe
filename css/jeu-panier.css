@@ -1,0 +1,89 @@
+/* Jeu « Le panier du marché » (js/jeu-panier.js). */
+
+.tete-panier { flex-direction: column; align-items: center; gap: .5rem; }
+.bouton-liste { display: flex; align-items: center; gap: .75rem; font-size: 1.25rem; font-weight: 700; }
+
+/* La liste écrite, en gras (sans son ; avec son, quand le panier est plein). */
+.liste-panier {
+  list-style: none; margin: 0; padding: .5rem .75rem;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.25rem;
+  font-size: 1.625rem; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere;
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1rem;
+}
+.liste-panier[hidden] { display: none; }
+.liste-panier li { display: flex; align-items: center; gap: .3rem; }
+.liste-panier li.trouve { color: var(--c4); }
+.coche-liste .ic { width: 1.4rem; height: 1.4rem; stroke-width: 3; }
+.cacher-liste { min-height: 3.5rem; }
+
+/* L'étal : auvent rayé, planche de bois, grille 3 × 3. */
+.etal { width: 100%; max-width: 17rem; }
+.auvent { display: block; width: 100%; height: auto; }
+.etal-grille.reponses.visuels {
+  grid-template-columns: repeat(3, 1fr); max-width: none; gap: .4rem;
+  padding: .45rem; background: #f4e3c3; border: 3px solid #92400e; border-top: 0; border-radius: 0 0 1rem 1rem;
+}
+.etal-grille .reponse.case-panier { padding: .3rem; }
+.case-panier:disabled:not(.juste):not(.faux) { opacity: 1; } /* fermée avant l'écoute, mais le dessin reste bien visible */
+.case-panier.pris { visibility: hidden; } /* parti dans le panier : la place reste vide sur l'étal */
+.case-panier.aide { outline: 5px solid var(--acc); outline-offset: 2px; } /* après deux erreurs : cadre épais, fixe */
+/* Petite étiquette vide, comme un prix sur un étal (décor). */
+.etiquette {
+  position: absolute; left: .25rem; bottom: .25rem; width: 1.1rem; height: .7rem;
+  background: var(--surface); border: 2px solid #92400e; border-radius: .2rem; pointer-events: none;
+}
+
+/* Le panier : dessin en osier, places au-dessus du tressage. */
+.panier { position: relative; width: 100%; max-width: 17rem; margin-top: -.25rem; }
+.panier-dessin { display: block; width: 100%; height: auto; }
+.places-panier {
+  position: absolute; left: 12%; right: 12%; top: 38%; bottom: 6%;
+  display: flex; justify-content: center; align-items: center; gap: 4%;
+}
+.place-panier {
+  position: relative; flex: 0 1 22%; aspect-ratio: 1; max-height: 100%;
+  display: grid; place-items: center;
+  border: 3px dashed #fef3c7; border-radius: .75rem; background: rgba(255, 255, 255, .25);
+}
+.place-panier.pleine { border-style: solid; border-color: var(--c4); background: var(--surface); }
+.place-panier .tuile, .place-panier .image, .place-panier .carre { width: 100%; height: 100%; border-radius: .6rem; }
+.place-panier .tuile { font-size: 1.25rem; padding: .1rem; }
+.place-panier .tuile.court { font-size: 1.75rem; }
+.place-panier .carre { border-width: 2px; padding: 0; }
+.place-panier .marque-ex { width: 1.6rem; height: 1.6rem; top: -.5rem; right: -.5rem; }
+.place-panier .marque-ex .ic { width: 1rem; height: 1rem; }
+
+/* Le dessin qui glisse de l'étal au panier (créé par le JS, absent si l'appareil demande moins d'animations). */
+.panier-vol { position: fixed; z-index: 10; margin: 0; pointer-events: none; transform-origin: center; }
+
+/* Tablette et ordinateur : étal et panier plus grands (sur téléphone, le panier doit rester près de l'étal). */
+@media (min-width: 600px) and (min-height: 800px) {
+  .etal, .panier { max-width: 22rem; }
+}
+
+/* Animations (choisies par l'enseignant le 2026-11-09) : courtes, sans clignotement, sans retarder le toucher ;
+   aucune si l'appareil demande moins d'animations. */
+@media (prefers-reduced-motion: no-preference) {
+  /* 6. Panier suivant : l'auvent se déplie comme un store qu'on baisse. */
+  .auvent { transform-origin: top; animation: panier-store .3s var(--ease); }
+  /* 1. Arrivée de l'étal : les 9 dessins l'un après l'autre (environ 0,6 s en tout). */
+  .case-panier { animation: panier-arrive .25s var(--ease) calc(.1s + var(--k, 0) * 30ms) backwards; }
+  /* 3. Mauvais dessin : un petit « non », avec la croix. */
+  .case-panier.faux { animation: panier-non .3s ease-in-out; }
+  /* 4. Mot trouvé dans la liste écrite : il grossit un instant avec sa coche. */
+  .liste-panier li.trouve { animation: panier-mot .3s var(--ease); }
+  /* 2. Le panier reçoit un dessin : il s'enfonce un peu puis remonte. */
+  .panier.recoit { animation: panier-poids .3s ease-out; }
+  /* 5. Panier plein : un saut de joie, puis les dessins sautillent l'un après l'autre. */
+  .panier.plein { animation: panier-saut .4s var(--ease); }
+  .panier.plein .place-panier { animation: panier-saut .3s var(--ease) backwards; }
+  .panier.plein .place-panier:nth-child(2) { animation-delay: .07s; }
+  .panier.plein .place-panier:nth-child(3) { animation-delay: .14s; }
+  .panier.plein .place-panier:nth-child(4) { animation-delay: .21s; }
+}
+@keyframes panier-store { from { transform: scaleY(0); } }
+@keyframes panier-arrive { from { opacity: 0; transform: translateY(.6rem); } }
+@keyframes panier-non { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes panier-mot { 50% { transform: scale(1.2); } }
+@keyframes panier-poids { 40% { transform: translateY(5px); } }
+@keyframes panier-saut { 40% { transform: translateY(-10px); } }

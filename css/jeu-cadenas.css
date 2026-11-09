@@ -1,0 +1,122 @@
+/* Jeu « Le cadenas à images » (js/jeu-cadenas.js). Dessin du cadenas : anse grise en SVG, corps doré en CSS. */
+.jeu-cadenas .ecoute-cadenas { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .75rem; }
+
+/* Version sans son : les 3 mots, dans l'ordre, au-dessus des roues. */
+.code-muet {
+  margin: 0; padding: 0; list-style: none; counter-reset: code;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem;
+}
+.code-muet li {
+  counter-increment: code;
+  padding: .2rem .7rem; font-size: 1.25rem; font-weight: 700; color: var(--acc);
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1rem;
+}
+.code-muet li::before { content: counter(code) ". "; color: var(--gris); font-weight: 400; }
+.code-muet[hidden] { display: none; }
+
+.cadenas { width: 100%; max-width: 24rem; margin: 0 auto; }
+.cadenas .anse { display: block; width: 52%; margin: 0 auto -.25rem; overflow: visible; }
+.anse-metal { fill: none; stroke: #8a94a8; stroke-width: 15; stroke-linecap: round; }
+.anse-reflet { fill: none; stroke: #c9d0dd; stroke-width: 5; stroke-linecap: round; }
+.cadenas .corps {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem;
+  padding: 1rem .6rem 1.4rem; position: relative;
+  background: #f2b43c; border: 4px solid #b45309; border-radius: 1.75rem;
+}
+/* Le trou de la serrure, sous les roues. */
+.cadenas .corps::after {
+  content: ""; position: absolute; left: 50%; bottom: .35rem; width: .7rem; height: .7rem;
+  margin-left: -.35rem; border-radius: 50%; background: #7c3d06;
+}
+
+.roue {
+  position: relative; display: flex; flex-direction: column; align-items: stretch; gap: .35rem;
+  padding: .35rem; background: var(--surface); border: 3px solid #b45309; border-radius: 1.1rem;
+}
+.roue.juste { border-color: var(--c4); background: #ecfdf3; }
+.roue.faux { border-color: var(--c1); border-style: dashed; }
+.fleche-roue {
+  min-height: 3.5rem; display: grid; place-items: center; padding: 0;
+  font: inherit; color: var(--encre); background: var(--doux); border: 0; border-radius: .8rem; cursor: pointer;
+}
+.fleche-roue .ic { width: 2rem; height: 2rem; stroke-width: 3; }
+.fleche-roue.descendre .ic { transform: rotate(180deg); }
+.fleche-roue:active:not(:disabled) { transform: scale(.95); }
+.fleche-roue:disabled { opacity: .35; cursor: default; }
+.roue.juste .fleche-roue:disabled { opacity: 0; } /* roue verrouillée : les flèches s'effacent */
+
+.fenetre { display: grid; place-items: center; border-radius: .9rem; outline: 0 solid var(--acc); }
+.fenetre .image, .fenetre .tuile, .fenetre .carre { width: 100%; height: auto; aspect-ratio: 1; }
+.fenetre .tuile { font-size: 1.25rem; padding: .25rem; }
+.fenetre .tuile.court { font-size: 2.5rem; }
+.fenetre .francais { font-size: 1.25rem; text-align: center; }
+/* Après deux essais, la bonne image a un cadre épais (fixe). */
+.fenetre.aide { outline: 5px solid var(--acc); outline-offset: 2px; }
+
+/* Ouverture : l'anse se soulève et pivote doucement, une seule fois. */
+@media (prefers-reduced-motion: no-preference) {
+  .cadenas .anse { transition: transform .6s var(--ease); transform-origin: 25% 100%; }
+  .fenetre > * { animation: fondu .15s ease-out; }
+  /* Animations choisies par l'enseignant le 2026-11-09 (toutes les 6 proposées). */
+  .fenetre { overflow: hidden; }
+  .fenetre[data-sens="1"] > * { animation: roule-bas .2s var(--ease); }
+  .fenetre[data-sens="-1"] > * { animation: roule-haut .2s var(--ease); }
+  .jeu-cadenas .cadenas { animation: arrive-droite .35s var(--ease); }
+  .roue.juste { animation: clic .25s ease-out; }
+  .roue.faux { animation: non-cadenas .3s ease-in-out; }
+  .cadenas.ouvert { animation: bond .4s ease-out; }
+  .tresor-mots li { animation: fondu .25s ease-out calc(var(--rang, 0) * .035s) backwards; }
+}
+@keyframes roule-bas { from { transform: translateY(60%); opacity: 0; } }
+@keyframes roule-haut { from { transform: translateY(-60%); opacity: 0; } }
+@keyframes arrive-droite { from { transform: translateX(2.5rem); opacity: 0; } }
+@keyframes clic { 50% { transform: scale(.93); } }
+@keyframes non-cadenas { 25% { transform: translateX(-.35rem); } 75% { transform: translateX(.35rem); } }
+@keyframes bond { 45% { transform: translateY(-.7rem); } }
+.cadenas.ouvert .anse { transform: translateY(-1.1rem) rotate(-14deg); }
+
+.jeu-cadenas > .action { align-self: center; }
+
+/* Les 5 cadenas reliés par une chaîne au coffre (demande du 2026-11-09). */
+.chaine {
+  margin: 0; padding: 0; list-style: none; width: 100%; max-width: 24rem; align-self: center;
+  display: flex; align-items: center; justify-content: space-between; position: relative;
+}
+.chaine::before { content: ""; position: absolute; left: 1rem; right: 2rem; top: 50%; border-top: 4px dashed #8a94a8; }
+.chaine li {
+  position: relative; display: grid; place-items: center; width: 2.6rem; height: 2.6rem;
+  color: var(--gris); background: var(--surface); border: 2px solid var(--trait); border-radius: 50%;
+}
+.chaine li.ouvert { color: var(--c4); border-color: var(--c4); }
+.chaine li.actuel { color: #b45309; border: 3px solid #b45309; background: #fff7e6; }
+.chaine .marque-ex { width: 1.3rem; height: 1.3rem; top: -.5rem; right: -.5rem; }
+.chaine .marque-ex .ic { width: .9rem; height: .9rem; }
+.chaine li.coffre-chaine { width: 3.6rem; height: 3.6rem; padding: .2rem; border-radius: .8rem; }
+.chaine li.coffre-chaine img { width: 100%; height: 100%; object-fit: contain; }
+
+.coffre-grand { display: block; width: min(16rem, 70vw); height: auto; margin: 0 auto; border-radius: 1rem; }
+.coffre-ouvert { position: relative; padding-top: 4.5rem; }
+.coffre-ouvert .surprise {
+  position: absolute; left: 50%; top: 0; width: 7rem; height: 7rem; margin-left: -3.5rem;
+  border-radius: 50%; background: #fff; box-shadow: var(--ombre-haute);
+}
+/* Mots de la partie : petit dessin, mot écrit, bouton d'écoute (avec le son). */
+.tresor-mots {
+  margin: 0; padding: 0; list-style: none; width: 100%;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .6rem;
+}
+.tresor-mots li {
+  display: flex; flex-direction: column; align-items: center; gap: .3rem; padding: .4rem;
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1rem;
+}
+.tresor-mots .image, .tresor-mots .tuile, .tresor-mots .carre { width: 4.5rem; height: 4.5rem; }
+.tresor-mots .tuile { font-size: 1.25rem; }
+.tresor-mots .tuile.court { font-size: 2rem; }
+.tresor-mots .mot { font-size: 1.25rem; font-weight: 700; text-align: center; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .chaine li.actuel { animation: pousse .35s var(--ease); }
+  .coffre-ouvert .coffre-grand { animation: fondu .4s ease-out; }
+  .coffre-ouvert .surprise { animation: sort-du-coffre .5s var(--ease) .2s backwards; }
+}
+@keyframes sort-du-coffre { from { transform: translateY(3rem) scale(.4); opacity: 0; } }

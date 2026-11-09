@@ -1,0 +1,64 @@
+/* Jeu « Le robot réparateur » (js/jeu-robot.js). Aucun clignotement ; le morceau réparé apparaît une fois (0,4 s). */
+.scene-robot { display: flex; align-items: center; justify-content: center; gap: .75rem; width: 100%; }
+.robot { flex: 0 0 auto; width: 5.5rem; height: auto; }
+.robot svg { display: block; width: 100%; height: auto; }
+/* L'objet en 6 morceaux (3 × 2) ; un morceau manquant : case en pointillés. */
+.objet-robot { flex: 0 1 13.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+.objet-robot svg, .objet-manque { display: block; width: 100%; aspect-ratio: var(--ratio, 1); }
+.objet-manque { box-sizing: border-box; border: 3px dashed #b8c0d2; border-radius: .4rem; background: var(--surface); }
+.indice-robot { width: 7rem; }
+.indice-robot .image, .indice-robot .carre, .indice-robot .tuile { width: 100%; height: auto; aspect-ratio: 1; }
+.indice-robot .tuile.court { font-size: 2.75rem; }
+
+/* L'écran du robot : le mot à trous. */
+.ecran-robot {
+  margin: 0; padding: .6rem 1rem; max-width: 100%;
+  font-size: 2rem; font-weight: 700; line-height: 1.4; text-align: center; letter-spacing: .02em;
+  color: var(--encre); background: #e6f4f1; border: 4px solid #0f766e; border-radius: 1rem;
+  overflow-wrap: anywhere;
+}
+.ecran-robot.long { font-size: 1.5rem; }
+.trou-robot {
+  display: inline-block; min-width: 1.6em; padding: 0 .15em; margin: 0 .05em;
+  color: var(--gris); background: var(--surface); border: 3px dashed #0f766e; border-radius: .4rem; line-height: 1.2;
+}
+.trou-robot.actif { border-style: solid; border-color: var(--encre); }
+.trou-robot.rempli { color: var(--c4); border: 3px solid var(--c4); background: #ecfdf3; }
+
+.reponses.robot-choix { grid-template-columns: repeat(3, 1fr); max-width: 22rem; }
+.reponses.robot-choix.n4 { grid-template-columns: repeat(2, 1fr); }
+.robot-choix .reponse { min-height: 3.5rem; }
+.reponse.entouree-robot { border: 5px solid var(--encre); }
+
+@media (min-width: 600px) {
+  .robot { width: 6rem; }
+  .reponses.robot-choix.n4 { grid-template-columns: repeat(4, 1fr); max-width: 30rem; }
+}
+
+/* Animations (6 choisies par l'enseignant le 2026-11-09) : courtes, sans clignotement, coupées si moins d'animations. */
+.objet-robot { position: relative; }
+.etincelles-robot { position: absolute; width: 0; height: 0; pointer-events: none; display: none; }
+.etincelles-robot span { position: absolute; left: -.6rem; top: -.6rem; }
+.etincelles-robot .ic { width: 1.2rem; height: 1.2rem; color: #b45309; fill: #fbbf24; }
+.zone-jeu:has(.fin-robot) { position: relative; } /* pour la pluie d'étoiles de la fin */
+
+@media (prefers-reduced-motion: no-preference) {
+  .arrivee-robot { animation: arrivee-robot .3s var(--ease); }                       /* 1. arrivée du mot */
+  .robot-choix .reponse.juste { animation: grossit-robot .3s var(--ease); }           /* 2. bon bouton */
+  .robot-choix .reponse.faux { animation: non-robot .3s var(--ease); }                /* 2. petit « non » */
+  .trou-robot.rempli { animation: tombe-robot .3s var(--ease); }                       /* 3. lettres qui tombent */
+  .robot.travaille { animation: travaille-robot .4s var(--ease); transform-origin: 50% 100%; } /* 4. le robot se penche */
+  .objet-pose { animation: robot-pose .4s var(--ease); }                               /* morceau posé */
+  .etincelles-robot { display: block; }                                                /* 5. étincelles */
+  .etincelles-robot span { animation: etincelle-robot .5s ease-out forwards; }
+  .fin-robot .objet-robot { animation: saut-robot .5s var(--ease) .1s; }               /* 6. fin : objet qui saute */
+  .fin-robot .robot { animation: saut-robot .5s var(--ease), saut-robot .5s var(--ease) .5s; transform-origin: 50% 100%; }
+}
+@keyframes robot-pose { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes arrivee-robot { from { transform: translateY(.6rem); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes grossit-robot { 50% { transform: scale(1.08); } }
+@keyframes non-robot { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes tombe-robot { from { transform: translateY(-.8rem); } 70% { transform: translateY(.1rem); } to { transform: none; } }
+@keyframes travaille-robot { 50% { transform: rotate(8deg); } }
+@keyframes etincelle-robot { from { transform: none; opacity: 1; } to { transform: translate(var(--dx), var(--dy)) scale(.6); opacity: 0; } }
+@keyframes saut-robot { 40% { transform: translateY(-.7rem); } }

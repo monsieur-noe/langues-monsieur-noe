@@ -1,0 +1,84 @@
+/* Jeu « Les terriers » (js/jeu-terriers.js) : 9 terriers en 3 colonnes, même sur un petit téléphone. */
+.terriers-jeu .consigne b { color: var(--nl); }
+.reste-terriers { min-height: 1.75rem; font-weight: 700; color: var(--gris); }
+.reste-terriers:empty { display: none; }
+
+.grille-terriers {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem;
+  width: 100%; max-width: 30rem;
+}
+.terrier {
+  position: relative; min-height: 3.5rem; padding: .35rem .25rem 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  font: inherit; color: var(--encre);
+  background: var(--surface); border: 2px solid var(--trait); border-radius: 1.1rem; box-shadow: var(--ombre); cursor: pointer;
+  transition: border-color var(--duree), transform var(--duree) var(--ease);
+}
+@media (hover: hover) { .terrier:hover { border-color: var(--acc); } }
+.terrier:active { transform: scale(.97); }
+.terrier.lapin { --patte: #e8dccb; --trait-patte: #5b4632; }
+.terrier.herisson { --patte: #f0d9b5; --trait-patte: #4a2f1a; }
+.terrier.souris { --patte: #ccd2dc; --trait-patte: #3d4555; }
+
+.corps-terrier { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 100%; }
+.animal-terrier { display: block; width: 4rem; max-width: 90%; height: auto; aspect-ratio: 100 / 74; margin-bottom: -.7rem; }
+/* La carte que l'animal tient dans ses pattes (deux ronds sur le bord du haut). */
+.carte-terrier {
+  position: relative; width: 100%; padding: .35rem .2rem .3rem;
+  display: flex; flex-direction: column; align-items: center; gap: .15rem;
+  background: #fffdf5; border: 2px solid #c9b48a; border-radius: .7rem;
+}
+.carte-terrier::before, .carte-terrier::after {
+  content: ""; position: absolute; top: -.5rem; width: 1rem; height: .75rem;
+  border-radius: 50%; background: var(--patte); border: 2px solid var(--trait-patte);
+}
+.carte-terrier::before { left: 18%; }
+.carte-terrier::after { right: 18%; }
+.image-terrier { display: block; width: 2.25rem; height: 2.25rem; object-fit: contain; }
+/* Texte de 20 px au moins : un mot long passe sur deux lignes, coupé entre deux syllabes (points de coupure du JS). */
+.mot-terrier {
+  max-width: 100%; font-size: 1.25rem; font-weight: 700; line-height: 1.15;
+  overflow-wrap: anywhere; hyphens: manual;
+}
+.article-terrier { color: var(--nl); }
+.butte-terrier { display: block; width: 100%; height: 1.1rem; margin-top: -.45rem; }
+
+/* Juste ou faux : coche ou croix (classe commune .marque-ex), en plus de la couleur du cadre. */
+.terrier.juste { border-color: var(--c4); background: #ecfdf3; }
+.terrier.faux { border-color: var(--c1); border-style: dashed; }
+.terrier .marque-ex { z-index: 2; }
+/* Après deux erreurs : les mots qui restent à trouver sont entourés d'un cadre épais, fixe. */
+.terrier.montre-terrier { border: 5px solid var(--acc); }
+.terrier.fini:not(.juste) { opacity: .85; }
+
+/* Animations (choisies par l'enseignant le 2026-11-09), toutes coupées si l'appareil demande moins d'animations.
+   Aucune ne retarde le toucher : les terriers se touchent dès leur arrivée. */
+.etoiles-terrier { position: absolute; left: 0; right: 0; top: .2rem; z-index: 3; display: flex; justify-content: center; gap: .35rem; pointer-events: none; }
+.etoiles-terrier .ic { width: 1.1rem; height: 1.1rem; color: #b45309; fill: #fbbf24; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Début de manche : les animaux sortent de leur terrier l'un après l'autre (0,4 s en tout). */
+  .animal-terrier { animation: sortie-terrier .3s var(--ease) both; animation-delay: calc(var(--rang, 0) * 12ms); }
+  /* Bonne carte : petit saut et trois étoiles qui s'envolent. */
+  .terrier.juste .corps-terrier { animation: saut-terrier .5s var(--ease); }
+  .etoiles-terrier .ic { animation: envol-terrier .5s ease-out; }
+  .etoiles-terrier .ic:nth-child(2) { animation-delay: .05s; }
+  .etoiles-terrier .ic:nth-child(3) { animation-delay: .1s; }
+  /* Mauvaise carte : l'animal remue doucement la tête, une fois. */
+  .terrier.faux .animal-terrier { animation: non-terrier .4s ease-in-out; }
+  /* Fin de manche : l'article se pose sur chaque carte, l'une après l'autre (0,5 s en tout). */
+  .article-terrier { display: inline-block; animation: pose-article .3s var(--ease) both; animation-delay: calc(var(--rang, 0) * 25ms); }
+  /* Manche suivante : la grille arrive en fondu, avec un léger glissement. */
+  .nouvelle-manche { animation: arrivee-manche .3s var(--ease); }
+}
+@keyframes sortie-terrier { from { transform: translateY(1.2rem); opacity: 0; } }
+@keyframes saut-terrier { 40% { transform: translateY(-.8rem); } }
+@keyframes envol-terrier { 0% { opacity: 1; transform: translateY(.6rem) scale(.6); } 100% { opacity: 0; transform: translateY(-1.4rem) scale(1); } }
+@keyframes non-terrier { 25% { transform: rotate(-7deg); } 75% { transform: rotate(7deg); } }
+@keyframes pose-article { from { transform: translateY(-.6rem); opacity: 0; } }
+@keyframes arrivee-manche { from { transform: translateX(1rem); opacity: 0; } }
+
+@media (min-width: 48rem) {
+  .grille-terriers { gap: .75rem; }
+  .animal-terrier { width: 5.5rem; }
+  .image-terrier { width: 3.5rem; height: 3.5rem; }
+}

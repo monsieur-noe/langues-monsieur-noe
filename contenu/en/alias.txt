@@ -1,0 +1,11 @@
+# Alias du jeu « La phrase en images » (anglais, toutes les années).
+# Une forme écrite dans une phrase | le ou les mots de la liste [mots] qu'elle désigne (séparés par des virgules).
+# Exemple : « windows » dans « There are three windows. » désigne le mot « window ».
+# On écrit les mots sans article (« window », pas « a window »), en minuscules.
+# Ajouter un alias = ajouter une ligne. Une ligne fausse est simplement ignorée.
+
+windows | window
+short brown hair | short hair, brown hair
+long blond hair | long hair, blond hair
+curly black hair | curly hair, black hair
+short red hair | short hair, red hair

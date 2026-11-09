@@ -5,7 +5,7 @@
 
 // Introduction jouée une fois, puis boucle [début, fin] en secondes, trouvée par tests/boucler-musiques.py.
 // Les musiques « un-coeur » arrivent en plein combat : elles commencent directement à leur boucle.
-import { muet } from './outils.js?v=03811efd';
+import { muet } from './outils.js?v=8e00c834';
 
 const BOUCLES = {
   'combat': [8.85, 54.379583],

@@ -1,0 +1,81 @@
+/* Jeu « La chasse aux mots » (js/jeu-ballons.js). Ballons immobiles pendant la manche ; animations courtes, aucun clignotement, coupées par « moins d'animations ». */
+.ballons { display: grid; gap: .75rem; width: 100%; max-width: 24rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ballons.n9 { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 30rem; gap: .5rem; }
+@media (max-width: 599px) { .ballons.n9.larges { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; } }
+@media (min-width: 600px) {
+  .ballons.n6 { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 36rem; }
+  .ballons.n9 { max-width: 34rem; gap: .75rem; }
+}
+
+.ballon {
+  position: relative; display: grid; place-items: center;
+  width: 100%; aspect-ratio: 1; min-height: 3.5rem; padding: 0;
+  font: inherit; color: var(--encre); background: none; border: 0; border-radius: 1.25rem; cursor: pointer;
+  transition: transform var(--duree) var(--ease);
+}
+.ballons.n6 .ballon { aspect-ratio: 10 / 9; }
+.ballon:disabled { cursor: default; color: var(--encre); } /* le mot reste bien lisible */
+.ballon:active:not(:disabled) { transform: scale(.96); }
+.ballon:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+.decor-ballon { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Avant la première écoute : ballons pâles, comme les réponses fermées des autres jeux. */
+.ballon:disabled:not(.juste):not(.faux) .decor-ballon { opacity: .5; }
+
+.mot-ballon {
+  position: relative; max-width: 80%; padding: .1rem .3rem;
+  font-size: 1.5rem; font-weight: 700; line-height: 1.15; text-align: center;
+  overflow-wrap: anywhere; hyphens: auto;
+}
+.mot-ballon.long { font-size: 1.25rem; } /* 20 px au moins (cahier 8) */
+.decor-ballon + .mot-ballon { margin-top: -6%; } /* au centre du ballon, au-dessus du nœud */
+.bal-bulle .mot-ballon, .bal-cible .mot-ballon, .bal-etoile .mot-ballon { margin-top: 0; }
+.bal-fruit .mot-ballon { margin-top: 12%; }
+.bal-etoile .mot-ballon { margin-top: 10%; }
+.bal-etiquette .mot-ballon { max-width: 88%; background: #fff; border: 2px solid var(--trait); border-radius: 1rem; padding: .15rem .45rem; }
+.ballons.n9 .mot-ballon { max-width: 92%; font-size: 1.25rem; }
+
+/* Arrivée : à chaque manche, les ballons montent l'un après l'autre (tous là en moins de 0,5 s ; touchables tout de suite). */
+.ballon { animation: monte .3s var(--ease) backwards; }
+.ballon:nth-child(2) { animation-delay: .025s; } .ballon:nth-child(3) { animation-delay: .05s; }
+.ballon:nth-child(4) { animation-delay: .075s; } .ballon:nth-child(5) { animation-delay: .1s; }
+.ballon:nth-child(6) { animation-delay: .125s; } .ballon:nth-child(7) { animation-delay: .15s; }
+.ballon:nth-child(8) { animation-delay: .175s; } .ballon:nth-child(9) { animation-delay: .2s; }
+@keyframes monte { from { transform: translateY(1.5rem); opacity: 0; } }
+
+/* Bonne réponse : le ballon gonfle puis éclate en 6 morceaux, le mot reste avec sa coche ; sur la cible, la flèche se plante. */
+.decor-ballon .bal-fleche { opacity: 0; }
+.ballon.juste .mot-ballon { background: #ecfdf3; border: 2px solid var(--c4); border-radius: 1rem; }
+.ballon.juste:not(.bal-cible) .decor-ballon { opacity: 0; animation: eclate .3s ease-out; }
+@keyframes eclate { from { opacity: 1; transform: none; } 50% { opacity: 1; transform: scale(1.15); } to { opacity: 0; transform: scale(1.25); } }
+.ballon.juste .bal-fleche { opacity: 1; animation: plante .3s var(--ease); }
+@keyframes plante { from { transform: translate(14px, -14px); opacity: 0; } }
+.eclats { position: absolute; inset: 0; pointer-events: none; }
+.eclats i { position: absolute; left: calc(50% - .35rem); top: calc(45% - .35rem); width: .7rem; height: .7rem; border-radius: 50%;
+  background: currentColor; opacity: 0; animation: vole .4s ease-out .12s backwards; }
+.eclats i:nth-child(1) { --dx: 0; --dy: -2.6rem; } .eclats i:nth-child(2) { --dx: 2.3rem; --dy: -1.3rem; }
+.eclats i:nth-child(3) { --dx: 2.3rem; --dy: 1.3rem; } .eclats i:nth-child(4) { --dx: 0; --dy: 2.6rem; }
+.eclats i:nth-child(5) { --dx: -2.3rem; --dy: 1.3rem; } .eclats i:nth-child(6) { --dx: -2.3rem; --dy: -1.3rem; }
+@keyframes vole { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); } }
+
+/* Erreur : croix (pas seulement la couleur), un petit « non » de gauche à droite, puis le ballon reste en place, plus pâle. */
+.ballon.faux { animation: non .3s ease-in-out; }
+@keyframes non { 25% { transform: translateX(-.4rem) rotate(-4deg); } 75% { transform: translateX(.4rem) rotate(4deg); } }
+.ballon.faux .decor-ballon { opacity: .4; }
+.ballon .marque-ex { top: 0; right: 0; }
+/* Après deux erreurs : cadre épais et fixe autour du bon ballon, qui grossit un instant (comme dans les exercices). */
+.ballon.entoure { outline: 5px solid var(--c2); outline-offset: 0; animation: grossit .5s var(--ease) .15s; }
+
+/* Fête de fin : 6 ballons montent une seule fois du bas de l'écran (environ 2 s), au-dessus de tout mais sans bloquer les touchers. */
+.envol-ballons { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.envol-ballons .decor-ballon { inset: auto; top: 100%; width: 4.5rem; height: 4.5rem; animation: envol 1.8s ease-in backwards; }
+.envol-ballons .decor-ballon:nth-child(1) { left: 6%; } .envol-ballons .decor-ballon:nth-child(2) { left: 22%; animation-delay: .25s; }
+.envol-ballons .decor-ballon:nth-child(3) { left: 40%; animation-delay: .1s; } .envol-ballons .decor-ballon:nth-child(4) { left: 56%; animation-delay: .35s; }
+.envol-ballons .decor-ballon:nth-child(5) { left: 72%; animation-delay: .15s; } .envol-ballons .decor-ballon:nth-child(6) { left: 84%; animation-delay: .3s; }
+@keyframes envol { from { transform: none; } to { transform: translateY(calc(-100vh - 6rem)) rotate(8deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ballon, .ballon.faux, .ballon.entoure { animation: none; }
+  .ballon.juste .decor-ballon { animation: none; }
+  .ballon.juste .bal-fleche { animation: none; }
+  .eclats, .envol-ballons { display: none; }
+}

@@ -1,0 +1,90 @@
+/* Jeu « Les mots cachés » (js/jeu-mots-caches.js). Cases de 56 px au moins (cahier 8), même à 360 px de large. */
+
+/* Les indices des mots à trouver : dessin, couleur, chiffre ou français, jamais le mot écrit. */
+.mc-indices { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; }
+.mc-indice {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  padding: .4rem; background: var(--surface); border: 2px solid var(--trait); border-radius: 1rem;
+  transition: opacity .3s;
+}
+.mc-indice .image, .mc-indice .carre, .mc-indice .tuile { width: 4rem; height: 4rem; }
+.mc-indice .tuile { font-size: 1.25rem; padding: .25rem; }
+.mc-indice .tuile.court { font-size: 2.25rem; }
+.mc-indice .francais { font-size: 1.25rem; max-width: 7rem; min-height: 3rem; display: grid; place-items: center; }
+.mc-indice .lecteur-audio { width: auto; }
+/* Mot trouvé : l'indice s'estompe et reçoit une coche (pas seulement la couleur). */
+.mc-indice.trouve { opacity: .45; border-color: var(--c4); }
+
+/* La grille : chaque case est placée par le code (ligne, colonne), les cadres des mots trouvés par-dessus. */
+.mc-grille {
+  --case: 3.5rem; --ecart: .375rem;
+  position: relative; display: grid; gap: var(--ecart);
+  grid-template-columns: repeat(var(--n), var(--case)); grid-template-rows: repeat(var(--n), var(--case));
+  margin-inline: -.6rem; /* à 360 px, la grille mord un peu sur la marge de la fiche pour garder des cases de 56 px */
+}
+.mc-5 { --n: 5; }
+.mc-6 { --n: 6; }
+.mc-case {
+  position: relative; width: var(--case); height: var(--case); padding: 0;
+  display: grid; place-items: center;
+  font: inherit; font-size: 1.75rem; font-weight: 700; line-height: 1; color: var(--encre);
+  background: var(--surface); border: 2px solid var(--trait); border-radius: .75rem; cursor: pointer;
+  transition: border-color var(--duree), background-color var(--duree);
+}
+@media (hover: hover) { .mc-case:hover:not(:disabled) { border-color: var(--acc); } }
+.mc-case:disabled { cursor: default; }
+.mc-case.dans-mot { background: #ecfdf3; }
+/* Première lettre touchée : un cadre épais. */
+.mc-case.choisie { border: 4px solid var(--acc); background: var(--doux); }
+/* Erreur : bord en tirets et une croix. */
+.mc-case.faux { border-color: var(--c1); border-style: dashed; }
+.mc-case .marque-ex { top: -.7rem; right: -.7rem; width: 1.75rem; height: 1.75rem; z-index: 2; }
+.mc-case .marque-ex .ic { width: 1.1rem; height: 1.1rem; }
+/* Aide après deux essais : la première lettre d'un mot reçoit un cadre épais, fixe. */
+.mc-case.mc-aide { border: 5px solid var(--c3); }
+
+/* Cadre continu autour d'un mot trouvé, posé sur ses cases ; il laisse passer les touchers. */
+.mc-trouve {
+  position: relative; z-index: 1; pointer-events: none;
+  margin: -.2rem; border: 4px solid var(--couleur); border-radius: 1rem;
+  animation: fondu .3s ease-out;
+}
+.mc-trouve .marque-ex { top: -.8rem; right: -.8rem; width: 1.75rem; height: 1.75rem; }
+.mc-trouve .marque-ex .ic { width: 1.1rem; height: 1.1rem; }
+.mc-indice .mc-coche { top: -.6rem; right: -.6rem; width: 1.75rem; height: 1.75rem; }
+.mc-indice .mc-coche .ic { width: 1.1rem; height: 1.1rem; }
+.mc-couleur-0 { --couleur: var(--c0); }
+.mc-couleur-1 { --couleur: var(--c2); }
+.mc-couleur-2 { --couleur: var(--c3); }
+.mc-couleur-3 { --couleur: var(--c1); }
+
+/* Grand écran : des cases un peu plus grandes. */
+@media (min-width: 37.5rem) {
+  .mc-grille { --case: 4rem; --ecart: .5rem; margin-inline: 0; }
+  .mc-case { font-size: 2rem; }
+  .mc-indice .image, .mc-indice .carre, .mc-indice .tuile { width: 5.5rem; height: 5.5rem; }
+}
+
+/* Animations (choisies par l'enseignant le 2026-11-09) : courtes, sans clignotement ; on peut toucher pendant. */
+/* 1. Nouvelle grille : les lettres arrivent en fondu, rangée après rangée. */
+.mc-neuve .mc-case { animation: mc-arrive .2s ease-out calc(var(--r, 0) * .05s) backwards; }
+@keyframes mc-arrive { from { opacity: 0; transform: translateY(-.4rem); } }
+/* 2. Première lettre touchée : petit « pop ». */
+.mc-case.choisie { animation: mc-pop .25s var(--ease); }
+@keyframes mc-pop { 50% { transform: scale(1.12); } }
+/* 3. Mot trouvé : ses lettres sautillent l'une après l'autre. */
+.mc-case.dans-mot { animation: mc-vague .35s var(--ease) calc(var(--i, 0) * .06s); }
+@keyframes mc-vague { 40% { transform: translateY(-.4rem); } }
+/* 4. Indice trouvé : un petit bond, puis il pâlit (transition ci-dessus). */
+.mc-indice.trouve { animation: mc-bond .4s var(--ease); }
+@keyframes mc-bond { 40% { transform: translateY(-.5rem); } }
+/* 5. Erreur : la lettre se balance doucement (en plus de la croix). */
+.mc-case.faux { animation: mc-non .35s ease-in-out; }
+@keyframes mc-non { 25% { transform: translateX(-.25rem); } 75% { transform: translateX(.25rem); } }
+/* 6. Grille terminée : une vague de gauche à droite, après celle du dernier mot. */
+.mc-fin .mc-case { animation: mc-vague .35s var(--ease) calc(.35s + var(--c, 0) * .06s); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-trouve, .mc-neuve .mc-case, .mc-case.choisie, .mc-case.dans-mot, .mc-case.faux, .mc-fin .mc-case, .mc-indice.trouve { animation: none; }
+  .mc-indice { transition: none; }
+}

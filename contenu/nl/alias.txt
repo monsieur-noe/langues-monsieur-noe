@@ -1,0 +1,17 @@
+# Alias du jeu « La phrase en images » (néerlandais, toutes les années).
+# Une forme écrite dans une phrase | le ou les mots de la liste [mots] qu'elle désigne (séparés par des virgules).
+# Exemple : « rode » dans « Ik heb een rode gom. » désigne le mot « rood ».
+# On écrit les mots sans article (« raam », pas « het raam »), en minuscules.
+# Ajouter un alias = ajouter une ligne. Une ligne fausse est simplement ignorée.
+
+rode | rood
+gele | geel
+groene | groen
+blauwe | blauw
+paarse | paars
+grijze | grijs
+ramen | raam
+kort bruin haar | kort haar, bruin haar
+lang blond haar | lang haar, blond haar
+gekruld zwart haar | gekruld haar, zwart haar
+kort rood haar | kort haar, rood haar
