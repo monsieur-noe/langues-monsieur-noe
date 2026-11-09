@@ -1,10 +1,10 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=8e00c834';
-import { chercherFichiers, cheminImage } from './cartes.js?v=8e00c834';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=8e00c834';
-import { el } from './outils.js?v=8e00c834';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=8e00c834';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=38e1124f';
+import { chercherFichiers, cheminImage } from './cartes.js?v=38e1124f';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=38e1124f';
+import { el } from './outils.js?v=38e1124f';
+import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=38e1124f';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 const RANG = { ok: 0, attention: 1, erreur: 2 };

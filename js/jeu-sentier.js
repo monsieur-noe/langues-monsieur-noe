@@ -1,16 +1,17 @@
 // Jeu « Le sentier des phrases » (jeu 10, accepté par l'enseignant le 2026-11-08 ; vue « comme si l'on marchait »
 // demandée le 2026-11-09) : 3 ou 4 fourches mènent à un coffre. À chaque fourche, une phrase (entendue, ou lue dans
 // la version sans son) et deux panneaux en français, à gauche et à droite : la bonne traduction et celle d'une autre phrase.
-// Bon panneau : on avance vers la fourche suivante. Mauvais panneau : on arrive devant un tronc qui barre le chemin
+// Bon panneau : coche, « Suivant » à la place de l'autre panneau ; au toucher de « Suivant », on avance vers la
+// fourche suivante (l'image ne change qu'à ce moment, demande du 2026-11-09). Mauvais panneau : on arrive devant un tronc qui barre le chemin
 // (« Ce chemin est bloqué ! Essaie l'autre. »), où le chemin se sépare à nouveau : on choisit l'autre panneau.
 // Phrases : celles du chapitre (traduites, sans « ... », avec leur son) ; s'il en a moins de 4, on complète avec
 // celles des chapitres déjà vus (même langue, même année, plus haut dans la liste : décision de l'enseignant).
 // Images : contenu/sentier/<vue>.jpg (Gemini, enseignant) si elles existent, sinon formes simples dessinées ici.
-import { el, icone, muet, parametre } from './outils.js?v=8e00c834';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=8e00c834';
-import { creerLecteur, arreter } from './audio.js?v=8e00c834';
-import { melanger, compteur, bravo } from './exercices.js?v=8e00c834';
-import { avatar } from './avatar.js?v=8e00c834';
+import { el, icone, muet, parametre } from './outils.js?v=38e1124f';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=38e1124f';
+import { creerLecteur, arreter } from './audio.js?v=38e1124f';
+import { melanger, compteur, bravo } from './exercices.js?v=38e1124f';
+import { avatar } from './avatar.js?v=38e1124f';
 
 const MAX_FOURCHES = 4;
 const MIN_FOURCHES = 3;
@@ -204,9 +205,9 @@ function chemin(images) {
         { duration: 450, easing: 'ease-in' }).finished.catch(() => {});
       boite.replaceChildren(apres);
       // Devant l'obstacle, on s'arrête net : la vue recule d'un petit pas (0,35 s) ; sinon la vue arrive doucement.
-      apres.animate(vue === 'obstacle'
+      await apres.animate(vue === 'obstacle'
         ? [{ transform: 'scale(1.12)', opacity: 0 }, { transform: 'scale(.97)', opacity: 1, offset: 0.6 }, { transform: 'none', opacity: 1 }]
-        : [{ transform: 'scale(.92)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: vue === 'obstacle' ? 350 : 250, easing: 'ease-out' });
+        : [{ transform: 'scale(.92)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: vue === 'obstacle' ? 350 : 250, easing: 'ease-out' }).finished.catch(() => {});
     },
     // Le coffre s'ouvre : fondu doux vers l'image du coffre ouvert, et une dizaine d'étoiles dorées montent du coffre.
     ouvrir() {
@@ -241,7 +242,7 @@ function fourche(f, ctx, rang, total, vue, fin) {
   const message = el('div', { class: 'message-ex' }, retour);
   let prof = null; // un seul avatar, qui change de pose (cahier 7.8)
   const poser = (pose) => { if (prof) prof.pose(pose); else message.prepend(prof = avatar(pose)); };
-  const suite = el('button', { type: 'button', class: 'action', hidden: '' }, rang === total ? 'Ouvrir le coffre' : 'Suivant', icone('droite'));
+  const suite = el('button', { type: 'button', class: 'action' }, rang === total ? 'Ouvrir le coffre' : 'Suivant', icone('droite'));
   const boutons = f.panneaux.map((t, k) => {
     const b = el('button', { type: 'button', class: `reponse panneau ${k ? 'droite' : 'gauche'}` },
       k ? '' : icone('gauche'), el('span', {}, t), k ? icone('droite') : '');
@@ -264,25 +265,35 @@ function fourche(f, ctx, rang, total, vue, fin) {
       for (const x of boutons) x.disabled = true;
       retour.replaceChildren(icone('sourire'), bravo());
       poser('content');
-      vue.marcher(b.cote, rang === total ? 'coffre' : 'fourche');
+      cote = b.cote; // l'image ne change qu'au toucher de « Suivant » (demande du 2026-11-09)
+      // « Suivant » prend la place de l'autre panneau, sous le doigt : sur téléphone, rien ne défile (choix A, 2026-11-09).
+      boutons.find((x) => x !== b).remove();
+      b.after(suite);
       if (!muet) {
-        voir.open = true;
+        // La phrase écrite s'affiche dans le message (plus au-dessus de l'image, qui aurait été décalée).
+        message.append(el('p', { class: 'fr sentier-phrase', lang: langue }, p.phrase));
         const son = creerLecteur(cheminSon(p, ctx.dossier), { nom: quoi });
         son.hidden = true;
         retour.after(son);
         son.jouer(); // juste après le toucher de l'enfant : permis (cahier 9)
       }
-      suite.hidden = false;
-      suite.focus();
+      suite.focus({ preventScroll: true }); // la page ne bouge pas (demande du 2026-11-09)
     });
   }
-  suite.addEventListener('click', fin);
+  let cote = 0;
+  // « Suivant » : on marche du côté choisi jusqu'à la fourche suivante (ou au coffre), puis elle s'affiche.
+  suite.addEventListener('click', async () => {
+    suite.disabled = true;
+    arreter();
+    await vue.marcher(cote, rang === total ? 'coffre' : 'fourche');
+    fin();
+  });
   const zone = el('div', { class: 'exercice sentier' },
     el('div', { class: 'tete-ex' }, titre, compteur(rang, total)),
     el('div', { class: 'enonce' }, enonce),
     vue.boite,
     el('div', { class: 'reponses n2 panneaux' }, ...boutons),
-    message, suite);
+    message);
   zone.titre = titre;
   return zone;
 }
@@ -290,7 +301,7 @@ function fourche(f, ctx, rang, total, vue, fin) {
 let styleCharge = false;
 async function lancer(zone, contenu) {
   if (!styleCharge) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=8e00c834' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=38e1124f' }));
     styleCharge = true;
   }
   const plan = planSentier(contenu.phrases, emprunts, enMots(contenu.mots));
@@ -304,7 +315,7 @@ async function lancer(zone, contenu) {
     i += 1;
     const q = fourche(plan[i - 1], contenu, i, plan.length, vue, suivante);
     zone.replaceChildren(q);
-    if (i > 1) q.titre.focus();
+    if (i > 1) q.titre.focus({ preventScroll: true });
   }
   // Arrivée : le coffre s'ouvre doucement.
   function arrivee() {
@@ -314,7 +325,7 @@ async function lancer(zone, contenu) {
     zone.replaceChildren(el('div', { class: 'bilan sentier' },
       el('div', { class: 'tete-bilan' }, avatar('bravo'), titre), vue.boite, el('p', {}, 'Le coffre est ouvert !'), encore));
     vue.ouvrir();
-    titre.focus();
+    titre.focus({ preventScroll: true });
   }
   suivante();
 }

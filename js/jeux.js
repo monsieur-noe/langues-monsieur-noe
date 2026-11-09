@@ -1,34 +1,34 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=8e00c834';
-import { cheminSon } from './donnees.js?v=8e00c834';
-import { chercherFichiers, cheminDessin } from './cartes.js?v=8e00c834';
-import { chargerAvatar } from './avatar.js?v=8e00c834';
-import { amorcer } from './musique.js?v=8e00c834';
-import juist from './jeu-juist.js?v=8e00c834';
-import loto from './jeu-loto.js?v=8e00c834';
-import memory from './jeu-memory.js?v=8e00c834';
-import oie, { oieDifficile } from './jeu-oie.js?v=8e00c834';
-import phrases from './jeu-phrases.js?v=8e00c834';
-import boss, { bossDifficile } from './jeu-boss.js?v=8e00c834';
-import qui from './jeu-qui.js?v=8e00c834';
-import phraseImages from './jeu-phrase-images.js?v=8e00c834';
-import motEnPieces from './jeu-mot-en-pieces.js?v=8e00c834';
-import ballons, { ballonsDifficile } from './jeu-ballons.js?v=8e00c834';
-import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=8e00c834';
-import motsCaches from './jeu-mots-caches.js?v=8e00c834';
-import sentier from './jeu-sentier.js?v=8e00c834';
-import panier from './jeu-panier.js?v=8e00c834';
-import boites from './jeu-boites.js?v=8e00c834';
-import devinette from './jeu-devinette.js?v=8e00c834';
-import cadenas from './jeu-cadenas.js?v=8e00c834';
-import robot, { robotDifficile } from './jeu-robot.js?v=8e00c834';
-import dessinDisparu from './jeu-dessin-disparu.js?v=8e00c834';
-import terriers from './jeu-terriers.js?v=8e00c834';
+import { el, icone } from './outils.js?v=38e1124f';
+import { cheminSon } from './donnees.js?v=38e1124f';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=38e1124f';
+import { chargerAvatar } from './avatar.js?v=38e1124f';
+import { amorcer } from './musique.js?v=38e1124f';
+import juist from './jeu-juist.js?v=38e1124f';
+import loto from './jeu-loto.js?v=38e1124f';
+import memory from './jeu-memory.js?v=38e1124f';
+import oie, { oieDifficile } from './jeu-oie.js?v=38e1124f';
+import phrases from './jeu-phrases.js?v=38e1124f';
+import boss, { bossDifficile } from './jeu-boss.js?v=38e1124f';
+import qui from './jeu-qui.js?v=38e1124f';
+import phraseImages from './jeu-phrase-images.js?v=38e1124f';
+import motEnPieces from './jeu-mot-en-pieces.js?v=38e1124f';
+import ballons, { ballonsDifficile } from './jeu-ballons.js?v=38e1124f';
+import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=38e1124f';
+import motsCaches from './jeu-mots-caches.js?v=38e1124f';
+import sentier from './jeu-sentier.js?v=38e1124f';
+import panier from './jeu-panier.js?v=38e1124f';
+import boites from './jeu-boites.js?v=38e1124f';
+import devinette from './jeu-devinette.js?v=38e1124f';
+import cadenas from './jeu-cadenas.js?v=38e1124f';
+import robot, { robotDifficile } from './jeu-robot.js?v=38e1124f';
+import dessinDisparu from './jeu-dessin-disparu.js?v=38e1124f';
+import terriers from './jeu-terriers.js?v=38e1124f';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
-// et `pleinEcran` pour masquer la barre des rubriques pendant le jeu.
+// et `pleinEcran` pour l'ouvrir sans changer de page (combat : garde le toucher qui permet la musique sur iPhone).
 // Les jeux s'ajoutent ici un par un, quand ils sont prêts.
 export const JEUX = [juist, loto, memory, oie, oieDifficile, phrases, phraseImages, qui, motEnPieces, ballons, ballonsDifficile, jumeaux, jumeauxDifficile, motsCaches, panier, boites, sentier, cadenas, devinette, robot, robotDifficile, dessinDisparu, terriers, boss, bossDifficile];
 
@@ -67,7 +67,8 @@ export async function afficherJeux(conteneur, contenu, jeu) {
     conteneur.replaceChildren(
       el('a', { class: 'retour-jeux', href: lienJeu('') }, icone('gauche'), 'Retour aux jeux'),
       zone);
-    if (choisi.pleinEcran) document.getElementById('onglets').hidden = true;
+    // Dans tous les jeux, la barre des rubriques est masquée pour laisser la place au jeu (demande du 2026-11-09).
+    document.getElementById('onglets').hidden = true;
     choisi.lancer(zone, contenu);
     // Sur téléphone, le jeu remonte en haut de l'écran : les boutons de réponse restent visibles sans défiler.
     // Après un rechargement, le navigateur ne remet pas la page où elle était (il annulerait cette remontée).

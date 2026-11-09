@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=8e00c834';
-import { creerLecteur, arreter } from './audio.js?v=8e00c834';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=8e00c834';
-import { positionReponse, cheminSon } from './donnees.js?v=8e00c834';
-import { avatar, chargerAvatar } from './avatar.js?v=8e00c834';
-import { serieOrdre } from './ordre.js?v=8e00c834';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=8e00c834';
+import { el, icone } from './outils.js?v=38e1124f';
+import { creerLecteur, arreter } from './audio.js?v=38e1124f';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=38e1124f';
+import { positionReponse, cheminSon } from './donnees.js?v=38e1124f';
+import { avatar, chargerAvatar } from './avatar.js?v=38e1124f';
+import { serieOrdre } from './ordre.js?v=38e1124f';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=38e1124f';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a

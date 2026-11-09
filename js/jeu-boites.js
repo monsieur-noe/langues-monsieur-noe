@@ -3,12 +3,12 @@
 // Niveau 2 (3 manches) : 8 cartes de 2 ou 3 chapitres ; on touche toutes celles du chapitre écrit en haut.
 // Chaque carte montre l'indice et le mot écrit ; au toucher, le mot est dit (version sans son : rien n'est dit).
 // Rien n'est enregistré.
-import { el, icone, muet, parametre } from './outils.js?v=8e00c834';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=8e00c834';
-import { creerLecteur, arreter } from './audio.js?v=8e00c834';
-import { visuel, indice, cheminImage } from './cartes.js?v=8e00c834';
-import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=8e00c834';
-import { avatar } from './avatar.js?v=8e00c834';
+import { el, icone, muet, parametre } from './outils.js?v=38e1124f';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=38e1124f';
+import { creerLecteur, arreter } from './audio.js?v=38e1124f';
+import { visuel, indice, cheminImage } from './cartes.js?v=38e1124f';
+import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=38e1124f';
+import { avatar } from './avatar.js?v=38e1124f';
 
 // Décisions de l'enseignant (2026-11-08).
 // shortcut: listes écrites ici faute de pouvoir toucher contenu/ ; à déplacer dans catalogue.txt si l'enseignant veut les modifier lui-même.
@@ -124,7 +124,7 @@ if (typeof document !== 'undefined') {
   document.querySelector('svg.sprite')?.insertAdjacentHTML('beforeend',
     '<symbol id="boite" viewBox="0 0 24 24"><path d="M3.5 9 12 5.5 20.5 9v9L12 21.5 3.5 18z"/><path d="M3.5 9 12 12.5 20.5 9M12 12.5v9"/></symbol>');
   if (!document.querySelector('link[href*="jeu-boites.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-boites.css?v=8e00c834' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-boites.css?v=38e1124f' }));
   }
 }
 
