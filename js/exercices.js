@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone } from './outils.js?v=38e1124f';
-import { creerLecteur, arreter } from './audio.js?v=38e1124f';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=38e1124f';
-import { positionReponse, cheminSon } from './donnees.js?v=38e1124f';
-import { avatar, chargerAvatar } from './avatar.js?v=38e1124f';
-import { serieOrdre } from './ordre.js?v=38e1124f';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=38e1124f';
+import { el, icone, muet } from './outils.js?v=16a7b2c4';
+import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=16a7b2c4';
+import { positionReponse, cheminSon } from './donnees.js?v=16a7b2c4';
+import { avatar, chargerAvatar } from './avatar.js?v=16a7b2c4';
+import { serieOrdre } from './ordre.js?v=16a7b2c4';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=16a7b2c4';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -17,8 +17,13 @@ const CONSIGNES = {
   trous: ['crayon', 'Choisis le mot qui manque.'],
   'fin-phrase': ['image', 'Regarde l\'image et choisis la bonne fin.'],
   'de-het': ['bulle', 'De ou het ? Choisis le bon petit mot.'],
+  // Grammaire (v1.65) : consignes de l'enseignant ; le texte change selon le contenu (voir question()).
+  tri: ['grille', 'Range chaque mot dans la bonne boîte.'],
+  pronoms: ['bulle', 'Choisis le bon petit mot.'],
+  'ecoute-clic': ['haut-parleur', 'Écoute la phrase, puis touche le bon mot.'],
 };
 const MELANGE = ['image-mot', 'mot-image', 'ecoute', 'trous'];
+const estPhrase = (t) => /[.!?]$/.test(t);
 
 // ---------- Logique (testée dans tests/exercices.test.js) ----------
 
@@ -143,6 +148,31 @@ export function planFins(fins) {
   return tirer(fins, fins.length).map((cible) => ({ variante: 'fin-phrase', cible }));
 }
 
+// Exercices de grammaire (v1.65) : chaque ligne une fois, dans le désordre.
+export const planListe = (variante, liste) => tirer(liste, liste.length).map((cible) => ({ variante, cible }));
+
+// « J'écoute et je clique » : la section [ecoute] si elle existe (réponse = smiley…), sinon les phrases à trou
+// qui ont un son, si leurs réponses forment 2 à 4 boutons (am / is / are). Boutons dans l'ordre du fichier, jamais mélangés.
+// `ordre` (ligne « en_couleur: am, is, are ») range les boutons dans l'ordre de la leçon.
+export const rangerOptions = (options, ordre = []) => [...options].sort((a, b) => rang(a, ordre) - rang(b, ordre));
+// Un mot de la leçon peut appartenir à un groupe « have/don't/do » (même couleur, même rang).
+const rang = (o, ordre) => { const k = ordre.findIndex((g) => g.split('/').includes(o.toLowerCase())); return k < 0 ? ordre.length : k; };
+export function itemsEcouteClic(phrases, ecoute, ordre = []) {
+  const items = ecoute.length
+    ? ecoute.map((e) => ({ ...phrases.find((p) => p.id === e.id), bonne: e.reponse, deSection: true })).filter((x) => x.phrase)
+    : phrases.filter((p) => p.reponse && p.son).map((p) => ({ ...p, bonne: p.reponse }));
+  // Phrases à trou dont la réponse et les propositions sont toutes des mots de la leçon (ligne en_couleur) :
+  // chacune garde ses propres boutons (have / has, don't / doesn't, do / does).
+  const lecon = ordre.flatMap((g) => g.split('/'));
+  const propres = items.map((x) => ({ ...x, options: rangerOptions([x.bonne, ...(x.propositions || [])], ordre) }));
+  if (!ecoute.length && propres.length && propres.every((x) => x.options.length >= 2 && x.options.length <= 4 && x.options.every((o) => lecon.includes(o.toLowerCase())))) return propres;
+  // Sinon, les mêmes boutons pour toutes : les réponses du chapitre, s'il y en a 2 à 4.
+  const options = [];
+  for (const x of items) if (!options.some((o) => o.toLowerCase() === x.bonne.toLowerCase())) options.push(x.bonne);
+  const ranges = rangerOptions(options, ordre);
+  return options.length >= 2 && options.length <= 4 ? items.map((x) => ({ ...x, options: ranges })) : [];
+}
+
 // Je m'entraîne : 10 questions, ou autant que de mots disponibles.
 export function planEntraine(dispo, deHet) {
   return deHet ? planDeHet(dispo, Math.min(10, dispo['de-het'].length)) : planMelange(dispo, Math.min(10, unites(dispo).size));
@@ -199,6 +229,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
   let lecteur = null; // le son joué après la réponse
   let lecteurDansEnonce = false;
   let apres = () => {}; // ce qui change dans l'énoncé une fois la réponse donnée
+  let autreConsigne = ''; // consigne adaptée au contenu (exercices de grammaire)
 
   if (q.variante === 'image-mot') {
     enonce = visuel(c, c.ind, langue);
@@ -239,6 +270,35 @@ export function question(q, ctx, verifie, rang, total, fin) {
       el('p', { class: 'phrase', lang: langue }, `${c.debut} `, trou));
     choix = propositions(c.fin, c.faux, c.faux.length + 1).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.fin }));
     lecteur = son(c.ref);
+  } else if (q.variante === 'tri') {
+    // « Je trie » (v1.65) : un mot ou une phrase à la fois ; les boîtes sont les boutons, dans l'ordre du fichier.
+    if (estPhrase(c.texte)) autreConsigne = 'Range chaque phrase dans la bonne boîte.';
+    enonce = el('p', { class: 'phrase carte-tri', lang: langue }, c.texte);
+    choix = c.options.map((o) => ({ noeud: option(o, ctx), juste: o === c.boite }));
+  } else if (q.variante === 'pronoms') {
+    // « Le bon petit mot » (v1.65) : la phrase, puis la même avec un trou à la place du sujet.
+    const i = positionReponse(c.phrase, c.sujet);
+    const trou = el('span', { class: 'trou' }, '…');
+    trou.setAttribute('aria-label', 'petit mot qui manque');
+    apres = () => { trou.textContent = c.bon; trou.removeAttribute('aria-label'); trou.classList.add('rempli'); };
+    enonce = el('div', { class: 'pile' },
+      el('p', { class: 'phrase', lang: langue }, c.phrase),
+      el('p', { class: 'phrase', lang: langue }, c.phrase.slice(0, i), trou, c.phrase.slice(i + c.sujet.length)));
+    choix = propositions(c.bon, c.autres, c.autres.length + 1).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.bon }));
+  } else if (q.variante === 'ecoute-clic') {
+    // « J'écoute et je clique » (v1.65) : la phrase entendue (écrite, avec son trou, sans le son), boutons fixes.
+    const i = c.deSection ? -1 : positionReponse(c.phrase, c.reponse);
+    const trou = el('span', { class: 'trou' }, '…');
+    const ecrit = el('p', { class: 'phrase', lang: langue }, ...(i < 0 ? [c.phrase] : [c.phrase.slice(0, i), trou, c.phrase.slice(i + c.reponse.length)]));
+    apres = () => { ecrit.hidden = false; trou.textContent = c.phrase.slice(i, i + c.reponse.length); trou.classList.add('rempli'); };
+    lecteur = c.son && !ctx.sansSon ? creerLecteur(cheminSon(c, ctx.dossier), { nom: 'la phrase à écouter' }) : null; // le nom ne donne pas la réponse
+    if (lecteur) {
+      ecrit.hidden = true; // la phrase écrite n'apparaît qu'après la réponse
+    } else autreConsigne = 'Lis la phrase, puis touche le bon mot.';
+    lecteurDansEnonce = true;
+    enonce = el('div', { class: 'pile' }, lecteur || '', ecrit);
+    choix = c.options.map((o) => ({ noeud: option(o, ctx), juste: o.toLowerCase() === c.bonne.toLowerCase() }));
+    if (choix.every((x) => x.noeud.matches('img'))) autreConsigne = lecteur ? 'Écoute la phrase, puis touche la bonne image.' : 'Lis la phrase, puis touche la bonne image.';
   } else {
     // De ou het : le nom sans article ; le son (qui dit l'article) seulement après la réponse.
     const art = el('span', { class: 'trou' }, '…');
@@ -250,7 +310,8 @@ export function question(q, ctx, verifie, rang, total, fin) {
     lecteur = son(c);
   }
 
-  const [ic, texte] = CONSIGNES[q.variante];
+  const [ic, texteBase] = CONSIGNES[q.variante];
+  const texte = autreConsigne || texteBase;
   const consigneSon = `contenu/${langue}/consignes/${q.variante}.m4a`;
   const titre = el('h2', { class: 'consigne', tabindex: '-1' }, icone(ic), texte);
   const retour = el('p', { class: 'retour-ex', 'aria-live': 'polite' });
@@ -268,7 +329,10 @@ export function question(q, ctx, verifie, rang, total, fin) {
   const dire = (ic2, txt, pose) => { retour.replaceChildren(icone(ic2), txt); if (!ctx.sansAvatar) { av.pose(pose); message.prepend(av); } };
 
   let essais = 0;
-  function terminer(juste, texte, ic2, pose) {
+  // `muette` : fin sans toucher (minuteur du combat Expert), donc sans son (jamais de son qui part seul, cahier §9).
+  function terminer(juste, texte, ic2, pose, muette = false) {
+    ctx.repondu?.(); // combat Expert : le minuteur s'arrête
+    if (muette) lecteur = null;
     for (const b of boutons) b.disabled = true;
     if (!juste) {
       const bonne = boutons.find((b) => b.juste);
@@ -320,11 +384,25 @@ export function question(q, ctx, verifie, rang, total, fin) {
     ctx.presents.has(consigneSon) && !ctx.sansSon ? creerLecteur(consigneSon, { nom: 'la consigne', avecBarre: false, lent: false }) : '',
     el('div', { class: 'enonce' }, enonce),
     // Images en grille ; mots les uns sous les autres (« de » et « het » côte à côte).
-    el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}` }, ...boutons),
+    // « courts » : que des mots de 5 lettres au plus (am, is, are), sur une ligne dans le combat sur téléphone (CSS).
+    el('div', { class: `reponses n${boutons.length}${choix[0].noeud.matches('.mot') ? '' : ' visuels'}${choix.every((x) => x.noeud.matches('.mot') && x.noeud.textContent.length <= 5) ? ' courts' : ''}` }, ...boutons),
     message, suite);
   zone.titre = titre;
   zone.suite = suite;
+  // Combat Expert : le minuteur attend la fin du mot à écouter ; temps écoulé = erreur, bonne réponse montrée.
+  zone.ecoute = q.variante === 'ecoute' ? lecteur : null;
+  zone.tempsEcoule = () => { if (!boutons.every((b) => b.disabled)) terminer(false, 'Temps écoulé !', 'bulle', 'encourage', true); };
   return zone;
+}
+
+// Un bouton de « Je trie » ou de « J'écoute et je clique » : le dessin images/<valeur>.svg s'il existe (smileys),
+// sinon la valeur écrite. Le texte du dessin est le français du mot qui l'utilise (« j'adore »).
+export const cheminOption = (o, dossier) => `${dossier}images/${o.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}.svg`;
+function option(o, ctx) {
+  const src = cheminOption(o, ctx.dossier);
+  if (!ctx.presents.has(src)) return el('span', { class: 'mot', lang: ctx.langue }, o);
+  const nom = src.split('/').pop();
+  return el('img', { class: 'dessin-option', src, alt: ctx.mots.find((m) => m.image === nom)?.francais || o });
 }
 
 // Enchaîne les questions d'un plan. Celles qui ne sont pas réussies du premier coup repassent, tour après tour,
@@ -483,7 +561,9 @@ function dicteeDates(d, ctx) {
 
 // Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ordre, couleurs ou dictees).
 // shortcut: le nom « Het is… » est fixe, à rendre variable si un chapitre commence ses phrases autrement.
-const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], 'fin-phrase': ['Het is…', 'image'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'] };
+const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], 'fin-phrase': ['Het is…', 'image'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'],
+  tri: ['Je trie', 'grille'], pronoms: ['Le bon petit mot', 'bulle'], 'ecoute-clic': [muet ? 'Je lis et je clique' : 'J\'écoute et je clique', muet ? 'oeil' : 'haut-parleur'] };
+const LISTES = ['tri', 'pronoms', 'ecoute-clic']; // exercices de grammaire : chaque ligne une fois (planListe)
 function choixExercice(choix, actif) {
   const lien = (valeur) => {
     const params = new URLSearchParams(location.search);
@@ -528,7 +608,9 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   // Sons facultatifs de [ordre] : un par manche, et celui à écouter à la fin.
   const sonsOrdre = donnees.ordre.flatMap((o) => [o.id, o.son].filter(Boolean).map((id) => cheminSon(o, dossier, id)));
 
-  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre]), chargerAvatar()]);
+  // Dessins des boîtes et des réponses de « Je trie » et « J'écoute et je clique » (smileys) : images/<valeur>.svg.
+  const dessinsOptions = [...donnees.tri.map((t) => t.boite), ...donnees.ecoute.map((e) => e.reponse)].map((o) => cheminOption(o, dossier));
+  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre, ...dessinsOptions]), chargerAvatar()]);
   const aSon = (x) => presents.has(cheminSon(x, dossier));
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
@@ -545,13 +627,24 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const dictees = verifie ? [] : donnees.dictees.filter((d) => (d.dates ? datesPossibles(piecesDates(mots)) : aSon(d))); // dictées : leur propre entrée (demande du 2026-10-20)
   // Les entrées possibles ; sans précision dans l'adresse, la première (les exercices mélangés s'il y en a).
   // Seules les entrées possibles restent (une condition fausse donne false ou null, jamais un nom d'entrée).
-  const choix = [avecMelange && '', avecDeHet && 'de-het', fins.length > 0 && 'fin-phrase', avecOrdre && 'ordre', couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
+  // Grammaire (v1.65), seulement dans « Je m'entraîne » : chaque ligne avec ses boutons (boîtes, pronoms, réponses).
+  // Ordre de la leçon : les mots de en_couleur, puis les dessins des cartes (smileys : love, like, dont-like).
+  const ordreLecon = [...donnees.en_couleur, ...donnees.mots.map((m) => m.image.toLowerCase().replace(/\.svg$/, ''))];
+  const boites = [];
+  for (const t of donnees.tri) if (!boites.includes(t.boite)) boites.push(t.boite);
+  const listes = verifie ? {} : {
+    tri: boites.length >= 2 ? donnees.tri.map((t) => ({ ...t, options: rangerOptions(boites, ordreLecon) })) : [],
+    pronoms: donnees.pronoms,
+    'ecoute-clic': itemsEcouteClic(phrases, donnees.ecoute, ordreLecon),
+  };
+  const choix = [avecMelange && '', avecDeHet && 'de-het', fins.length > 0 && 'fin-phrase', avecOrdre && 'ordre',
+    ...LISTES.map((v) => listes[v]?.length > 0 && v), couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
   const actif = choix.includes(exercice) ? exercice : choix[0];
   const deHet = actif === 'de-het';
   if (!verifie && choix.length > 1) parties.push(choixExercice(choix, actif));
 
   const zone = el('div', { class: 'zone-exercice' });
-  const plan = () => (verifie ? planVerifie(dispo) : actif === 'fin-phrase' ? planFins(fins) : planEntraine(dispo, deHet));
+  const plan = () => (verifie ? planVerifie(dispo) : actif === 'fin-phrase' ? planFins(fins) : LISTES.includes(actif) ? planListe(actif, listes[actif]) : planEntraine(dispo, deHet));
   const lancer = () => {
     if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
     if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });

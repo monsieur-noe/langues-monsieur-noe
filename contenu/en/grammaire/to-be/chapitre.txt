@@ -1,0 +1,139 @@
+# Chapitre de GRAMMAIRE (anglais) : le verbe « to be » (am / is / are), sans la négation.
+# Source : fiche « Introduce yourself 5-6 », ex. 11-13. Phrases écrites pour le site.
+# Anglais britannique.
+# POUR CLAUDE CODE : c'est le premier chapitre de la nouvelle partie « Grammaire »,
+# en dehors des années (voir pour-claude-code.md).
+
+titre: The verb to be
+
+# Pas de lien Quizlet : l'enseignant a arrêté Quizlet (2026-11-11).
+
+# Les mots mis en couleur dans « Je comprends » (une couleur par mot).
+en_couleur: am, is, are
+
+# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
+boss: Caméléon Am-Is-Are
+
+[explication]
+# POUR CLAUDE CODE : nouvelle partie « Je comprends », AVANT « Je découvre ».
+# Une page d'explication en français, très visuelle (couleurs, smileys, grands exemples).
+# Chaque ligne commence par son type :
+#   titre | texte                     -> un sous-titre
+#   texte | texte                     -> un petit paragraphe
+#   tableau | case | case | ...       -> une ligne de tableau (la 1re ligne = en-tête)
+#   exemple | anglais | français | son (facultatif) -> un exemple, avec bouton 🔊 si un son est donné
+#   astuce | texte                    -> un encadré « Astuce »
+# Mets en couleur am, is et are dans les exemples.
+
+titre | « To be » veut dire « être »
+texte | En anglais, « to be » change selon la personne. Il devient am, is ou are.
+tableau | En anglais | En français
+tableau | I am | je suis
+tableau | you are | tu es
+tableau | he is | il est
+tableau | she is | elle est
+tableau | it is | il est, elle est (une chose, un animal)
+tableau | we are | nous sommes
+tableau | you are | vous êtes
+tableau | they are | ils sont, elles sont
+astuce | I va avec am. He, she et it vont avec is. You, we et they vont avec are.
+exemple | I am from Belgium. | Je viens de Belgique. | tobe-p1
+exemple | She is from Spain. | Elle vient d'Espagne. | tobe-p4
+exemple | They are from France. | Ils viennent de France. | tobe-p6
+exemple | It is a cat. | C'est un chat. | tobe-p7
+astuce | Pour ton âge, l'anglais utilise « to be » : I am 10 years old. = J'ai 10 ans.
+titre | Poser une question
+texte | Pour poser une question, mets am, is ou are au début de la phrase.
+exemple | You are English. | Tu es anglais.
+exemple | Are you English? | Es-tu anglais ?
+texte | Pour répondre oui : Yes, puis le petit mot, puis am, is ou are.
+exemple | Are you English? Yes, I am. | Es-tu anglais ? Oui. | tobe-q1
+exemple | Is she tall? Yes, she is. | Est-elle grande ? Oui. | tobe-q4
+
+[mots]
+# id | mot | français | indice (facultatif)
+# Les cartes de la conjugaison. Pas de « De ou het ? » en anglais.
+i-am | I am | je suis
+you-are | you are | tu es, vous êtes
+he-is | he is | il est
+she-is | she is | elle est
+it-is | it is | il est, elle est (une chose, un animal)
+we-are | we are | nous sommes
+they-are | they are | ils sont, elles sont
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Phrases à trous : am, is ou are.
+tobe-p1 | I am from Belgium. | Je viens de Belgique. | am | is, are
+tobe-p2 | You are my friend. | Tu es mon ami. | are | am, is
+tobe-p3 | He is from Germany. | Il vient d'Allemagne. | is | am, are
+tobe-p4 | She is from Spain. | Elle vient d'Espagne. | is | am, are
+tobe-p5 | We are from China. | Nous venons de Chine. | are | am, is
+tobe-p6 | They are from France. | Ils viennent de France. | are | am, is
+tobe-p7 | It is a cat. | C'est un chat. | is | am, are
+
+# Question et réponse courte.
+# POUR CLAUDE CODE : masque le DERNIER mot (la réponse courte), même s'il apparaît
+# aussi au début de la question (« Is ... ? Yes, he is. »).
+tobe-q1 | Are you English? Yes, I am. | Es-tu anglais ? Oui. | am | is, are
+tobe-q2 | Is he from Spain? Yes, he is. | Vient-il d'Espagne ? Oui. | is | am, are
+tobe-q3 | Are they from China? Yes, they are. | Viennent-ils de Chine ? Oui. | are | am, is
+tobe-q4 | Is she tall? Yes, she is. | Est-elle grande ? Oui. | is | am, are
+tobe-q5 | Are you from Belgium? Yes, we are. | Venez-vous de Belgique ? Oui. | are | am, is
+
+# POUR CLAUDE CODE : nouveau jeu « J'écoute et je clique ».
+# L'enfant entend une phrase de [phrases] (le son <id>.m4a) et clique sur am, is ou are.
+# La bonne réponse est le mot à masquer (4e colonne). Pas besoin d'autres données.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# EXCEPTION voulue par Noé : ici l'intrus est am, is ou are (c'est le but du chapitre).
+# Pas d'image au-dessus des cases dans ce chapitre.
+order-1 | I / am / from / Belgium. | tobe-p1 | is
+order-2 | You / are / my / friend. | tobe-p2 | am
+order-3 | He / is / from / Germany. | tobe-p3 | are
+order-4 | She / is / from / Spain. | tobe-p4 | am
+order-5 | We / are / from / China. | tobe-p5 | is
+order-6 | They / are / from / France. | tobe-p6 | is
+
+[tri]
+# POUR CLAUDE CODE : nouveau jeu « Je trie ». Trois boîtes : am, is, are.
+# L'enfant glisse chaque sujet dans la bonne boîte. Pas de son.
+# Consigne : « Range chaque mot dans la bonne boîte. »
+# id | sujet | boîte
+sort-1 | I | am
+sort-2 | my mum | is
+sort-3 | my dad | is
+sort-4 | the dog | is
+sort-5 | she | is
+sort-6 | you | are
+sort-7 | we | are
+sort-8 | my friends | are
+sort-9 | the cats | are
+sort-10 | they | are
+
+[pronoms]
+# POUR CLAUDE CODE : nouveau jeu « Je remplace par le pronom ».
+# Le site montre la phrase, puis la même phrase avec un trou à la place du sujet
+# (« ___ is tall. »). L'enfant choisit le bon pronom. Pas de son.
+# Consigne : « Choisis le bon petit mot. »
+# id | phrase | sujet à remplacer | bon pronom | autres propositions
+pronoun-1 | My mum is tall. | My mum | She | He, It, They
+pronoun-2 | My dad is from Spain. | My dad | He | She, It, We
+pronoun-3 | The dog is black. | The dog | It | He, She, They
+pronoun-4 | My friends are from France. | My friends | They | He, She, It
+pronoun-5 | My sister and I are tall. | My sister and I | We | They, He, She
+pronoun-6 | The cat is white. | The cat | It | He, She, We
+
+[paires]
+# POUR CLAUDE CODE : nouveau « Memory des paires » dans « Je joue ».
+# On retourne deux cartes : un pronom et son verbe. Une carte « is » va avec he, she
+# ou it ; une carte « are » va avec you, we ou they.
+# id | carte 1 | carte 2
+pair-1 | I | am
+pair-2 | you | are
+pair-3 | he | is
+pair-4 | she | is
+pair-5 | it | is
+pair-6 | we | are
+pair-7 | they | are

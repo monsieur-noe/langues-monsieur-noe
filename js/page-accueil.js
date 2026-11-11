@@ -1,9 +1,9 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=38e1124f';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=38e1124f';
-import { avatar, chargerAvatar } from './avatar.js?v=38e1124f';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=16a7b2c4';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=16a7b2c4';
+import { avatar, chargerAvatar } from './avatar.js?v=16a7b2c4';
 
 const langue = parametre('langue');
 const annee = parametre('annee');
@@ -76,17 +76,19 @@ async function afficherBienvenue() {
 function afficherAnnees(chapitres) {
   preparerEtape('Choisis ton année.', 'index.html', el('span', { lang: langue }, nomLangue));
   // P3 à P6 toujours montrées (une année sans chapitre : « bientôt »), sauf P4 : pas de P4 en anglais (décision de l'enseignant du 2026-10-31).
-  const annees = [...new Set(['p3', ...(langue === 'en' ? [] : ['p4']), 'p5', 'p6', ...chapitres.filter((c) => c.langue === langue).map((c) => c.annee)])].sort();
+  // « Grammaire » (v1.65) : une partie hors des années, toujours en dernier.
+  const annees = [...new Set(['p3', ...(langue === 'en' ? [] : ['p4']), 'p5', 'p6', ...chapitres.filter((c) => c.langue === langue && c.annee !== 'grammaire').map((c) => c.annee)])].sort();
+  annees.push('grammaire');
   montrer('annees', annees.map((a, i) => carte(
     chapitres.some((c) => c.langue === langue && c.annee === a) && `index.html?langue=${langue}&annee=${a}`,
     couleur(i + 2),
-    el('span', { class: 'num' }, a.toUpperCase()),
-    el('span', { class: 'titre' }, `${a.slice(1)}e primaire`),
+    el('span', { class: 'num' }, a === 'grammaire' ? 'G' : a.toUpperCase()),
+    el('span', { class: 'titre' }, a === 'grammaire' ? 'Grammaire' : `${a.slice(1)}e primaire`),
   )));
 }
 
 function afficherChapitres(chapitres) {
-  preparerEtape('Tes chapitres', `index.html?langue=${langue}`, el('span', { lang: langue }, nomLangue), ` · ${annee.toUpperCase()}`);
+  preparerEtape('Tes chapitres', `index.html?langue=${langue}`, el('span', { lang: langue }, nomLangue), ` · ${annee === 'grammaire' ? 'Grammaire' : annee.toUpperCase()}`);
   const liste = chapitres.filter((c) => c.langue === langue && c.annee === annee);
   if (!liste.length) {
     document.getElementById('message').append(el('p', { class: 'message' }, 'Pas encore de chapitre ici. Reviens bientôt !'));

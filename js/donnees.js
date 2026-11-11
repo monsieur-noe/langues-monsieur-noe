@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES, muet } from './outils.js?v=38e1124f';
+import { LANGUES, muet } from './outils.js?v=16a7b2c4';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -26,7 +26,14 @@ const SECTIONS = {
   ordre: [2, 4, 'id | cases séparées par « / » | son à écouter à la fin (facultatif) | intrus (facultatif)'],
   descriptions: [2, 3, 'id | texte de la description (« / » = nouvelle phrase) | français (facultatif)'],
   'fin-de-phrase': [5, 5, 'id | début de la phrase | bonne fin | autres propositions | identifiant du mot'],
+  // Grammaire (v1.65) : « Je trie », « Le bon petit mot », memory des paires, « J'écoute et je clique ».
+  tri: [3, 3, 'id | mot ou phrase | boîte'],
+  pronoms: [5, 5, 'id | phrase | sujet à remplacer | bon pronom | autres propositions'],
+  paires: [3, 3, 'id | carte 1 | carte 2'],
+  ecoute: [2, 2, 'id du son | bonne réponse'],
 };
+// [explication] (« Je comprends », v1.65) : chaque ligne commence par son type ; colonnes [minimum, maximum].
+const EXPLICATION = { titre: [2, 2], texte: [2, 2], tableau: [2, 8], exemple: [3, 4], astuce: [2, 2] };
 
 // Garde les lignes utiles avec leur numéro (lignes vides et # ignorées).
 function lignesUtiles(texte) {
@@ -58,8 +65,8 @@ export function lireCatalogue(texte, fichier = 'contenu/catalogue.txt') {
       erreurs.push(erreur(fichier, num, `la langue « ${langue} » n'est pas reconnue. Écris ${LANGUES.map((l) => `« ${l.code} »`).join(' ou ')}, en minuscules.`));
       continue;
     }
-    if (!/^p[1-6]$/.test(annee)) {
-      erreurs.push(erreur(fichier, num, `l'année « ${annee} » n'est pas reconnue. Écris par exemple « p3 » ou « p4 », en minuscules.`));
+    if (!/^(p[1-6]|grammaire)$/.test(annee)) {
+      erreurs.push(erreur(fichier, num, `l'année « ${annee} » n'est pas reconnue. Écris par exemple « p3 », « p4 » ou « grammaire », en minuscules.`));
       continue;
     }
     if (!ID_VALIDE.test(chapitre)) {
@@ -84,10 +91,16 @@ export function lireCatalogue(texte, fichier = 'contenu/catalogue.txt') {
 
 // Où commence la réponse à masquer dans la phrase (-1 si absente), sans tenir compte des majuscules.
 // Le mot entier d'abord : « de » ne doit pas être pris dans « rode ».
+// Question et réponse (« Is he tall? Yes, he is. ») : le trou est d'abord cherché dans la réponse, écrit
+// exactement pareil (v1.65) ; « Do » (majuscule) reste donc dans la question de « Do you play tennis? Yes, I do. ».
 // (Sans « lookbehind » dans l'expression : Safari ne le connaît qu'à partir d'iOS 16.4.)
 export function positionReponse(phrase, reponse) {
   const [p, r] = [phrase.toLowerCase(), reponse.toLowerCase()];
   const lettre = (c) => /[\p{L}\p{N}]/u.test(c || '');
+  const q = phrase.indexOf('? ');
+  for (let i = q >= 0 ? phrase.indexOf(reponse, q) : -1; i >= 0; i = phrase.indexOf(reponse, i + 1)) {
+    if (!lettre(p[i - 1]) && !lettre(p[i + r.length])) return i;
+  }
   for (let i = p.indexOf(r); i >= 0; i = p.indexOf(r, i + 1)) {
     if (!lettre(p[i - 1]) && !lettre(p[i + r.length])) return i;
   }
@@ -95,7 +108,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', cartes_francais: '', reprend: [], listes: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], erreurs: [] };
+  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', cartes_francais: '', en_couleur: [], reprend: [], listes: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], explication: [], tri: [], pronoms: [], paires: [], ecoute: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -107,8 +120,8 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     if (titreSection) {
       section = titreSection[1].trim().toLowerCase();
       liste = '';
-      if (!SECTIONS[section]) {
-        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [mots], [phrases], [pistes], [dictees], [ordre], [descriptions] et [fin-de-phrase].`);
+      if (!SECTIONS[section] && section !== 'explication') {
+        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [explication], [mots], [phrases], [pistes], [dictees], [ordre], [descriptions], [fin-de-phrase], [tri], [pronoms], [paires] et [ecoute].`);
         section = 'inconnue';
       }
       continue;
@@ -136,14 +149,25 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
           err(num, `« ${resultat.arene} » n'est pas un nom d'arène. Écris le nom du fichier sans « .jpg », en minuscules, sans accent ni espace (exemple : arene: couleurs).`);
           resultat.arene = '';
         }
+      } else if (m[1] === 'en_couleur') {
+        // « Je comprends » (v1.65) : mots mis en couleur ; « -ing » = tout mot qui finit ainsi.
+        resultat.en_couleur = m[2].split(',').map((x) => x.trim().toLowerCase()).filter(Boolean);
       } else if (['titre', 'note_parents', 'couleurs', 'boss', 'cartes_francais'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: » et « reprend: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: », « en_couleur: » et « reprend: ».`);
       }
       continue;
     }
     if (section === 'inconnue') continue;
+    if (section === 'explication') {
+      const [type, ...reste] = colonnes(ligne);
+      const [min, max] = EXPLICATION[type.toLowerCase()] || [];
+      if (!min) err(num, `« ${type} » n'est pas un type de ligne de [explication]. Commence la ligne par titre, texte, tableau, exemple ou astuce, puis « | ».`);
+      else if (reste.length + 1 < min || reste.length + 1 > max || reste[0] === '') err(num, `cette ligne « ${type} » n'a pas le bon nombre de colonnes. Exemple : exemple | I am from Belgium. | Je viens de Belgique. | tobe-p1`);
+      else resultat.explication.push({ type: type.toLowerCase(), colonnes: reste, ligne: num });
+      continue;
+    }
     // « liste: Les mois » dans [mots] : les mots suivants forment une liste de « Je découvre » (demande du 2026-10-26).
     // Dans [phrases], même nom : les phrases suivantes s'affichent avec cette liste (sans liste : avec toutes).
     const ligneListe = (section === 'mots' || section === 'phrases') && ligne.match(/^liste\s*:\s*(.*)$/);
@@ -173,6 +197,11 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     const id = c[0];
     if (!ID_VALIDE.test(id)) {
       err(num, `l'identifiant « ${id} » doit être en minuscules, sans accent ni espace, avec des tirets (exemple : te-voet).`);
+      continue;
+    }
+    // [ecoute] reprend les identifiants des phrases : ce ne sont pas de nouveaux identifiants.
+    if (section === 'ecoute') {
+      resultat.ecoute.push({ id, reponse: c[1], ligne: num });
       continue;
     }
     if (ids.has(id)) {
@@ -227,6 +256,13 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     } else if (section === 'fin-de-phrase') {
       // Exercice « Het is… » (demande de l'enseignant) : la 5e colonne nomme le mot qui donne l'image et le son.
       resultat.finsDePhrase.push({ id, debut: c[1], fin: c[2], faux: c[3].split(',').map((x) => x.trim()).filter(Boolean), mot: c[4], ligne: num });
+    } else if (section === 'tri') {
+      resultat.tri.push({ id, texte: c[1], boite: c[2], ligne: num });
+    } else if (section === 'pronoms') {
+      if (positionReponse(c[1], c[2]) < 0) err(num, `le sujet « ${c[2]} » n'apparaît pas dans la phrase. Recopie-le exactement comme dans la phrase.`);
+      else resultat.pronoms.push({ id, phrase: c[1], sujet: c[2], bon: c[3], autres: c[4].split(',').map((x) => x.trim()).filter(Boolean), ligne: num });
+    } else if (section === 'paires') {
+      resultat.paires.push({ id, a: c[1], b: c[2], ligne: num });
     } else {
       const [, titre, texteD, francais = ''] = c;
       // « dates: » en 3e colonne : dictée de dates tirées au hasard, sans son à elle (demande du 2026-10-26).
@@ -234,6 +270,10 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     }
   }
 
+  for (const e of resultat.ecoute) {
+    if (!resultat.phrases.some((p) => p.id === e.id)) err(e.ligne, `la phrase « ${e.id} » n'est pas dans [phrases]. Recopie exactement son identifiant (1re colonne).`);
+  }
+  resultat.ecoute = resultat.ecoute.filter((e) => resultat.phrases.some((p) => p.id === e.id));
   for (const f of resultat.finsDePhrase) {
     if (!resultat.mots.some((m) => m.id === f.mot)) err(f.ligne, `le mot « ${f.mot} » n'est pas dans [mots]. Recopie exactement son identifiant (1re colonne).`);
   }

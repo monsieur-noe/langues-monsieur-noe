@@ -1,0 +1,148 @@
+# Chapitre de GRAMMAIRE (anglais) : le verbe « to have » (have / has).
+# Pas de fiche : phrases écrites pour le site, avec du vocabulaire déjà vu (animaux, famille, apparence, école).
+# Anglais britannique. Même forme que le chapitre P6 « My family and me » :
+# I have / she has, don't / doesn't have, Do / Does … have ? JAMAIS « have got » (choix de Noé, 2026-11-11).
+# POUR CLAUDE CODE : 3e chapitre de la partie « Grammaire » (après to-be et likes-and-dislikes).
+# Mêmes jeux que to-be : [tri], [pronoms], [paires], « J'écoute et je clique ».
+
+titre: The verb to have
+
+# Les mots mis en couleur dans « Je comprends » : rose pour I, you, we, they ; bleu pour he, she, it.
+en_couleur: have/don't/do, has/doesn't/does
+
+# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
+boss: Have-Has le Collectionneur
+
+[explication]
+# POUR CLAUDE CODE : partie « Je comprends », AVANT « Je découvre » (même format que likes-and-dislikes).
+# Chaque ligne commence par son type :
+#   titre | texte                     -> un sous-titre
+#   texte | texte                     -> un petit paragraphe
+#   tableau | case | case | ...       -> une ligne de tableau (la 1re ligne = en-tête)
+#   exemple | anglais | français | son (facultatif) -> un exemple, avec bouton 🔊 si un son est donné
+#   astuce | texte                    -> un encadré « Astuce »
+# Mets en couleur have, has, don't, doesn't, do et does dans le tableau et les exemples.
+
+titre | Le verbe « to have » : avoir
+texte | En anglais, pour dire « j'ai », on dit I have.
+tableau | anglais | français
+tableau | I have | j'ai
+tableau | you have | tu as
+tableau | he has | il a
+tableau | she has | elle a
+tableau | it has | il a, elle a (une chose, un animal)
+tableau | we have | nous avons
+tableau | they have | ils ont, elles ont
+astuce | Avec he, she et it, on dit has. Avec tous les autres, on dit have.
+exemple | I have a dog. | J'ai un chien. | tohave-p1
+exemple | She has long hair. | Elle a les cheveux longs. | tohave-p4
+
+titre | Dire « je n'ai pas »
+texte | Pour dire non, on ajoute don't ou doesn't devant have.
+tableau | anglais | français
+tableau | I don't have | je n'ai pas
+tableau | she doesn't have | elle n'a pas
+astuce | Avec doesn't, on garde have (jamais « doesn't has »).
+exemple | I don't have a bike. | Je n'ai pas de vélo. | tohave-n1
+exemple | She doesn't have glasses. | Elle n'a pas de lunettes. | tohave-n2
+
+titre | Poser la question
+texte | Pour poser une question, mets Do ou Does au début.
+texte | Pour répondre « oui », dis Yes, le petit mot, puis do ou does.
+exemple | Do you have a pet? Yes, I do. | As-tu un animal ? Oui. | tohave-q1
+exemple | Does he have a brother? Yes, he does. | A-t-il un frère ? Oui. | tohave-q2
+
+titre | Attention à l'âge
+texte | En français, on dit « j'ai 10 ans ». En anglais, on utilise to be.
+exemple | I am ten. | J'ai dix ans.
+astuce | Pour l'âge, on dit I am, jamais I have.
+
+[mots]
+# id | mot | français | indice (facultatif)
+# Les cartes de la conjugaison. Pas de « De ou het ? » en anglais.
+i-have | I have | j'ai
+you-have | you have | tu as, vous avez
+he-has | he has | il a
+she-has | she has | elle a
+it-has | it has | il a, elle a (une chose, un animal)
+we-have | we have | nous avons
+they-have | they have | ils ont, elles ont
+
+[phrases]
+# POUR CLAUDE CODE : chaque phrase reçoit un dessin (règle de tous les chapitres).
+# id | phrase | français | mot à masquer | autres propositions
+# Phrases à trous : have ou has.
+tohave-p1 | I have a dog. | J'ai un chien. | have | has
+tohave-p2 | You have a bike. | Tu as un vélo. | have | has
+tohave-p3 | He has a sister. | Il a une sœur. | has | have
+tohave-p4 | She has long hair. | Elle a les cheveux longs. | has | have
+tohave-p5 | We have a cat. | Nous avons un chat. | have | has
+tohave-p6 | They have blue eyes. | Ils ont les yeux bleus. | have | has
+tohave-p7 | It has four legs. | Il a quatre pattes. | has | have
+
+# Phrases « non » : don't ou doesn't.
+tohave-n1 | I don't have a bike. | Je n'ai pas de vélo. | don't | doesn't
+tohave-n2 | She doesn't have glasses. | Elle n'a pas de lunettes. | doesn't | don't
+tohave-n3 | They don't have a cat. | Ils n'ont pas de chat. | don't | doesn't
+
+# Question et réponse courte : do ou does.
+# POUR CLAUDE CODE : comme dans to-be, masque le DERNIER mot (la réponse courte),
+# même s'il apparaît aussi au début de la question (« Does he … ? Yes, he does. »).
+tohave-q1 | Do you have a pet? Yes, I do. | As-tu un animal ? Oui. | do | does
+tohave-q2 | Does he have a brother? Yes, he does. | A-t-il un frère ? Oui. | does | do
+tohave-q3 | Do they have a dog? Yes, they do. | Ont-ils un chien ? Oui. | do | does
+tohave-q4 | Does he have glasses? Yes, he does. | A-t-il des lunettes ? Oui. | does | do
+tohave-q5 | Do you have a red pen? Yes, I do. | As-tu un bic rouge ? Oui. | do | does
+
+# POUR CLAUDE CODE : jeu « J'écoute et je clique » comme dans to-be.
+# Les boutons = le mot à masquer + les autres propositions de la phrase
+# (have / has, don't / doesn't ou do / does). La bonne réponse est le mot à masquer.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# EXCEPTION voulue par Noé (comme to-be) : l'intrus est un petit mot de grammaire.
+# Pas d'image du mot recherché au-dessus des cases (le dessin de la phrase reste).
+order-1 | I / have / a dog. | tohave-p1 | has
+order-2 | He / has / a sister. | tohave-p3 | have
+order-3 | She / has / long hair. | tohave-p4 | have
+order-4 | They / have / blue eyes. | tohave-p6 | has
+order-5 | I / don't / have / a bike. | tohave-n1 | doesn't
+order-6 | She / doesn't / have / glasses. | tohave-n2 | don't
+
+[tri]
+# Jeu « Je trie » (comme to-be), avec deux boîtes : have, has. Pas de son.
+# Consigne : « Range chaque mot dans la bonne boîte. »
+# id | sujet | boîte
+sort-1 | I | have
+sort-2 | you | have
+sort-3 | we | have
+sort-4 | they | have
+sort-5 | my friends | have
+sort-6 | he | has
+sort-7 | she | has
+sort-8 | my mum | has
+sort-9 | my brother | has
+sort-10 | the dog | has
+
+[pronoms]
+# Jeu « Je remplace par le pronom » (comme to-be). Pas de son.
+# Consigne : « Choisis le bon petit mot. »
+# id | phrase | sujet à remplacer | bon pronom | autres propositions
+pronoun-1 | My sister has a cat. | My sister | She | He, It, They
+pronoun-2 | My dad has glasses. | My dad | He | She, It, We
+pronoun-3 | The dog has a ball. | The dog | It | He, She, They
+pronoun-4 | My friends have bikes. | My friends | They | He, She, It
+pronoun-5 | My brother and I have a dog. | My brother and I | We | They, He, She
+pronoun-6 | The cat has green eyes. | The cat | It | He, She, We
+
+[paires]
+# « Memory des paires » (comme to-be) : un pronom et son verbe.
+# Une carte « has » va avec he, she ou it ; une carte « have » va avec I, you, we ou they.
+# id | carte 1 | carte 2
+pair-1 | I | have
+pair-2 | you | have
+pair-3 | he | has
+pair-4 | she | has
+pair-5 | it | has
+pair-6 | we | have
+pair-7 | they | have

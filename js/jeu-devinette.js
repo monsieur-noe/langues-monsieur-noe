@@ -1,12 +1,12 @@
 // Jeu « Devinette à indices » (jeu 8 du document de l'enseignant, 2026-11-08) : une carte mystère cache un mot.
 // L'enfant demande des indices quand il veut, toujours dans le même ordre, et choisit le mot parmi 4 boutons.
 // Aucun compte des indices utilisés : ce n'est pas un score. Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=38e1124f';
-import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=38e1124f';
-import { creerLecteur, arreter } from './audio.js?v=38e1124f';
-import { visuel } from './cartes.js?v=38e1124f';
-import { melanger, tirer, bilanEntraine, compteur, bravo, fete, article, sansArticle } from './exercices.js?v=38e1124f';
-import { avatar } from './avatar.js?v=38e1124f';
+import { el, icone, muet } from './outils.js?v=16a7b2c4';
+import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=16a7b2c4';
+import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
+import { visuel } from './cartes.js?v=16a7b2c4';
+import { melanger, tirer, bilanEntraine, compteur, bravo, fete, article, sansArticle } from './exercices.js?v=16a7b2c4';
+import { avatar } from './avatar.js?v=16a7b2c4';
 
 const NOMBRE = 6;
 const CHOIX = 4;
@@ -72,7 +72,7 @@ let styleCharge = false;
 function preparerPage() {
   if (styleCharge) return;
   styleCharge = true;
-  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-devinette.css?v=38e1124f' }));
+  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-devinette.css?v=16a7b2c4' }));
 }
 
 // Pictogramme du menu et de la carte mystère : une carte avec un point d'interrogation (dessiné par Claude).

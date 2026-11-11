@@ -1,0 +1,77 @@
+# Chapitre 7 (anglais, P6) : The weather (le temps qu'il fait)
+# Source : la fiche « Weather P5-6 » de Monsieur Noé (vocabulaire ex. 3 et 7, grammaire ex. 6), anglais britannique.
+# Pas de lien Quizlet (décision de l'enseignant, 2026-11-11).
+
+titre: The weather
+
+# Le français s'affiche aussi sous le dessin, sur les cartes.
+cartes_francais: oui
+boss: Grosnuage
+arene: meteo
+
+[mots]
+# id | mot | français | image (facultatif)
+# Un dessin pour chaque nom, tous différents (choix de l'enseignant, 2026-11-11) : un nom, son adjectif et
+# son verbe (rain, rainy, to rain) auraient eu le même dessin, et deux images identiques dans un jeu prêtent à confusion.
+# Adjectifs et verbes : le français seul. Dessins de sun, cloud, rain, snow, wind et fog repris de Het weer (P4).
+
+liste: Nouns
+sun | sun | le soleil | sun.svg
+cloud | cloud | le nuage | cloud.svg
+rain | rain | la pluie | rain.svg
+snow | snow | la neige | snow.svg
+wind | wind | le vent | wind.svg
+fog | fog | le brouillard | fog.svg
+mist | mist | la brume | mist.svg
+frost | frost | le gel | frost.svg
+storm | storm | la tempête | storm.svg
+thunder | thunder | le tonnerre | thunder.svg
+lightning | lightning | l'éclair | lightning.svg
+thunderstorm | thunderstorm | l'orage | thunderstorm.svg
+
+liste: Adjectives
+sunny | sunny | ensoleillé
+cloudy | cloudy | nuageux
+partly-cloudy | partly cloudy | partiellement nuageux
+rainy | rainy | pluvieux
+snowy | snowy | neigeux
+windy | windy | venteux
+foggy | foggy | plein de brouillard
+misty | misty | brumeux
+stormy | stormy | orageux
+warm | warm | chaud
+cold | cold | froid
+cool | cool | frais
+
+liste: Verbs
+to-rain | to rain | pleuvoir
+to-snow | to snow | neiger
+to-blow | to blow | souffler
+to-freeze | to freeze | geler
+to-thunder | to thunder | tonner
+to-hail | to hail | grêler
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Les fausses propositions travaillent la grammaire de la fiche (nom / adjectif / verbe).
+weather-p1 | It is sunny today. | Il y a du soleil aujourd'hui. | sunny | rainy, snowy
+weather-p2 | It is cloudy and cold. | Il fait nuageux et froid. | cloudy | cloud, clouds
+weather-p3 | It is raining. | Il pleut. | raining | rain, rains
+weather-p4 | The wind is blowing. | Le vent souffle. | blowing | blow, blows
+weather-p5 | There is fog this morning. | Il y a du brouillard ce matin. | fog | foggy, fogs
+weather-p6 | It will snow tomorrow. | Il neigera demain. | snow | snowing, snows
+weather-p7 | It is going to rain. | Il va pleuvoir. | going | go, goes
+weather-p8 | There will be a storm. | Il y aura une tempête. | be | is, are
+weather-p9 | It is a windy day. | C'est une journée de vent. | windy | wind, winds
+weather-p10 | There is thunder and lightning. | Il y a du tonnerre et des éclairs.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Un intrus par manche, toujours un mot du chapitre, qui ne forme pas une autre phrase correcte.
+order-1 | It / is / sunny / today. | weather-p1 | cloud
+order-2 | It / is / raining. | weather-p3 | fog
+order-3 | The / wind / is / blowing. | weather-p4 | sunny
+order-4 | There / is / fog / this / morning. | weather-p5 | foggy
+order-5 | It / will / snow / tomorrow. | weather-p6 | cloudy
+order-6 | It / is / going / to / rain. | weather-p7 | windy
+order-7 | There / will / be / a / storm. | weather-p8 | stormy

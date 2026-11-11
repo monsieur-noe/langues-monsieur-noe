@@ -5,7 +5,7 @@
 
 // Introduction jouée une fois, puis boucle [début, fin] en secondes, trouvée par tests/boucler-musiques.py.
 // Les musiques « un-coeur » arrivent en plein combat : elles commencent directement à leur boucle.
-import { muet } from './outils.js?v=38e1124f';
+import { muet } from './outils.js?v=16a7b2c4';
 
 const BOUCLES = {
   'combat': [8.85, 54.379583],
@@ -16,7 +16,14 @@ const BOUCLES = {
   'fin-annee-un-coeur': [0.5, 53.320833],
   'fin-annee-difficile': [14, 67.151667],
   'fin-annee-difficile-un-coeur': [0.5, 55.620146],
+  // Combat expert (2026-11-11), musiques de l'enseignant (Gemini).
+  'combat-expert': [14.95, 66.130167],
+  'combat-expert-un-coeur': [0.5, 46.56075],
+  'fin-annee-expert': [14.95, 62.971896],
+  'fin-annee-expert-un-coeur': [0.5, 59.331417],
 };
+// Musique prête (repères connus) : le combat expert garde la musique difficile tant que la sienne manque.
+export const existe = (nom) => nom in BOUCLES;
 // Les enregistrements sont peu forts (moyenne autour de -38 dB, voir tests/mesurer-sons.py) : ces deux réglages gardent la voix nettement au-dessus.
 // Réglés pour des voix à -27 LUFS (tests/normaliser-sons.py) : musique un peu au-dessus de la voix, 20 dB sous elle pendant un mot.
 const VOLUME = 0.4;

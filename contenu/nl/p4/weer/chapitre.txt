@@ -5,7 +5,7 @@ titre: Het weer
 
 quizlet: https://quizlet.com/be/1225531028/la-meteo-neerlandais-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.png et boss-difficile.png dans ce dossier.
-boss: Grognuage
+boss: Grosnuage
 arene: meteo
 
 [mots]

@@ -1,0 +1,160 @@
+# Chapitre de GRAMMAIRE (anglais) n° 2 : Likes and dislikes
+# (I like / I love / I don't like / my favourite / my least favourite + verbe en -ing).
+# Source : fiche « Sports and hobbies 5-6 », p. 7 (Likes and dislikes) et ex. 5.
+# Les phrases sports-p2 à p7, p11 et p12 restent AUSSI dans Sports and hobbies (P5).
+# Pas d'autre négation que « don't like ». Anglais britannique.
+
+titre: Likes and dislikes
+
+# POUR CLAUDE CODE : un boss propre à ce chapitre, différent de celui de to-be (Noé veut un boss par point de grammaire).
+
+# Lien Quizlet (Noé l'enverra). Enlève le # quand le lien est là.
+# quizlet: Likes and dislikes | (lien à venir)
+
+# Les mots mis en couleur dans « Je comprends » : tous les mots en -ing.
+en_couleur: -ing
+
+# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
+boss: Grincheux-Ing
+
+[explication]
+# POUR CLAUDE CODE : nouvelle partie « Je comprends », AVANT « Je découvre ».
+# Une page d'explication en français, très visuelle (couleurs, smileys, grands exemples).
+# Chaque ligne commence par son type :
+#   titre | texte                     -> un sous-titre
+#   texte | texte                     -> un petit paragraphe
+#   tableau | case | case | ...       -> une ligne de tableau (la 1re ligne = en-tête)
+#   exemple | anglais | français | son (facultatif) -> un exemple, avec bouton 🔊 si un son est donné
+#   astuce | texte                    -> un encadré « Astuce »
+# Mets en couleur le mot en -ing dans les exemples.
+
+titre | Dire ce que tu aimes
+texte | En anglais, il y a 3 façons de dire si tu aimes quelque chose.
+tableau | smiley | anglais | français
+tableau | image:love.svg | I love | j'adore
+tableau | image:like.svg | I like | j'aime
+tableau | image:dont-like.svg | I don't like | je n'aime pas
+exemple | I love swimming. | J'adore nager. | sports-p3
+exemple | I like reading. | J'aime lire. | sports-p2
+exemple | I don't like cooking. | Je n'aime pas cuisiner. | sports-p4
+
+titre | La règle : le verbe prend -ing
+texte | Après like, love et don't like, on ajoute -ing au verbe.
+tableau | verbe | après like / love
+tableau | read | reading
+tableau | draw | drawing
+tableau | sing | singing
+astuce | En français, on dit « j'aime lire ». En anglais, on dit « I like reading ».
+
+titre | Attention à l'orthographe
+tableau | quand le verbe… | on fait… | exemple
+tableau | finit par -e | on enlève le e | dance → dancing
+tableau | est court (swim, run) | on double la dernière lettre | swim → swimming
+tableau | tous les autres | on ajoute -ing | ski → skiing
+
+titre | Ton préféré
+texte | Pour dire ce que tu préfères, tu utilises my favourite.
+exemple | My favourite sport is tennis. | Mon sport préféré est le tennis. | sports-p5
+exemple | My favourite hobby is drawing. | Mon loisir préféré est le dessin. | sports-p6
+texte | Pour dire ce que tu aimes le moins, tu utilises my least favourite.
+exemple | My least favourite sport is boxing. | Le sport que j'aime le moins, c'est la boxe. | sports-p7
+
+titre | Poser la question
+exemple | What's your favourite sport? | Quel est ton sport préféré ? | sports-p11
+exemple | Do you like swimming? Yes, I do. | Tu aimes nager ? Oui. | likes-q1
+
+[mots]
+# id | mot | français | indice (facultatif)
+# POUR CLAUDE CODE : dessine 3 smileys pour le dos des cartes, dans le style du site :
+# I love = smiley avec des cœurs, I like = smiley content, I don't like = smiley pas content.
+# Les mêmes smileys servent dans « Je trie » et « J'écoute et je clique ».
+# Pas de dessin pour my favourite / my least favourite (le français s'affiche).
+i-love | I love | j'adore | love.svg
+i-like | I like | j'aime | like.svg
+i-dont-like | I don't like | je n'aime pas | dont-like.svg
+my-favourite | my favourite | mon … préféré, ma … préférée
+my-least-favourite | my least favourite | celui ou celle que j'aime le moins
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# POUR CLAUDE CODE : les sons sports-p… existent déjà dans le chapitre Sports and hobbies
+# (en/p5/sports-and-hobbies) : copie-les ici, Noé ne les réenregistre pas.
+# Le trou est surtout le verbe en -ing (c'est la règle du chapitre).
+# POUR CLAUDE CODE : chaque phrase reçoit un dessin qui montre son sens (style du site), dans tous les exercices.
+sports-p2 | I like reading. | J'aime lire. | reading | read, reads
+sports-p3 | I love swimming. | J'adore nager. | swimming | swim, swims
+sports-p4 | I don't like cooking. | Je n'aime pas cuisiner. | cooking | cook, cooks
+sports-p5 | My favourite sport is tennis. | Mon sport préféré est le tennis. | favourite | least, like
+sports-p6 | My favourite hobby is drawing. | Mon loisir préféré est le dessin. | drawing | draw, draws
+sports-p7 | My least favourite sport is boxing. | Le sport que j'aime le moins, c'est la boxe. | least | favourite, like
+sports-p11 | What's your favourite sport? | Quel est ton sport préféré ? | favourite | least, like
+sports-p12 | What's your favourite hobby? | Quel est ton loisir préféré ? | hobby | sport, colour
+
+# Nouvelles phrases (à enregistrer), avec les activités de Sports and hobbies.
+likes-p1 | I like dancing. | J'aime danser. | dancing | dance, dances
+likes-p2 | I love singing. | J'adore chanter. | singing | sing, sings
+likes-p3 | I don't like running. | Je n'aime pas courir. | running | run, runs
+likes-p4 | I love playing football. | J'adore jouer au foot. | playing | play, plays
+likes-p5 | I like watching TV. | J'aime regarder la télé. | watching | watch, watches
+likes-p6 | I don't like skiing. | Je n'aime pas skier. | skiing | ski, skis
+likes-p7 | I love cycling. | J'adore faire du vélo. | cycling | cycle, cycles
+likes-p8 | My favourite hobby is painting. | Mon loisir préféré est la peinture. | painting | paint, paints
+
+# Question et réponse courte.
+# POUR CLAUDE CODE : comme dans to-be, masque le DERNIER mot (« do »).
+likes-q1 | Do you like swimming? Yes, I do. | Tu aimes nager ? Oui. | do | does, am
+likes-q2 | Do you like reading? Yes, I do. | Tu aimes lire ? Oui. | do | does, am
+
+[ecoute]
+# POUR CLAUDE CODE : jeu « J'écoute et je clique », comme dans to-be, mais ici
+# l'enfant entend la phrase et clique sur un des 3 smileys (love / like / don't like).
+# Consigne : « Écoute et clique sur le bon smiley. »
+# id du son | bonne réponse (love, like ou dont-like)
+sports-p2 | like
+sports-p3 | love
+sports-p4 | dont-like
+likes-p1 | like
+likes-p2 | love
+likes-p3 | dont-like
+likes-p4 | love
+likes-p5 | like
+likes-p6 | dont-like
+likes-p7 | love
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# EXCEPTION voulue (comme pour am/is/are dans to-be) : l'intrus est le verbe SANS -ing,
+# pour travailler la règle. Pas d'image au-dessus des cases dans ce chapitre.
+order-1 | I / like / reading. | sports-p2 | read
+order-2 | I / love / swimming. | sports-p3 | swim
+order-3 | I / don't / like / cooking. | sports-p4 | cook
+order-4 | I / love / singing. | likes-p2 | sing
+order-5 | I / like / watching / TV. | likes-p5 | watch
+order-6 | My / favourite / hobby / is / drawing. | sports-p6 | draw
+
+[tri]
+# POUR CLAUDE CODE : « Je trie », comme dans to-be, mais les 3 boîtes sont les 3 smileys
+# (love / like / don't like) et l'enfant range des phrases. Pas de son.
+# Consigne : « Range chaque phrase dans la bonne boîte. »
+# id | phrase | boîte
+sort-1 | I love swimming. | love
+sort-2 | I love singing. | love
+sort-3 | I love cycling. | love
+sort-4 | I like reading. | like
+sort-5 | I like dancing. | like
+sort-6 | I like watching TV. | like
+sort-7 | I don't like cooking. | dont-like
+sort-8 | I don't like running. | dont-like
+sort-9 | I don't like skiing. | dont-like
+
+[paires]
+# Memory des paires, comme dans to-be : le verbe et sa forme en -ing.
+# id | carte 1 | carte 2
+pair-1 | read | reading
+pair-2 | draw | drawing
+pair-3 | cook | cooking
+pair-4 | sing | singing
+pair-5 | dance | dancing
+pair-6 | swim | swimming
+pair-7 | run | running
+pair-8 | ski | skiing

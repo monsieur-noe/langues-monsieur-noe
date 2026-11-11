@@ -2,11 +2,11 @@
 // (4 sur grand écran), de gauche à droite ou de haut en bas. Au-dessus, leurs indices (dessin, couleur, chiffre
 // ou français), jamais le mot écrit. On touche la première puis la dernière lettre d'un mot. 3 grilles par partie.
 // Version sans son (?muet=1) : mêmes indices, sans haut-parleur. Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=38e1124f';
-import { cheminSon } from './donnees.js?v=38e1124f';
-import { creerLecteur, arreter } from './audio.js?v=38e1124f';
-import { melanger, bilanEntraine, bravo, compteur, fete } from './exercices.js?v=38e1124f';
-import { avatar } from './avatar.js?v=38e1124f';
+import { el, icone, muet } from './outils.js?v=16a7b2c4';
+import { cheminSon } from './donnees.js?v=16a7b2c4';
+import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
+import { melanger, bilanEntraine, bravo, compteur, fete } from './exercices.js?v=16a7b2c4';
+import { avatar } from './avatar.js?v=16a7b2c4';
 
 const GRILLES = 3; // grilles par partie
 // Téléphone : 5 × 5, 3 mots de 3 à 5 lettres. Grand écran (tablette, ordinateur) : 6 × 6, 4 mots jusqu'à 6 lettres.
@@ -238,7 +238,7 @@ if (typeof document !== 'undefined') {
     sprite.append(s);
   }
   if (!document.querySelector('link[href*="jeu-mots-caches.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-mots-caches.css?v=38e1124f' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-mots-caches.css?v=16a7b2c4' }));
   }
 }
 

@@ -633,6 +633,12 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 }
 .case-oie > .ic { color: var(--acc); }
 .case-oie.arrivee > .ic { color: #b45309; fill: #fbbf24; }
+/* Version expert (2026-11-09) : cases spéciales, avec leur pictogramme en coin, et le message de la case du pion. */
+.case-oie.surprise, .case-oie.pont, .case-oie.tempete { background: #eef2ff; border-color: #a5b4fc; }
+.case-oie:is(.surprise, .pont, .tempete) > .ic { position: absolute; top: .15rem; right: .15rem; width: 1.1rem; height: 1.1rem; }
+.case-speciale { display: flex; align-items: center; justify-content: center; gap: .5rem; min-height: 1.75rem; margin: 0 0 .5rem; font-weight: 700; }
+.case-speciale:empty { display: none; }
+.case-speciale .ic { color: var(--acc); flex: none; }
 .case-oie.fete { border-color: #b45309; background: #fff7d6; animation: grossit .5s var(--ease) .45s; } /* bond de l'arrivée, une fois le pion posé (l'étoile est sous le pion) */
 .pion {
   position: absolute; inset: 0; margin: auto; width: 2.5rem; height: 2.5rem;
@@ -677,7 +683,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 }
 .coeurs span { display: inline-flex; }
 .monstre > .ic, .dessin-boss { width: 5.5rem; height: 5.5rem; object-fit: contain; }
-.monstre { transition: transform .4s var(--ease), opacity .4s; }
+.monstre { transition: transform .4s var(--ease), opacity .4s, scale .4s var(--ease); }
 .monstre.vaincu { transform: rotate(80deg) translateY(1rem); opacity: .55; }
 .place-prof { position: relative; min-height: 5.5rem; display: flex; align-items: flex-end; }
 .parade { position: absolute; right: -1.25rem; top: 50%; translate: 0 -50%; opacity: 0; pointer-events: none; }
@@ -765,7 +771,39 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .boss-difficile .dessin-boss.de-base { filter: brightness(.8) saturate(1.3) drop-shadow(0 0 .35rem #dc2626); }
 .boss-difficile .intention { border-color: #fca5a5; background: #fef2f2; }
 .boss-difficile .intention > .ic { color: #b91c1c; }
+/* Combat Expert (2026-11-09) : 10 cœurs du monstre en 2 lignes de 5 ; minuteur, barre qui se vide en rougissant
+   (le script l'anime ; la longueur dit le temps, pas seulement la couleur). */
+.coeurs.dix { display: grid; grid-template-columns: repeat(5, auto); justify-content: start; }
+.minuteur { height: .75rem; margin: 0 0 .5rem; border: 2px solid var(--trait); border-radius: 1rem; background: var(--surface); overflow: hidden; }
+.minuteur > span { display: block; width: 100%; height: 100%; background: #16a34a; }
+.minuteur[hidden] { display: none; }
+/* Combat expert, ambiance (v1.64) : violet et or ; dessin difficile entouré d'un halo violet tant que `boss-expert` manque ;
+   deuxième phase (à 5 cœurs) : le monstre grandit et brille ; entrée du boss final ; couronne de la victoire. */
+.boss-expert .intention { border-color: #a78bfa; background: #f5f3ff; }
+.boss-expert .intention > .ic, .boss-expert .consigne-oie .ic { color: #6d28d9; }
+.boss-expert .arene { box-shadow: 0 0 0 3px #7c3aed; }
+.boss-expert .arene.avec-decor { border-color: #d4a017; }
+.boss-expert .cadre-vies { border-color: #d4a017; }
+.boss-expert .minuteur { border-color: #a78bfa; }
+.halo-expert { filter: drop-shadow(0 0 .35rem #7c3aed); }
+.monstre.enrage { scale: 1.15; }
+.monstre.enrage .dessin-boss, .monstre.enrage > .ic { filter: drop-shadow(0 0 .45rem #7c3aed) saturate(1.3); }
+/* Victoire expert : rayons violets et dorés qui sortent du monstre, puis éclat de lumière (une seule fois, doux, sans clignoter). */
+.rayons-boss, .eclat-boss { position: absolute; border-radius: 50%; opacity: 0; pointer-events: none; }
+.rayons-boss {
+  width: 9rem; height: 9rem;
+  background: repeating-conic-gradient(rgb(167 139 250 / .85) 0 10deg, transparent 10deg 30deg, rgb(251 191 36 / .8) 30deg 40deg, transparent 40deg 60deg);
+  -webkit-mask: radial-gradient(circle, #000 15%, transparent 70%); mask: radial-gradient(circle, #000 15%, transparent 70%);
+}
+.eclat-boss { width: 5rem; height: 5rem; background: radial-gradient(circle, #fff 0 25%, rgb(253 230 138 / .9) 45%, rgb(167 139 250 / .5) 65%, transparent 72%); }
+.ombre-boss { position: absolute; inset: 0; border-radius: inherit; background: #1e1b4b; opacity: 0; pointer-events: none; }
+.alerte-boss {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
+  padding: .4rem .9rem; border: 2px solid #fbbf24; border-radius: 1rem; background: #4c1d95; color: #fff; font-size: 1.25rem; font-weight: 700;
+}
+.couronne { position: absolute; left: 50%; top: -1.25rem; transform: translateX(-50%); pointer-events: none; width: 3rem; height: auto; }
 @media (max-width: 30rem) {
+  .minuteur { height: .6rem; margin-bottom: .3rem; }
   .boss-difficile .arene { column-gap: .35rem; }
   .boss-difficile .coeurs .ic { width: 1.3rem; height: 1.3rem; } /* les 5 cœurs du monstre tiennent sur une ligne */
 }
@@ -817,6 +855,13 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   /* minmax(0, 1fr) : quatre colonnes égales, même quand un nombre (« 100 », « 19th ») est plus large que sa case. */
   .combat-boss .reponses.visuels.n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: none; }
   .combat-boss .reponses.visuels.n4 .tuile.court { font-size: min(2.75rem, 6.5vw); } /* tient dans la case, 20 px au moins dès 308 px de large */
+  /* Mots de 5 lettres au plus (am, is, are : grammaire, v1.65) : sur une ligne, pour qu'une question longue tienne aussi. */
+  .combat-boss .reponses.courts { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); max-width: none; }
+  /* Expert : seules les phrases à trous ont 3 réponses ; deux en haut, la troisième en dessous (2026-11-11). */
+  .boss-expert .reponses.n3:not(.visuels, .courts) { grid-template-columns: repeat(2, 1fr); max-width: none; }
+  .boss-expert .reponses.n3:not(.visuels, .courts) > :last-child { grid-column: 1 / -1; }
+  /* Dessin d'une phrase à trou un peu plus petit : une phrase longue sur deux lignes tient aussi (v1.65). */
+  .combat-boss .enonce .pile > .image { width: 3.5rem; height: 3.5rem; }
 }
 /* Téléphone : pendant le combat, la barre du titre du chapitre est cachée à l'œil (toujours lue par les lecteurs
    d'écran). Ainsi tout tient sans que la page doive remonter (iPhone). */
@@ -858,3 +903,37 @@ button.choix[aria-expanded="true"] { border-color: var(--acc); }
 button.choix[aria-expanded="true"] .fleche { transform: rotate(90deg); }
 .versions { display: flex; gap: .75rem; margin-top: .5rem; animation: arrive .25s var(--ease) backwards; }
 .versions .choix { flex: 1; min-height: 3.5rem; justify-content: center; }
+/* Trois niveaux (oie, combat) : les boutons passent à la ligne plutôt que de couper « Difficile » sur téléphone. */
+.versions { flex-wrap: wrap; }
+.versions .choix { flex: 1 1 7rem; }
+.versions .titre { overflow-wrap: normal; hyphens: none; }
+
+/* ---------- Grammaire (v1.65) : « Je comprends », Je trie, J'écoute et je clique ---------- */
+
+/* Cinq rubriques : « Je comprends » sur toute la largeur, puis deux lignes de deux sur téléphone ; une ligne dès la tablette. */
+.segments.cinq { grid-template-columns: repeat(2, 1fr); }
+.segments.cinq .seg:first-child { grid-column: 1 / -1; }
+@media (min-width: 40rem) { .segments.cinq { grid-template-columns: repeat(5, 1fr); } .segments.cinq .seg:first-child { grid-column: auto; } }
+
+.comprends { display: flex; flex-direction: column; gap: 1rem; }
+.titre-comprends { display: flex; align-items: center; gap: .5rem; font-size: 1.5rem; margin-top: .5rem; }
+.titre-comprends .ic { width: 1.75rem; height: 1.75rem; color: var(--acc); flex: none; }
+.comprends > .titre-comprends:first-child { margin-top: 0; }
+.tableau-comprends { overflow-x: auto; }
+.tableau-comprends table { border-collapse: collapse; width: 100%; font-size: 1.25rem; }
+.tableau-comprends th, .tableau-comprends td { padding: .5rem .75rem; border: 1.5px solid var(--trait); text-align: left; vertical-align: top; }
+.tableau-comprends th { background: var(--doux); }
+.exemple { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem 1rem; padding: .75rem 1rem; border-left: 5px solid var(--acc); border-radius: .5rem; background: var(--fond); }
+.exemple .phrase { flex: 1 1 100%; }
+.exemple .fr { flex: 1 1 12rem; color: var(--gris); }
+.astuce { padding: .75rem 1rem; border: 2px dashed #b45309; border-radius: 1rem; background: #fff7ed; }
+.astuce .ic { width: 1.4rem; height: 1.4rem; margin-right: .3rem; vertical-align: -.2rem; color: #b45309; }
+/* Mots en couleur : une couleur par mot (contraste 4,5:1 au moins sur blanc), toujours en gras. */
+.en-couleur.c0 { color: #be185d; }
+.en-couleur.c1 { color: #1d4ed8; }
+.en-couleur.c2 { color: #15803d; }
+.en-couleur.c3 { color: #7e22ce; }
+
+.carte-tri { min-width: 10rem; padding: 1rem 1.25rem; border: 2px solid var(--trait); border-radius: 1rem; background: var(--surface); box-shadow: var(--ombre); text-align: center; }
+.dessin-option { width: 100%; max-width: 5.5rem; height: auto; aspect-ratio: 1; }
+.dessin-tableau { width: 3rem; height: 3rem; display: block; }

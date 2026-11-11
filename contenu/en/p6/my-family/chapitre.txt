@@ -1,0 +1,143 @@
+# Chapitre 8 (anglais, P6) : My family and me (la famille, la description, to be et to have)
+# Source : la leçon de Monsieur Noé « My family and me » (archive my-family-pour-claude-code.zip).
+# Anglais britannique. « to have » : I have / she has, JAMAIS « have got ».
+# Pas de lien Quizlet. Pas de « De ou het ? » en anglais.
+
+titre: My family and me
+
+# Le français s'affiche aussi sous le dessin, sur les cartes.
+cartes_francais: oui
+
+# Les mots mis en couleur dans « Je comprends » : to be, have, has.
+en_couleur: am/is/are/isn't/aren't/i'm/you're/he's/she's/it's/we're/they're, have/don't/do, has/doesn't/does
+
+# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini) et son décor.
+boss: Les Jumeaux Chamaillus
+arene: apparence
+
+[explication]
+# « Je comprends » : écrit par Claude d'après les notes de Monsieur Noé.
+# titre | texte · texte | texte · tableau | case | case · exemple | anglais | français | son · astuce | texte
+
+titre | Le 's : à qui ?
+texte | Pour dire « la mère d'Amira », on met d'abord Amira, puis 's.
+exemple | Amira's mother | la mère d'Amira
+exemple | Sophie is Amira's mother. | Sophie est la mère d'Amira. | family-p4
+astuce | D'abord celui à qui c'est, puis 's, puis la chose ou la personne.
+
+titre | Le verbe « to be » : être
+tableau | anglais | forme courte | français
+tableau | I am | I'm | je suis
+tableau | you are | you're | tu es
+tableau | he is, she is, it is | he's, she's, it's | il est, elle est
+tableau | we are | we're | nous sommes
+tableau | they are | they're | ils sont, elles sont
+texte | Pour dire non, on ajoute not : I'm not, isn't, aren't.
+exemple | Lina is a baby. | Lina est un bébé. | family-p3
+exemple | Noah and Eva are twins. | Noah et Eva sont jumeaux. | family-p2
+texte | Pour poser une question, mets am, is ou are au début.
+exemple | Is she eleven? Yes, she is. | A-t-elle onze ans ? Oui.
+astuce | Dans la réponse courte, on ne raccourcit pas : Yes, I am.
+
+titre | Le verbe « to have » : avoir
+tableau | anglais | français
+tableau | I have, you have | j'ai, tu as
+tableau | he has, she has, it has | il a, elle a
+tableau | we have, they have | nous avons, ils ont
+exemple | Amira has a brother. | Amira a un frère. | family-p5
+texte | Pour dire non : don't have ou doesn't have.
+exemple | Eva doesn't have glasses. | Eva n'a pas de lunettes. | family-p10
+texte | Pour poser une question, mets Do ou Does au début.
+exemple | Do you have a sister? Yes, I do. | As-tu une sœur ? Oui. | family-p11
+astuce | Le secret de has : has = does + have. Donc on dit doesn't have et Does she have… ?
+
+titre | Attention au piège !
+texte | En français, on dit « j'ai 11 ans ». En anglais, on dit « je suis 11 ».
+exemple | I am eleven. | J'ai onze ans. | family-p1
+exemple | I am hungry. | J'ai faim.
+exemple | I am thirsty. | J'ai soif.
+exemple | I am cold. I am hot. | J'ai froid. J'ai chaud.
+exemple | I am scared. | J'ai peur.
+astuce | Hair est toujours au singulier : She has long hair.
+
+[mots]
+# id | mot | français | image (facultatif)
+# Dessins : 7 repris d'Appearance (P3), 23 de Claude (cahier §9). Le petit arbre : la personne « ME » est l'enfant.
+
+liste: Family
+mother | mother | la mère | mother.svg
+father | father | le père | father.svg
+parents | parents | les parents | parents.svg
+brother | brother | le frère | brother.svg
+sister | sister | la sœur | sister.svg
+grandmother | grandmother | la grand-mère | grandmother.svg
+grandfather | grandfather | le grand-père | grandfather.svg
+grandparents | grandparents | les grands-parents | grandparents.svg
+uncle | uncle | l'oncle | uncle.svg
+aunt | aunt | la tante | aunt.svg
+cousin | cousin | le cousin, la cousine | cousin.svg
+son | son | le fils | son.svg
+daughter | daughter | la fille | daughter.svg
+husband | husband | le mari | husband.svg
+wife | wife | la femme (l'épouse) | wife.svg
+twins | twins | les jumeaux | twins.svg
+baby | baby | le bébé | baby.svg
+only-child | only child | l'enfant unique | only-child.svg
+stepmother | stepmother | la belle-mère | stepmother.svg
+stepfather | stepfather | le beau-père | stepfather.svg
+
+liste: Description
+tall | tall | grand | tall.svg
+short | short | petit | short.svg
+long-hair | long hair | les cheveux longs | long-hair.svg
+short-hair | short hair | les cheveux courts | short-hair.svg
+curly-hair | curly hair | les cheveux bouclés | curly-hair.svg
+straight-hair | straight hair | les cheveux raides | straight-hair.svg
+blond | blond | blond | blond.svg
+glasses | glasses | les lunettes | glasses.svg
+beard | beard | la barbe | beard.svg
+freckles | freckles | les taches de rousseur | freckles.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Chaque phrase a son dessin : images/<id>.svg (Claude).
+family-p1 | I am eleven. | J'ai onze ans. | am | have, is
+family-p2 | Noah and Eva are twins. | Noah et Eva sont jumeaux. | are | is, have
+family-p3 | Lina is a baby. | Lina est un bébé. | is | are, has
+family-p4 | Sophie is Amira's mother. | Sophie est la mère d'Amira. | Amira's | Amira, Amiras, Amira is
+family-p5 | Amira has a brother. | Amira a un frère. | has | have, is
+family-p6 | My grandfather has a beard. | Mon grand-père a une barbe. | has | have, is
+family-p7 | My aunt has curly hair. | Ma tante a les cheveux bouclés. | has | have, is
+family-p8 | Eva has freckles. | Eva a des taches de rousseur. | freckles | glasses, beard, tall
+family-p9 | Marc is very tall. | Marc est très grand. | is | are, has
+family-p10 | Eva doesn't have glasses. | Eva n'a pas de lunettes. | doesn't | don't, isn't, aren't
+family-p11 | Do you have a sister? | As-tu une sœur ? | Do | Does, Are
+family-p12 | Is Lina your sister? | Lina est-elle ta sœur ? | Is | Are, Has
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+family-order-1 | I / am / eleven. | family-p1 | glasses
+family-order-2 | Noah / and / Eva / are / twins. | family-p2 | freckles
+family-order-3 | Sophie / is / Amira's / mother. | family-p4 | glasses
+family-order-4 | Amira / has / a / brother. | family-p5 | freckles
+family-order-5 | My / grandfather / has / a / beard. | family-p6 | twins
+family-order-6 | My / aunt / has / curly / hair. | family-p7 | baby
+family-order-7 | Marc / is / very / tall. | family-p9 | cousin
+family-order-8 | Eva / doesn't / have / glasses. | family-p10 | father
+family-order-9 | Do / you / have / a / sister? | family-p11 | freckles
+
+[tri]
+# « To be or to have ? » (Je trie) : l'enfant range chaque mot dans la boîte « I am » ou « I have ».
+# id | mot | boîte
+tobehave-1 | eleven | I am
+tobehave-2 | hungry | I am
+tobehave-3 | a brother | I have
+tobehave-4 | tall | I am
+tobehave-5 | freckles | I have
+tobehave-6 | scared | I am
+tobehave-7 | glasses | I have
+tobehave-8 | thirsty | I am
+tobehave-9 | a sister | I have
+tobehave-10 | long hair | I have
+tobehave-11 | cold | I am
+tobehave-12 | a beard | I have

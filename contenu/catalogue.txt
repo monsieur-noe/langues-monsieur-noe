@@ -30,3 +30,9 @@ en | p5 | introduce-yourself-p5 | 1 | Introduce yourself
 en | p5 | sports-and-hobbies | 2 | Sports and hobbies
 en | p5 | food-and-drinks | 3 | Food and drinks
 en | p5 | transport | 4 | Means of transport
+en | p6 | weather | 7 | The weather
+en | p6 | my-family | 8 | My family and me
+en | grammaire | to-be | 1 | The verb to be
+en | grammaire | likes-and-dislikes | 2 | Likes and dislikes
+en | grammaire | to-have | 3 | The verb to have
+en | grammaire | imperative | 4 | The imperative

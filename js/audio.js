@@ -1,8 +1,8 @@
 // Le lecteur audio unique du site (cahier 9) : tous les sons passent par creerLecteur().
 // Bouton lecture/pause, barre de progression que l'on touche ou fait glisser, temps écoulé / durée.
 // Un seul son à la fois ; rien ne démarre seul (sur iPhone, un son ne part qu'après un toucher).
-import { el, icone } from './outils.js?v=38e1124f';
-import { baisser } from './musique.js?v=38e1124f';
+import { el, icone } from './outils.js?v=16a7b2c4';
+import { baisser } from './musique.js?v=16a7b2c4';
 
 let actif = null; // le son en cours, pour l'arrêter quand un autre démarre
 

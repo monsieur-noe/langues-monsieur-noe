@@ -3,9 +3,11 @@
 // à la seconde chance : le pion avance d'une case. Il ne recule jamais. Pas de dé. Arrivée : petite fête.
 // Version difficile (demandée le 2026-10-20) : un seul essai par question, comme « Je vérifie » ;
 // une erreur fait reculer le pion d'une case (jamais avant le départ).
-import { el, icone } from './outils.js?v=38e1124f';
-import { arreter } from './audio.js?v=38e1124f';
-import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=38e1124f';
+// Version expert (demandée le 2026-11-09) : un seul essai, une erreur renvoie à la première case ;
+// cases spéciales : question surprise (3 et 9), pont (5 : on saute à la 7), tempête (8 : 2 bonnes réponses de suite).
+import { el, icone } from './outils.js?v=16a7b2c4';
+import { arreter } from './audio.js?v=16a7b2c4';
+import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=16a7b2c4';
 
 const CASES = 12;
 const COLONNES = 4;
@@ -32,14 +34,41 @@ const dispoDe = (contenu) => disponibles(contenu.mots, contenu.phrases, contenu.
 // sinon il reste (normal) ou recule d'une case (difficile).
 export const pas = (juste, difficile) => (juste ? 1 : difficile ? -1 : 0);
 
-function lancer(zone, contenu, difficile) {
+// Cases spéciales de la version expert (numéro de case moins un) : [pictogramme, texte montré quand le pion y est].
+export const SPECIALES = {
+  2: ['surprise', 'Question surprise !'],
+  4: ['pont', 'Pont : une bonne réponse, tu sautes une case !'],
+  7: ['tempete', 'Tempête : 2 bonnes réponses de suite pour partir.'],
+  8: ['surprise', 'Question surprise !'],
+};
+
+// Version expert : erreur, retour au départ ; pont, deux cases d'un coup ; tempête, il faut une bonne réponse de plus.
+// `tempete` : bonnes réponses déjà données sur la case tempête.
+export function deplacer(pos, juste, tempete = 0) {
+  const special = SPECIALES[pos]?.[0];
+  if (!juste) return { pos: 0, tempete: 0 };
+  if (special === 'tempete' && tempete < 1) return { pos, tempete: 1 };
+  return { pos: pos + (special === 'pont' ? 2 : 1), tempete: 0 };
+}
+
+// Question surprise : toujours une « Écoute » ou un « De ou het ? » (les plus difficiles), si le chapitre en a.
+function surprise(dispo) {
+  const variantes = ['ecoute', 'de-het'].filter((v) => dispo[v].length);
+  if (!variantes.length) return null;
+  const variante = variantes[Math.floor(Math.random() * variantes.length)];
+  return { variante, cible: dispo[variante][Math.floor(Math.random() * dispo[variante].length)] };
+}
+
+function lancer(zone, contenu, difficile, expert = false) {
   const ctx = { ...contenu, dispo: dispoDe(contenu) };
   let plan = [];
   let pos = 0;
+  let tempete = 0;
 
   const cases = Array.from({ length: CASES }, (_, k) => {
     const contenuCase = k === 0 ? icone('lecture') : k === CASES - 1 ? icone('etoile') : String(k + 1);
-    const c = el('li', { class: `case-oie${k === CASES - 1 ? ' arrivee' : ''}` }, contenuCase);
+    const special = expert && SPECIALES[k];
+    const c = el('li', { class: `case-oie${k === CASES - 1 ? ' arrivee' : ''}${special ? ` ${special[0]}` : ''}` }, contenuCase, special ? icone(special[0]) : '');
     const { rang, col } = placeCase(k);
     c.style.gridRow = rang; // propriétés CSS posées par le script : permises par la politique de sécurité
     c.style.gridColumn = col;
@@ -47,12 +76,15 @@ function lancer(zone, contenu, difficile) {
   });
   const pion = el('span', { class: 'pion' }, icone('pion'));
   const position = el('p', { class: 'compteur', 'aria-live': 'polite' });
+  const message = el('p', { class: 'case-speciale', 'aria-live': 'polite' }); // ce que fait la case spéciale (expert)
   const questionZone = el('div', { class: 'zone-exercice' });
 
   function poser(anime) {
     const avant = pion.isConnected ? pion.getBoundingClientRect() : null;
     cases[pos].append(pion);
     position.textContent = `Case ${pos + 1} / ${CASES}`;
+    const special = expert && SPECIALES[pos];
+    message.replaceChildren(...(special ? [icone(special[0]), tempete ? 'Tempête : encore une bonne réponse !' : special[1]] : []));
     if (!anime || !avant || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     // Le pion glisse de son ancienne case vers la nouvelle en faisant un petit bond (en avant comme en arrière).
     const apres = pion.getBoundingClientRect();
@@ -67,7 +99,12 @@ function lancer(zone, contenu, difficile) {
 
   function tour(_premierCoup, juste) {
     arreter();
-    const nouvelle = Math.max(0, pos + (juste === undefined ? 0 : pas(juste, difficile)));
+    let nouvelle = Math.max(0, pos + (juste === undefined ? 0 : pas(juste, difficile)));
+    if (expert && juste !== undefined) {
+      const avant = tempete;
+      ({ pos: nouvelle, tempete } = deplacer(pos, juste, tempete));
+      if (nouvelle === pos && tempete !== avant) poser(false); // tempête : le message change, le pion reste
+    }
     if (nouvelle !== pos) {
       pos = nouvelle;
       zone.scrollIntoView({ block: 'start' }); // le plateau revient à l'écran pour voir le pion bouger
@@ -75,18 +112,20 @@ function lancer(zone, contenu, difficile) {
     }
     if (pos === CASES - 1) {
       cases[pos].classList.add('fete');
-      return bilanEntraine(questionZone, () => lancer(zone, contenu, difficile), 'bravo', el('p', {}, 'Ton pion est arrivé !'));
+      return bilanEntraine(questionZone, () => lancer(zone, contenu, difficile, expert), 'bravo', el('p', {}, 'Ton pion est arrivé !'));
     }
     if (!plan.length) plan = planOie(ctx.dispo, 20);
-    const q = question(plan.shift(), ctx, difficile, 1, 0, tour); // total 0 : ni compteur ni « Terminer »
+    const q = question((expert && SPECIALES[pos]?.[0] === 'surprise' && surprise(ctx.dispo)) || plan.shift(), ctx, difficile, 1, 0, tour); // total 0 : ni compteur ni « Terminer »
     questionZone.replaceChildren(q);
     if (juste !== undefined) q.titre.focus({ preventScroll: true });
   }
 
   zone.replaceChildren(
     el('div', { class: 'tete-oie' }, el('p', { class: 'consigne-oie' }, icone('pion'),
-      difficile ? 'Bonne réponse : tu avances. Erreur : tu recules.' : 'Réponds bien pour avancer ton pion.'), position),
+      expert ? 'Bonne réponse : tu avances. Erreur : retour au départ !'
+        : difficile ? 'Bonne réponse : tu avances. Erreur : tu recules.' : 'Réponds bien pour avancer ton pion.'), position),
     el('ol', { class: 'plateau', 'aria-label': `Chemin de ${CASES} cases` }, ...cases),
+    message,
     questionZone);
   poser(false);
   tour();
@@ -109,4 +148,12 @@ export const oieDifficile = {
   icone: 'pion',
   possible,
   lancer: (zone, contenu) => lancer(zone, contenu, true),
+};
+
+export const oieExpert = {
+  id: 'oie-expert',
+  nom: 'Le jeu de l\'oie (expert) de Monsieur Noé',
+  icone: 'pion',
+  possible,
+  lancer: (zone, contenu) => lancer(zone, contenu, true, true),
 };

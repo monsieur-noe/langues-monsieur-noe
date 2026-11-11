@@ -1,13 +1,15 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=38e1124f';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=38e1124f';
-import { afficherDecouvre } from './cartes.js?v=38e1124f';
-import { afficherExercices } from './exercices.js?v=38e1124f';
-import { avatar, chargerAvatar } from './avatar.js?v=38e1124f';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=38e1124f';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=16a7b2c4';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=16a7b2c4';
+import { afficherDecouvre } from './cartes.js?v=16a7b2c4';
+import { afficherExercices } from './exercices.js?v=16a7b2c4';
+import { avatar, chargerAvatar } from './avatar.js?v=16a7b2c4';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=16a7b2c4';
+import { afficherComprends } from './comprends.js?v=16a7b2c4';
 
 const RUBRIQUES = [
+  { id: 'comprends', nom: 'Je comprends', icone: 'ampoule' }, // grammaire (v1.65) : seulement avec une section [explication]
   { id: 'decouvre', nom: 'Je découvre', icone: 'oeil' },
   { id: 'entraine', nom: 'Je m\'entraîne', icone: 'crayon' },
   { id: 'verifie', nom: 'Je vérifie', icone: 'etoile' },
@@ -18,15 +20,16 @@ const langue = parametre('langue');
 const annee = parametre('annee');
 const chapitre = parametre('chapitre');
 const sens = parametre('sens'); // 'indice' : l'image (ou le français) d'abord, sinon le mot d'abord
-const rubrique = RUBRIQUES.find((r) => r.id === parametre('rubrique')) || RUBRIQUES[0];
+let rubrique; // choisie une fois le chapitre lu (« Je comprends » n'existe pas partout)
 const message = document.getElementById('message');
 
 // « Je joue » n'apparaît que si au moins un jeu est possible dans ce chapitre.
-function afficherOnglets(avecJeux) {
+function afficherOnglets(rubriques) {
   const nav = document.getElementById('onglets');
   // Quatre onglets : deux lignes de deux sur téléphone (classe lue par le CSS).
-  nav.classList.toggle('quatre', avecJeux);
-  for (const r of RUBRIQUES.filter((x) => avecJeux || x.id !== 'joue')) {
+  nav.classList.toggle('quatre', rubriques.length === 4);
+  nav.classList.toggle('cinq', rubriques.length === 5);
+  for (const r of rubriques) {
     nav.append(el('a', {
       class: 'seg',
       href: `chapitre.html?langue=${langue}&annee=${annee}&chapitre=${chapitre}&rubrique=${r.id}${sens ? `&sens=${sens}` : ''}`,
@@ -39,6 +42,7 @@ function afficherRubrique(donnees, jeux) {
   const zone = document.getElementById('rubrique');
   const dossier = cheminChapitre(langue, annee, chapitre);
   if (rubrique.id === 'joue') return afficherJeux(zone, jeux, parametre('jeu'));
+  if (rubrique.id === 'comprends') return afficherComprends(zone, donnees, dossier, langue);
   if (rubrique.id === 'decouvre') return afficherDecouvre(zone, donnees, dossier, langue, sens === 'indice');
   return afficherExercices(zone, donnees, dossier, langue, annee, rubrique.id === 'verifie', parametre('exercice'));
 }
@@ -106,7 +110,9 @@ async function demarrer() {
   if (donnees.erreurs.length) message.append(encadreErreurs(donnees.erreurs, 'Certaines lignes du chapitre sont ignorées :'));
 
   const jeux = await contenuJeux(donnees, cheminChapitre(langue, annee, chapitre), langue, annee);
-  afficherOnglets(jeuxPossibles(jeux).length > 0);
+  const rubriques = RUBRIQUES.filter((r) => (r.id !== 'joue' || jeuxPossibles(jeux).length > 0) && (r.id !== 'comprends' || donnees.explication.length > 0));
+  rubrique = rubriques.find((r) => r.id === parametre('rubrique')) || rubriques[0];
+  afficherOnglets(rubriques);
   await afficherRubrique(donnees, jeux);
   afficherExtras(donnees);
   document.getElementById('contenu').hidden = false;

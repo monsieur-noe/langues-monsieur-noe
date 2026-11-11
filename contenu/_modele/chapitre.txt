@@ -120,3 +120,49 @@ titre: Titre du chapitre
 # Le mot de la 5e colonne donne l'image, et son son est joué après la réponse.
 # Exemple :
 # fin-1 | Het is | zonnig. | koud., mistig. | het-is-zonnig
+
+# ---------- Chapitres de grammaire (année « grammaire » dans catalogue.txt) ----------
+# Mots mis en couleur dans « Je comprends » (facultatif, en haut du fichier, avant [mots]) :
+# en_couleur: am, is, are       (une couleur par mot ; « -ing » colore tout mot qui finit par -ing)
+# Ces mots donnent aussi l'ordre des boutons de « Je trie » et de « J'écoute et je clique ».
+
+[explication]
+# Rubrique « Je comprends », avant « Je découvre » : une page d'explication en français.
+# Chaque ligne commence par son type :
+#   titre | texte                                     un sous-titre
+#   texte | texte                                     un petit paragraphe
+#   tableau | case | case | ...                       une ligne de tableau (la 1re ligne = en-tête)
+#   exemple | anglais | français | son (facultatif)   un exemple, avec son bouton d'écoute si le son existe
+#   astuce | texte                                    un encadré « Astuce »
+# Exemple :
+# titre | « To be » veut dire « être »
+# exemple | I am from Belgium. | Je viens de Belgique. | tobe-p1
+
+[tri]
+# id | mot ou phrase | boîte
+# Exercice « Je trie » de « Je m'entraîne » : chaque mot (ou phrase) se range dans sa boîte.
+# Les boîtes sont les valeurs de la 3e colonne (2 à 4). Un dessin images/<boîte>.svg remplace le mot (smileys).
+# Exemple :
+# sort-1 | my mum | is
+
+[pronoms]
+# id | phrase | sujet à remplacer | bon pronom | autres propositions (séparées par des virgules)
+# Exercice « Le bon petit mot » de « Je m'entraîne » : la phrase, puis la même avec un trou à la place du sujet.
+# Exemple :
+# pronoun-1 | My mum is tall. | My mum | She | He, It, They
+
+[paires]
+# id | carte 1 | carte 2
+# Jeu « Le memory des paires » de « Je joue » (au moins 3 lignes). Deux cartes vont ensemble si elles forment
+# une ligne du fichier : une carte « is » va donc avec he, she et it.
+# Exemple :
+# pair-3 | he | is
+
+[ecoute]
+# id d'une phrase de [phrases] | bonne réponse
+# Exercice « J'écoute et je clique » de « Je m'entraîne » : l'élève écoute la phrase et touche la bonne réponse
+# (2 à 4 réponses différentes ; un dessin images/<réponse>.svg remplace le mot).
+# Sans cette section, l'exercice se fait seul avec les phrases à trou qui ont un son, si leurs mots
+# à masquer forment 2 à 4 boutons (am / is / are).
+# Exemple :
+# sports-p2 | like

@@ -1,0 +1,136 @@
+# Chapitre de GRAMMAIRE (anglais) : l'impératif, affirmatif (Open your book.) et négatif (Don't run.).
+# Pas de fiche : phrases écrites pour le site, avec des consignes de classe.
+# Anglais britannique.
+# POUR CLAUDE CODE : 4e chapitre de la partie « Grammaire » (après to-be, likes-and-dislikes, to-have).
+# Mêmes jeux que to-have : [tri], [paires], « J'écoute et je clique ». Pas de [pronoms] ici.
+
+titre: The imperative
+
+# Les mots mis en couleur dans « Je comprends » : Don't, puis tous les verbes d'une même couleur (séparés par « / »).
+en_couleur: don't, open/listen/close/sit/look/write/run/talk/shout/eat/touch/stand
+
+# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
+boss: Général Don't
+
+[explication]
+# POUR CLAUDE CODE : nouvelle partie « Je comprends », AVANT « Je découvre ».
+# Une page d'explication en français, très visuelle (couleurs, smileys, grands exemples).
+# Chaque ligne commence par son type :
+#   titre | texte                     -> un sous-titre
+#   texte | texte                     -> un petit paragraphe
+#   tableau | case | case | ...       -> une ligne de tableau (la 1re ligne = en-tête)
+#   exemple | anglais | français | son (facultatif) -> un exemple, avec bouton 🔊 si un son est donné
+#   astuce | texte                    -> un encadré « Astuce »
+# Mets en couleur le verbe et « Don't » dans les exemples.
+
+titre | Donner un ordre en anglais
+texte | Pour dire à quelqu'un de faire quelque chose, on utilise l'impératif.
+texte | C'est facile : tu prends le verbe, tout seul.
+exemple | Open your book. | Ouvre ton livre. | imp-p1
+exemple | Listen to me. | Écoute-moi. | imp-p2
+astuce | Pas de « you », pas de « to », pas de « s » : juste le verbe !
+tableau | ✓ Juste | ✗ Faux
+tableau | Open your book. | To open your book.
+tableau | Listen to me. | Listens to me.
+titre | Dire de ne pas faire quelque chose
+texte | Pour interdire, tu mets « Don't » devant le verbe.
+exemple | Don't run in the classroom. | Ne cours pas dans la classe. | imp-n1
+exemple | Don't touch my pen. | Ne touche pas mon bic. | imp-n5
+tableau | Je dis de faire | Je dis de ne pas faire
+tableau | Run. | Don't run.
+tableau | Talk. | Don't talk.
+tableau | Sit down. | Don't sit down.
+astuce | On dit « Don't run », jamais « Not run » ou « No run ».
+titre | Pour être poli
+texte | Ajoute « please » au début ou à la fin.
+exemple | Sit down, please. | Assieds-toi, s'il te plaît. | imp-p4
+
+[mots]
+# id | mot | français | indice (facultatif)
+# Les verbes à l'impératif. Pas de « De ou het ? » en anglais.
+open | open | ouvre
+close | close | ferme
+listen | listen | écoute
+look | look | regarde
+write | write | écris
+sit-down | sit down | assieds-toi
+stand-up | stand up | lève-toi
+run | run | cours
+talk | talk | parle
+shout | shout | crie
+eat | eat | mange
+touch | touch | touche
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Affirmatif : le verbe seul, sans « to » et sans « s ».
+imp-p1 | Open your book. | Ouvre ton livre. | Open | Opens, To open
+imp-p2 | Listen to me. | Écoute-moi. | Listen | Listens, To listen
+imp-p3 | Close the door. | Ferme la porte. | Close | Closes, To close
+imp-p4 | Sit down, please. | Assieds-toi, s'il te plaît. | Sit | Sits, To sit
+imp-p5 | Look at the board. | Regarde le tableau. | Look | Looks, To look
+imp-p6 | Write your name. | Écris ton nom. | Write | Writes, To write
+
+# Négatif : Don't + le verbe.
+imp-n1 | Don't run in the classroom. | Ne cours pas dans la classe. | Don't | Not, No
+imp-n2 | Don't talk now. | Ne parle pas maintenant. | Don't | Not, No
+imp-n3 | Don't shout, please. | Ne crie pas, s'il te plaît. | Don't | Not, No
+imp-n4 | Don't eat in class. | Ne mange pas en classe. | Don't | Not, No
+imp-n5 | Don't touch my pen. | Ne touche pas mon bic. | Don't | Not, No
+imp-n6 | Don't stand up. | Ne te lève pas. | Don't | Not, No
+
+# POUR CLAUDE CODE : jeu « J'écoute et je clique » comme dans to-be,
+# avec deux boutons : « ✓ Fais-le » et « ✗ Ne le fais pas ».
+# Bonne réponse : imp-p… = Fais-le ; imp-n… = Ne le fais pas.
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# EXCEPTION voulue (comme to-be et to-have) : l'intrus est « to » (affirmatif) ou « not » (négatif),
+# les deux erreurs les plus fréquentes. Pas d'image au-dessus des cases.
+order-1 | Open / your / book. | imp-p1 | to
+order-2 | Look / at / the board. | imp-p5 | to
+order-3 | Write / your / name. | imp-p6 | to
+order-4 | Don't / run / in the classroom. | imp-n1 | not
+order-5 | Don't / eat / in class. | imp-n4 | not
+order-6 | Don't / touch / my pen. | imp-n5 | not
+
+[tri]
+# Jeu « Je trie » (comme to-be), avec deux boîtes : « ✓ Do » et « ✗ Don't ». Pas de son.
+# Consigne : « Range chaque phrase dans la bonne boîte. »
+# id | phrase | boîte
+sort-1 | Open your book. | Do
+sort-2 | Stand up. | Do
+sort-3 | Listen to me. | Do
+sort-4 | Close the door. | Do
+sort-5 | Look at the board. | Do
+sort-6 | Don't run. | Don't
+sort-7 | Don't shout. | Don't
+sort-8 | Don't talk now. | Don't
+sort-9 | Don't eat in class. | Don't
+sort-10 | Don't touch my pen. | Don't
+
+[paires]
+# « Memory des paires » (comme to-be) : la phrase affirmative et sa phrase négative.
+# id | carte 1 | carte 2
+pair-1 | Run. | Don't run.
+pair-2 | Talk. | Don't talk.
+pair-3 | Shout. | Don't shout.
+pair-4 | Eat. | Don't eat.
+pair-5 | Sit down. | Don't sit down.
+pair-6 | Open the door. | Don't open the door.
+
+[ecoute]
+# Jeu « J'écoute et je clique » : l'élève entend la phrase et touche « Fais-le » ou « Ne le fais pas ».
+# id de la phrase | bonne réponse
+imp-p1 | Fais-le
+imp-p2 | Fais-le
+imp-p3 | Fais-le
+imp-p4 | Fais-le
+imp-p5 | Fais-le
+imp-p6 | Fais-le
+imp-n1 | Ne le fais pas
+imp-n2 | Ne le fais pas
+imp-n3 | Ne le fais pas
+imp-n4 | Ne le fais pas
+imp-n5 | Ne le fais pas
+imp-n6 | Ne le fais pas
