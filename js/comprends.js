@@ -1,8 +1,8 @@
 // Rubrique « Je comprends » (v1.65, chapitres de grammaire) : l'explication de la section [explication],
 // avant « Je découvre ». Titres, petits textes, tableaux, exemples à écouter et astuces.
-import { el, icone } from './outils.js?v=16a7b2c4';
-import { fichiersPresents, cheminSon } from './donnees.js?v=16a7b2c4';
-import { creerLecteur } from './audio.js?v=16a7b2c4';
+import { el, icone } from './outils.js?v=4a69adff';
+import { fichiersPresents, cheminSon } from './donnees.js?v=4a69adff';
+import { creerLecteur } from './audio.js?v=4a69adff';
 
 // Mots mis en couleur (ligne « en_couleur: am, is, are ») : une couleur par mot de la liste ;
 // « -ing » colore tout mot qui finit ainsi ; « open/close/run » : plusieurs mots d'une même couleur.

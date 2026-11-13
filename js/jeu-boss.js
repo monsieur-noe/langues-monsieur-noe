@@ -3,13 +3,13 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone, muet } from './outils.js?v=16a7b2c4';
-import { arreter } from './audio.js?v=16a7b2c4';
-import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=16a7b2c4';
-import { avatar } from './avatar.js?v=16a7b2c4';
-import { disponibles, question, fete } from './exercices.js?v=16a7b2c4'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=16a7b2c4';
-import oie, { planOie } from './jeu-oie.js?v=16a7b2c4';
+import { el, icone, muet } from './outils.js?v=4a69adff';
+import { arreter } from './audio.js?v=4a69adff';
+import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=4a69adff';
+import { avatar } from './avatar.js?v=4a69adff';
+import { disponibles, question, fete } from './exercices.js?v=4a69adff'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=4a69adff';
+import oie, { planOie } from './jeu-oie.js?v=4a69adff';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6', 'grammaire']; // la grammaire suit les règles de P5-P6 (v1.65)
@@ -142,7 +142,7 @@ function lancer(zone, contenu, difficile, expert = false) {
   const nom = contenu.boss || 'le monstre';
   const Nom = nom[0].toUpperCase() + nom.slice(1);
   const n = expert ? 4 : contenu.n; // Expert : 4 réponses, même en P3
-  const ctx = { ...contenu, n, dispo: disponibles(contenu.mots, contenu.phrases, n), sansAvatar: true, sansDefilement: true, sansSon: true, enchainer: ENCHAINER };
+  const ctx = { ...contenu, n, dispo: disponibles(contenu.mots, contenu.phrases, n, contenu.annee === 'grammaire'), sansAvatar: true, sansDefilement: true, sansSon: true, enchainer: ENCHAINER };
   const max = { boss: expert ? EXPERT.boss : VIES.boss, noe: difficile ? VIE_DIFFICILE : VIES.noe };
   const limite = expert ? EXPERT.limite : LIMITE;
   // Minuteur (Expert) : une barre qui se vide en 10 s en rougissant ; elle part à l'affichage de la question,

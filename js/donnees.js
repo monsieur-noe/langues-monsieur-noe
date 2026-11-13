@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES, muet } from './outils.js?v=16a7b2c4';
+import { LANGUES, muet } from './outils.js?v=4a69adff';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 

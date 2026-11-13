@@ -1,13 +1,13 @@
 // Jeu « Le cadenas à images » (cahier 7.9) : on écoute 3 mots (version sans son : on les lit), puis on règle
 // les 3 roues du cadenas sur leurs images, dans l'ordre, et on touche « Ouvrir ». 5 cadenas par partie.
 // Rien ne sonne seul : les 3 mots partent au toucher de « Écouter » (un seul lecteur, les sons à la suite).
-import { el, icone, muet } from './outils.js?v=16a7b2c4';
-import { cheminSon } from './donnees.js?v=16a7b2c4';
-import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
-import { visuel } from './cartes.js?v=16a7b2c4';
-import { melanger, bilanEntraine, bravo, fete } from './exercices.js?v=16a7b2c4';
-import { avatar } from './avatar.js?v=16a7b2c4';
-import { motsDuLoto } from './jeu-loto.js?v=16a7b2c4'; // mêmes mots que le loto : indice visuel, son, indices tous différents
+import { el, icone, muet } from './outils.js?v=4a69adff';
+import { cheminSon } from './donnees.js?v=4a69adff';
+import { creerLecteur, arreter } from './audio.js?v=4a69adff';
+import { visuel } from './cartes.js?v=4a69adff';
+import { melanger, bilanEntraine, bravo, fete } from './exercices.js?v=4a69adff';
+import { avatar } from './avatar.js?v=4a69adff';
+import { motsDuLoto } from './jeu-loto.js?v=4a69adff'; // mêmes mots que le loto : indice visuel, son, indices tous différents
 
 const NOMBRE = 5; // cadenas par partie
 const TAILLE = 6; // images par roue : les 3 mots du code et 3 leurres
@@ -62,7 +62,7 @@ function chaine(ouverts) {
 if (typeof document !== 'undefined') {
   ajouterPictogrammes();
   if (!document.querySelector('link[href*="jeu-cadenas.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-cadenas.css?v=16a7b2c4' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-cadenas.css?v=4a69adff' }));
   }
 }
 

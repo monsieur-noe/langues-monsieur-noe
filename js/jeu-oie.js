@@ -5,9 +5,9 @@
 // une erreur fait reculer le pion d'une case (jamais avant le départ).
 // Version expert (demandée le 2026-11-09) : un seul essai, une erreur renvoie à la première case ;
 // cases spéciales : question surprise (3 et 9), pont (5 : on saute à la 7), tempête (8 : 2 bonnes réponses de suite).
-import { el, icone } from './outils.js?v=16a7b2c4';
-import { arreter } from './audio.js?v=16a7b2c4';
-import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=16a7b2c4';
+import { el, icone } from './outils.js?v=4a69adff';
+import { arreter } from './audio.js?v=4a69adff';
+import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=4a69adff';
 
 const CASES = 12;
 const COLONNES = 4;
@@ -28,7 +28,7 @@ export function placeCase(k) {
   return { rang: rang + 1, col: rang % 2 ? COLONNES - col : col + 1 };
 }
 
-const dispoDe = (contenu) => disponibles(contenu.mots, contenu.phrases, contenu.n);
+const dispoDe = (contenu) => disponibles(contenu.mots, contenu.phrases, contenu.n, contenu.annee === 'grammaire');
 
 // De combien de cases bouge le pion après une question : il avance si c'est juste ;
 // sinon il reste (normal) ou recule d'une case (difficile).

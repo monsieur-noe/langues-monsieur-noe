@@ -3,12 +3,12 @@
 // en fondu (une demi-seconde, une seule fois) : l'enfant choisit le mot qui manque parmi 3 (P3) ou 4 mots.
 // Leurres : les mots des autres dessins de la manche. Essais sans limite ; après deux erreurs, la bonne réponse est entourée.
 // Version sans son (?muet=1) : les mots restent écrits, aucun haut-parleur.
-import { el, icone, muet } from './outils.js?v=16a7b2c4';
-import { cheminSon } from './donnees.js?v=16a7b2c4';
-import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
-import { visuel } from './cartes.js?v=16a7b2c4';
-import { melanger, propositions, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=16a7b2c4';
-import { avatar } from './avatar.js?v=16a7b2c4';
+import { el, icone, muet } from './outils.js?v=4a69adff';
+import { cheminSon } from './donnees.js?v=4a69adff';
+import { creerLecteur, arreter } from './audio.js?v=4a69adff';
+import { visuel } from './cartes.js?v=4a69adff';
+import { melanger, propositions, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=4a69adff';
+import { avatar } from './avatar.js?v=4a69adff';
 
 const DESSINS = 5;
 const MANCHES = 6;
@@ -51,7 +51,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-dessin-disparu.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-dessin-disparu.css?v=16a7b2c4' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-dessin-disparu.css?v=4a69adff' }));
   }
 }
 

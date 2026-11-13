@@ -4,12 +4,12 @@
 // pris dans le chapitre, puis dans les autres chapitres de la même année et de la même langue.
 // Le son ne part jamais seul : au toucher de « Écoute » (1re manche), puis de « Suivant » (décision de l'enseignant du 2026-11-08).
 // Version difficile : 9 ballons, mots encore plus proches. Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=16a7b2c4';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=16a7b2c4';
-import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
-import { visuel } from './cartes.js?v=16a7b2c4';
-import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=16a7b2c4';
-import { avatar } from './avatar.js?v=16a7b2c4';
+import { el, icone, muet } from './outils.js?v=4a69adff';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=4a69adff';
+import { creerLecteur, arreter } from './audio.js?v=4a69adff';
+import { visuel } from './cartes.js?v=4a69adff';
+import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=4a69adff';
+import { avatar } from './avatar.js?v=4a69adff';
 
 const MANCHES = 8;
 
@@ -108,7 +108,7 @@ if (typeof document !== 'undefined') {
     sprite.append(s);
   }
   if (!document.querySelector('link[href*="jeu-ballons.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-ballons.css?v=16a7b2c4' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-ballons.css?v=4a69adff' }));
   }
 }
 

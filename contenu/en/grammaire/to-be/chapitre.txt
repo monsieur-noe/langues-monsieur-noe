@@ -11,8 +11,11 @@ titre: The verb to be
 # Les mots mis en couleur dans « Je comprends » (une couleur par mot).
 en_couleur: am, is, are
 
-# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
-boss: Caméléon Am-Is-Are
+# Le monstre du combat de boss (dessins boss.png, boss-difficile.png et boss-expert.png dans ce dossier).
+boss: Kaméléo
+
+# Le décor du combat : commun aux 4 chapitres de grammaire (contenu/arene/laboratoire*.jpg).
+arene: laboratoire
 
 [explication]
 # POUR CLAUDE CODE : nouvelle partie « Je comprends », AVANT « Je découvre ».

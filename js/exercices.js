@@ -1,12 +1,12 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=16a7b2c4';
-import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=16a7b2c4';
-import { positionReponse, cheminSon } from './donnees.js?v=16a7b2c4';
-import { avatar, chargerAvatar } from './avatar.js?v=16a7b2c4';
-import { serieOrdre } from './ordre.js?v=16a7b2c4';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=16a7b2c4';
+import { el, icone, muet } from './outils.js?v=4a69adff';
+import { creerLecteur, arreter } from './audio.js?v=4a69adff';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=4a69adff';
+import { positionReponse, cheminSon } from './donnees.js?v=4a69adff';
+import { avatar, chargerAvatar } from './avatar.js?v=4a69adff';
+import { serieOrdre } from './ordre.js?v=4a69adff';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=4a69adff';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -98,7 +98,8 @@ export function fauxTrous(phrase, phrases) {
 
 // Ce que chaque variante peut interroger. `mots` portent `ind` (indice) et `son` (audio présent).
 // Une variante sans assez de contenu reçoit une liste vide : elle est ignorée, sans message à l'enfant.
-export function disponibles(mots, phrases, n) {
+// `deuxChoix` (grammaire, v1.65, accord de l'enseignant du 2026-11-11) : une seule proposition écrite suffit (have / has) ; texte à trous à 2 choix, v1.72.
+export function disponibles(mots, phrases, n, deuxChoix = false) {
   const images = mots.filter(aUnVisuel);
   const sonores = mots.filter((m) => m.son);
   const noms = mots.filter((m) => article(m.mot));
@@ -108,7 +109,7 @@ export function disponibles(mots, phrases, n) {
     // Écoute : tous les mots avec un son, même sans dessin (choixEcoute dit parmi quoi on choisit).
     ecoute: sonores.length >= n ? sonores : [],
     // Propositions écrites dans le fichier : 2 suffisent, même en P4 et après (3 choix, comme « Het is… »).
-    trous: phrases.filter((p) => p.reponse).map((p) => ({ ...p, faux: fauxTrous(p, phrases) })).filter((p) => p.faux.length >= (p.propositions.length ? 2 : n - 1)),
+    trous: phrases.filter((p) => p.reponse).map((p) => ({ ...p, faux: fauxTrous(p, phrases) })).filter((p) => p.faux.length >= (p.propositions.length ? (deuxChoix ? 1 : 2) : n - 1)),
     'de-het': noms.length >= 4 ? noms : [],
   };
 }
@@ -615,7 +616,7 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
   const phrases = donnees.phrases.map((p) => ({ ...p, son: aSon(p), dessin: presents.has(cheminDessin(p, dossier)) ? cheminDessin(p, dossier) : '' }));
-  const dispo = disponibles(mots, phrases, n);
+  const dispo = disponibles(mots, phrases, n, annee === 'grammaire');
   const ctx = { langue, dossier, n, dispo, presents, mots, phrases };
 
   const parties = [];

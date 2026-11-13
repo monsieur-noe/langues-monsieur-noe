@@ -7,11 +7,11 @@
 // Phrases : celles du chapitre (traduites, sans « ... », avec leur son) ; s'il en a moins de 4, on complète avec
 // celles des chapitres déjà vus (même langue, même année, plus haut dans la liste : décision de l'enseignant).
 // Images : contenu/sentier/<vue>.jpg (Gemini, enseignant) si elles existent, sinon formes simples dessinées ici.
-import { el, icone, muet, parametre } from './outils.js?v=16a7b2c4';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=16a7b2c4';
-import { creerLecteur, arreter } from './audio.js?v=16a7b2c4';
-import { melanger, compteur, bravo } from './exercices.js?v=16a7b2c4';
-import { avatar } from './avatar.js?v=16a7b2c4';
+import { el, icone, muet, parametre } from './outils.js?v=4a69adff';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=4a69adff';
+import { creerLecteur, arreter } from './audio.js?v=4a69adff';
+import { melanger, compteur, bravo } from './exercices.js?v=4a69adff';
+import { avatar } from './avatar.js?v=4a69adff';
 
 const MAX_FOURCHES = 4;
 const MIN_FOURCHES = 3;
@@ -301,7 +301,7 @@ function fourche(f, ctx, rang, total, vue, fin) {
 let styleCharge = false;
 async function lancer(zone, contenu) {
   if (!styleCharge) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=16a7b2c4' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=4a69adff' }));
     styleCharge = true;
   }
   const plan = planSentier(contenu.phrases, emprunts, enMots(contenu.mots));

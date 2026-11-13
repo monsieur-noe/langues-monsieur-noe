@@ -10,8 +10,11 @@ titre: The verb to have
 # Les mots mis en couleur dans « Je comprends » : rose pour I, you, we, they ; bleu pour he, she, it.
 en_couleur: have/don't/do, has/doesn't/does
 
-# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
-boss: Have-Has le Collectionneur
+# Le monstre du combat de boss (dessins boss.png, boss-difficile.png et boss-expert.png dans ce dossier).
+boss: Gardetout
+
+# Le décor du combat : commun aux 4 chapitres de grammaire (contenu/arene/laboratoire*.jpg).
+arene: laboratoire
 
 [explication]
 # POUR CLAUDE CODE : partie « Je comprends », AVANT « Je découvre » (même format que likes-and-dislikes).

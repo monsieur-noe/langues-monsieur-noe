@@ -9,8 +9,11 @@ titre: The imperative
 # Les mots mis en couleur dans « Je comprends » : Don't, puis tous les verbes d'une même couleur (séparés par « / »).
 en_couleur: don't, open/listen/close/sit/look/write/run/talk/shout/eat/touch/stand
 
-# Le monstre du combat de boss (son dessin : boss.png dans ce dossier, à faire avec Gemini).
+# Le monstre du combat de boss (dessins boss.png, boss-difficile.png et boss-expert.png dans ce dossier).
 boss: Général Don't
+
+# Le décor du combat : commun aux 4 chapitres de grammaire (contenu/arene/laboratoire*.jpg).
+arene: laboratoire
 
 [explication]
 # POUR CLAUDE CODE : nouvelle partie « Je comprends », AVANT « Je découvre ».
