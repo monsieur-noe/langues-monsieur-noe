@@ -3,10 +3,6 @@
 
 titre: Food and drinks
 
-# Les 3 listes Quizlet du chapitre.
-quizlet: Les aliments | https://quizlet.com/be/1229435026/aliments-anglais-flash-cards/
-quizlet: Les magasins | https://quizlet.com/be/1229435487/magasins-anglais-flash-cards/
-quizlet: Les repas | https://quizlet.com/be/1229435562/repas-anglais-flash-cards/
 # Le français s'affiche aussi sous le dessin, sur les cartes.
 cartes_francais: oui
 boss: Goinfrax

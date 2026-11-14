@@ -6,12 +6,6 @@ titre: Birthday
 boss: Croque-Gâteau
 arene: anniversaire
 
-# Les 4 listes Quizlet du chapitre.
-quizlet: Les jours de la semaine | https://quizlet.com/be/1228792709/jours-de-la-semaine-anglais-flash-cards/
-quizlet: Les mois | https://quizlet.com/be/1228793036/mois-de-lannee-anglais-flash-cards/
-quizlet: Les nombres de 0 à 100 | https://quizlet.com/be/1228793355/nombres-0-100-anglais-flash-cards/
-quizlet: Les dates (1st à 31st) | https://quizlet.com/be/1228793763/dates-1-31-anglais-flash-cards/
-
 [mots]
 # id | mot | français | indice (facultatif)
 

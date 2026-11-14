@@ -6,8 +6,6 @@
 
 titre: The verb to be
 
-# Pas de lien Quizlet : l'enseignant a arrêté Quizlet (2026-11-11).
-
 # Les mots mis en couleur dans « Je comprends » (une couleur par mot).
 en_couleur: am, is, are
 

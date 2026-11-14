@@ -4,9 +4,6 @@
 
 titre: Appearance
 
-# Les 2 listes Quizlet du chapitre.
-quizlet: Les vêtements | https://quizlet.com/be/1229295482/vetements-anglais-flash-cards/
-quizlet: L'apparence | https://quizlet.com/be/1228794985/vetements-anglais-flash-cards/
 boss: Chaussette-Chipie
 arene: apparence
 

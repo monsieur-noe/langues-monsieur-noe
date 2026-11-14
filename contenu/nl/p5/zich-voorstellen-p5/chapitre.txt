@@ -3,7 +3,6 @@
 
 titre: Zich voorstellen
 
-quizlet: https://quizlet.com/be/1228053527/se-presenter-p5-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.png et boss-difficile.png dans ce dossier.
 boss: Polyglotron
 arene: aeroport

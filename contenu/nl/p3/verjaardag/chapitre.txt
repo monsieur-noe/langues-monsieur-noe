@@ -4,11 +4,6 @@ titre: Verjaardag
 boss: Croque-Gâteau
 arene: anniversaire
 
-# Les 3 listes Quizlet du chapitre.
-quizlet: Les jours de la semaine | https://quizlet.com/be/1225249263/jours-de-la-semaine-neerlandais-flash-cards/
-quizlet: Les mois | https://quizlet.com/be/1225249600/mois-neerlandais-flash-cards/
-quizlet: Les nombres de 0 à 100 | https://quizlet.com/be/1225250053/nombres-de-0-a-100-flash-cards/
-
 [mots]
 # id | mot | français | indice (facultatif)
 

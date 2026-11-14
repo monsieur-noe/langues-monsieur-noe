@@ -5,9 +5,9 @@
 // une erreur fait reculer le pion d'une case (jamais avant le départ).
 // Version expert (demandée le 2026-11-09) : un seul essai, une erreur renvoie à la première case ;
 // cases spéciales : question surprise (3 et 9), pont (5 : on saute à la 7), tempête (8 : 2 bonnes réponses de suite).
-import { el, icone } from './outils.js?v=4a69adff';
-import { arreter } from './audio.js?v=4a69adff';
-import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=4a69adff';
+import { el, icone } from './outils.js?v=59fdf551';
+import { arreter } from './audio.js?v=59fdf551';
+import { disponibles, planMelange, planDeHet, question, bilanEntraine } from './exercices.js?v=59fdf551';
 
 const CASES = 12;
 const COLONNES = 4;

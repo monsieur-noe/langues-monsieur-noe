@@ -173,7 +173,6 @@ Les images viennent plus tard, quand vous les avez (partie 4). En attendant, les
 
 **Les possibilités en plus** (toutes facultatives, expliquées avec un exemple dans `contenu/_modele/chapitre.txt`) :
 
-- `quizlet:` : le lien Quizlet ; plusieurs listes : une ligne par liste, `quizlet: Les mois | https://quizlet.com/...`
 - `note_parents:` : un conseil pour les parents.
 - `couleurs:` : l'exercice « Couleurs », avec les couleurs d'un autre chapitre.
 - `boss:` : le nom du monstre (partie 4).
@@ -201,7 +200,7 @@ Les messages les plus fréquents :
 - « Texte à trous : il faut au moins 2 propositions fausses » : écrivez de fausses réponses en 5e colonne de la phrase, séparées par des virgules. Ce n'est pas grave si vous ne le faites pas : l'exercice n'est simplement pas proposé.
 - « Le fichier … chapitre.txt est introuvable » : le nom du dossier écrit dans `catalogue.txt` n'est pas exactement le même que le vrai dossier.
 
-La page montre aussi, pour chaque chapitre, les **mots secrets** des 7 derniers jours, et le bouton **« Copier pour Quizlet »**.
+La page montre aussi, pour chaque chapitre, les **mots secrets** des 7 derniers jours.
 
 ## 7. Annuler une erreur : revenir à la version précédente
 
@@ -280,8 +279,7 @@ Par exemple un son tout seul à la racine du dépôt, à côté de `index.html`,
 La page de contrôle donne la ligne. Les erreurs les plus fréquentes :
 
 - Un `|` manquant ou en trop : comparez la ligne avec ses voisines.
-- Une ligne `titre:`, `quizlet:`, `boss:`, `couleurs:` ou `note_parents:` placée sous `[mots]` : ces lignes vont en haut du fichier, avant `[mots]`.
-- Un lien Quizlet de plus d'une liste sans son nom : il faut `quizlet: Les mois | https://...`.
+- Une ligne `titre:`, `boss:`, `couleurs:` ou `note_parents:` placée sous `[mots]` : ces lignes vont en haut du fichier, avant `[mots]`.
 - Une ligne `liste:` de `[phrases]` dont le nom n'est pas exactement celui de `[mots]` (majuscules, accents) : les phrases n'apparaissent pas avec leur liste.
 - Un intrus dans `[ordre]` sans son : écrivez `| |` avant l'intrus, par exemple `zin-1 | Ik / ben / blij | | stoel`.
 - Un `#` oublié au début d'une ligne d'exemple du modèle : le site la prend pour un vrai mot.

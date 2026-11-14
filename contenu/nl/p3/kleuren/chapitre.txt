@@ -1,5 +1,4 @@
 titre: Kleuren
-quizlet: https://quizlet.com/be/1224987951/couleurs-neerlandais-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
 boss: Gribouille
 arene: couleurs

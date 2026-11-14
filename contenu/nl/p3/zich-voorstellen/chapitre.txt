@@ -1,5 +1,4 @@
 titre: Zich voorstellen
-quizlet: https://quizlet.com/be/1224987302/nombres-0-10-neerlandais-flash-cards/
 # Nom du monstre du jeu « Le combat de boss ». Son dessin : boss.svg (ou boss.png) dans ce dossier.
 boss: Bla-Bla le Bavard
 arene: presentation

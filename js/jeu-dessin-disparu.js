@@ -1,14 +1,14 @@
 // Jeu « Le dessin disparu » (document de l'enseignant, jeu 11 ; le jeu de Kim) : 5 dessins avec leur mot écrit ;
 // on touche un dessin pour entendre son mot. Après « Je suis prêt ! », les mots s'effacent et un dessin disparaît
 // en fondu (une demi-seconde, une seule fois) : l'enfant choisit le mot qui manque parmi 3 (P3) ou 4 mots.
-// Leurres : les mots des autres dessins de la manche. Essais sans limite ; après deux erreurs, la bonne réponse est entourée.
+// Leurres : des mots du chapitre absents de la manche (choixDessins). Essais sans limite ; après deux erreurs, la bonne réponse est entourée.
 // Version sans son (?muet=1) : les mots restent écrits, aucun haut-parleur.
-import { el, icone, muet } from './outils.js?v=4a69adff';
-import { cheminSon } from './donnees.js?v=4a69adff';
-import { creerLecteur, arreter } from './audio.js?v=4a69adff';
-import { visuel } from './cartes.js?v=4a69adff';
-import { melanger, propositions, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=4a69adff';
-import { avatar } from './avatar.js?v=4a69adff';
+import { el, icone, muet } from './outils.js?v=59fdf551';
+import { cheminSon } from './donnees.js?v=59fdf551';
+import { creerLecteur, arreter } from './audio.js?v=59fdf551';
+import { visuel } from './cartes.js?v=59fdf551';
+import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=59fdf551';
+import { avatar } from './avatar.js?v=59fdf551';
 
 const DESSINS = 5;
 const MANCHES = 6;
@@ -32,6 +32,18 @@ export function planDessins(mots, manches = MANCHES, dessins = DESSINS) {
   });
 }
 
+// Les mots à choisir (v1.84, demande de l'enseignant du 2026-11-14 : les leurres visibles à l'écran rendaient le jeu trop simple) :
+// le mot caché et n - 1 mots du chapitre absents de la manche (jamais le même mot écrit qu'un dessin montré),
+// avec un son si le mot caché en a un (sinon le seul haut-parleur trahirait la réponse) ; s'il en manque, des mots de la manche.
+export function choixDessins(cache, montres, mots, n) {
+  const ecrits = new Set(montres.map((m) => m.mot));
+  const absents = melanger(mots.filter((m) => !ecrits.has(m.mot)))
+    .filter((m, k, t) => t.findIndex((x) => x.mot === m.mot) === k);
+  const memeSon = absents.filter((m) => Boolean(m.son) === Boolean(cache.son));
+  const leurres = [...memeSon, ...absents.filter((m) => !memeSon.includes(m)), ...melanger(montres.filter((m) => m !== cache))];
+  return melanger([cache, ...leurres.slice(0, n - 1)]);
+}
+
 const NS = 'http://www.w3.org/2000/svg';
 const svg = (balise, attributs = {}, ...enfants) => {
   const n = document.createElementNS(NS, balise);
@@ -51,7 +63,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-dessin-disparu.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-dessin-disparu.css?v=4a69adff' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-dessin-disparu.css?v=59fdf551' }));
   }
 }
 
@@ -101,10 +113,13 @@ function manche({ cache, montres }, ctx, rang, total, fin) {
     });
     let erreurs = 0;
     const lignes = [];
-    const boutons = propositions(cache, montres, n).map((m) => {
+    const proposes = choixDessins(cache, montres, ctx.mots, n);
+    // Un haut-parleur à côté des mots seulement si tous en ont un (aucun indice sur la bonne réponse).
+    const avecSon = !muet && proposes.every((m) => m.son);
+    const boutons = proposes.map((m) => {
       const b = el('button', { type: 'button', class: 'reponse' }, el('span', { class: 'mot', lang: langue }, m.mot));
       b.juste = m === cache;
-      const lecteur = lecteurs.get(m);
+      const lecteur = avecSon ? lecteurs.get(m) || creerLecteur(cheminSon(m, dossier), { nom: m.mot, avecBarre: false, lent: false }) : null;
       lignes.push(el('div', { class: 'ligne-dd' }, b, lecteur || ''));
       b.addEventListener('click', () => {
         b.disabled = true;
@@ -121,7 +136,7 @@ function manche({ cache, montres }, ctx, rang, total, fin) {
         boutons.forEach((x) => { x.disabled = true; });
         cases[montres.indexOf(cache)].classList.replace('disparu', 'revenu');
         cases.forEach((c) => c.classList.remove('phase2')); // les mots reviennent sous les dessins
-        lecteur?.jouer(); // après un toucher : permis sur iPhone
+        lecteurs.get(cache)?.jouer(); // après un toucher : permis sur iPhone
         retour.replaceChildren(icone('sourire'), bravo());
         av.pose('content');
         suite.hidden = false;

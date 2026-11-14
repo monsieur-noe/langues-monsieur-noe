@@ -1,0 +1,109 @@
+# Chapitre 8 : Het dagelijks leven (la journée et l'heure), P4.
+# Source : fiche « Dagelijks leven en het uur P4 » (exercices 1 à 15) de Monsieur Noé.
+# Pas de conseil aux parents, pas de dictée (choix de l'enseignant).
+
+titre: Het dagelijks leven
+
+# Nom du monstre du jeu « Le combat de boss ». Ses dessins : boss.png, boss-difficile.png et boss-expert.png dans ce dossier.
+boss: Réveillator
+# Décor du combat : la chambre (contenu/arene/maison.jpg, -difficile, -expert), images de Monsieur Noé avec Gemini.
+arene: maison
+
+[explication]
+# « Je comprends » : texte de Monsieur Noé (page 5 de sa fiche).
+# titre | texte · texte | texte · tableau | case | case · exemple | néerlandais | français | son · astuce | texte · image | fichier | description
+titre | Hoe laat is het?
+exemple | Hoe laat is het? | Quelle heure est-il ? | routine-p7
+texte | over = après, voor = avant.
+image | horloge-parts.png | Une horloge en 4 parts : over 8, voor half 9, over half 9, voor 9 ; en haut 8 uur, en bas half 9, à droite kwart over, à gauche kwart voor.
+astuce | Attention à half ! half negen = 8 h 30 : la moitié vers 9 heures.
+tableau | heure | néerlandais
+tableau | 8 h 00 | acht uur
+tableau | 8 h 15 | kwart over acht
+tableau | 8 h 20 | tien voor half negen
+tableau | 8 h 30 | half negen
+tableau | 8 h 40 | tien over half negen
+tableau | 8 h 45 | kwart voor negen
+
+[mots]
+# id | mot | français | image (facultatif)
+# Les 21 dessins sont de Claude (demande de l'enseignant du 2026-11-14). Pour en changer un, dépose un fichier du même nom.
+# Une phrase (avec un point à la fin) ne va jamais dans « De ou het ? » : seuls klok, wekker et uur sont des noms,
+# trop peu pour cet exercice (il en faut 4).
+sta-op | Ik sta op. | Je me lève. | sta-op.svg
+was-me | Ik was me. | Je me lave. | was-me.svg
+kleed-me-aan | Ik kleed me aan. | Je m'habille. | kleed-me-aan.svg
+ontbijt | Ik ontbijt. | Je prends mon petit-déjeuner. | ontbijt.svg
+poets-tanden | Ik poets mijn tanden. | Je me brosse les dents. | poets-tanden.svg
+ga-naar-school | Ik ga naar school. | Je vais à l'école. | ga-naar-school.svg
+leer | Ik leer. | J'apprends. | leer.svg
+eet-boterhammen | Ik eet mijn boterhammen. | Je mange mes tartines. | eet-boterhammen.svg
+speel | Ik speel. | Je joue. | speel.svg
+ga-naar-huis | Ik ga naar huis. | Je rentre à la maison. | ga-naar-huis.svg
+maak-huiswerk | Ik maak mijn huiswerk. | Je fais mes devoirs. | maak-huiswerk.svg
+eet-met-familie | Ik eet met mijn familie. | Je mange avec ma famille. | eet-met-familie.svg
+kijk-naar-tv | Ik kijk naar TV. | Je regarde la télé. | kijk-naar-tv.svg
+douche | Ik douche. | Je prends ma douche. | douche.svg
+ga-naar-bed | Ik ga naar bed. | Je vais au lit. | ga-naar-bed.svg
+klok | de klok | l'horloge | klok.svg
+wekker | de wekker | le réveil | wekker.svg
+uur | het uur | l'heure | uur.svg
+s-morgens | 's morgens | le matin | s-morgens.svg
+s-middags | 's middags | l'après-midi | s-middags.svg
+s-avonds | 's avonds | le soir | s-avonds.svg
+
+[phrases]
+# id | phrase | français | mot à masquer | autres propositions
+# Chaque phrase a son dessin (images/<id>.svg, de Claude) : l'action et une horloge qui montre l'heure.
+routine-p1 | Om zeven uur sta ik op. | À 7 heures, je me lève. | zeven | acht, negen
+routine-p2 | Om half acht ontbijt ik. | À 7 h 30, je prends mon petit-déjeuner. | half | kwart, uur
+routine-p3 | Om kwart over acht ga ik naar school. | À 8 h 15, je vais à l'école. | over | voor, half
+routine-p4 | Om twaalf uur eet ik mijn boterhammen. | À 12 heures, je mange mes tartines. | boterhammen | tanden, huiswerk
+routine-p5 | Om half vier ga ik naar huis. | À 15 h 30, je rentre à la maison. | huis | bed, school
+routine-p6 | Om half negen ga ik naar bed. | À 20 h 30, je vais au lit. | negen | acht, zeven
+routine-p7 | Hoe laat is het? | Quelle heure est-il ? | laat | uur, half
+routine-p8 | Hoe laat sta jij op? | À quelle heure te lèves-tu ? | sta | ga, eet
+
+[ordre]
+# id | cases | son à écouter à la fin | intrus
+# Intrus = mots du chapitre (règle de Monsieur Noé).
+ordre-1 | Ik / sta / op. | sta-op | wekker
+ordre-2 | Ik / poets / mijn / tanden. | poets-tanden | klok
+ordre-3 | Ik / maak / mijn / huiswerk. | maak-huiswerk | boterhammen
+ordre-4 | Ik / eet / met / mijn / familie. | eet-met-familie | tanden
+ordre-5 | Om / zeven / uur / sta / ik / op. | routine-p1 | wekker
+ordre-6 | Om / half / acht / ontbijt / ik. | routine-p2 | klok
+ordre-7 | Om / half / negen / ga / ik / naar / bed. | routine-p6 | school
+ordre-8 | Hoe / laat / is / het? | routine-p7 | klok
+
+[heures]
+# « Hoe laat is het? » dans « Je m'entraîne » : le site dessine l'horloge et colle les sons (audio/<id>.m4a) :
+# het-is + morceau des minutes + heure (+ uur-pile pour l'heure pile). Exemple : 8 h 20 = het-is + tien-voor-half + 9.
+# id | texte
+# Les morceaux enregistrés par Monsieur Noé (les identifiants ne changent pas : le site les connaît).
+het-is | Het is
+uur-pile | uur
+half | half
+kwart-over | kwart over
+kwart-voor | kwart voor
+vijf-over | vijf over
+tien-over | tien over
+tien-voor-half | tien voor half
+vijf-voor-half | vijf voor half
+vijf-over-half | vijf over half
+tien-over-half | tien over half
+tien-voor | tien voor
+vijf-voor | vijf voor
+# Les heures de 1 à 12 : sons des nombres de Verjaardag (un.m4a… douze.m4a), copiés ici sous le nom du chiffre.
+1 | één
+2 | twee
+3 | drie
+4 | vier
+5 | vijf
+6 | zes
+7 | zeven
+8 | acht
+9 | negen
+10 | tien
+11 | elf
+12 | twaalf

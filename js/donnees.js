@@ -1,7 +1,7 @@
 // Lecture des fichiers texte de l'enseignant (catalogue.txt et chapitre.txt).
 // Chaque erreur dit le fichier, la ligne et comment corriger : l'enseignant
 // n'a que ces messages pour comprendre ce qui ne va pas.
-import { LANGUES, muet } from './outils.js?v=4a69adff';
+import { LANGUES, muet } from './outils.js?v=59fdf551';
 
 const ID_VALIDE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -31,9 +31,12 @@ const SECTIONS = {
   pronoms: [5, 5, 'id | phrase | sujet à remplacer | bon pronom | autres propositions'],
   paires: [3, 3, 'id | carte 1 | carte 2'],
   ecoute: [2, 2, 'id du son | bonne réponse'],
+  // « Hoe laat is het? » (v1.77) : morceaux de l'heure (het-is, half, kwart-over…) et heures 1 à 12, chacun avec son son.
+  heures: [2, 2, 'id | texte'],
 };
 // [explication] (« Je comprends », v1.65) : chaque ligne commence par son type ; colonnes [minimum, maximum].
-const EXPLICATION = { titre: [2, 2], texte: [2, 2], tableau: [2, 8], exemple: [3, 4], astuce: [2, 2] };
+// « image | horloge-parts.svg | description » (v1.77) : un dessin du dossier images/ du chapitre.
+const EXPLICATION = { titre: [2, 2], texte: [2, 2], tableau: [2, 8], exemple: [3, 4], astuce: [2, 2], image: [3, 3] };
 
 // Garde les lignes utiles avec leur numéro (lignes vides et # ignorées).
 function lignesUtiles(texte) {
@@ -108,7 +111,7 @@ export function positionReponse(phrase, reponse) {
 }
 
 export function lireChapitre(texte, fichier = 'chapitre.txt') {
-  const resultat = { titre: '', quizlet: [], note_parents: '', couleurs: '', boss: '', arene: '', cartes_francais: '', en_couleur: [], reprend: [], listes: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], explication: [], tri: [], pronoms: [], paires: [], ecoute: [], erreurs: [] };
+  const resultat = { titre: '', note_parents: '', couleurs: '', boss: '', arene: '', cartes_francais: '', en_couleur: [], reprend: [], listes: [], mots: [], phrases: [], pistes: [], dictees: [], ordre: [], descriptions: [], finsDePhrase: [], explication: [], tri: [], pronoms: [], paires: [], ecoute: [], heures: [], erreurs: [] };
   const err = (num, message) => resultat.erreurs.push(erreur(fichier, num, message));
   const ids = new Map(); // id -> ligne, pour repérer les doublons dans tout le chapitre
   let section = null;
@@ -121,7 +124,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       section = titreSection[1].trim().toLowerCase();
       liste = '';
       if (!SECTIONS[section] && section !== 'explication') {
-        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [explication], [mots], [phrases], [pistes], [dictees], [ordre], [descriptions], [fin-de-phrase], [tri], [pronoms], [paires] et [ecoute].`);
+        err(num, `la section « [${titreSection[1]}] » est inconnue. Les sections possibles sont [explication], [mots], [phrases], [pistes], [dictees], [ordre], [descriptions], [fin-de-phrase], [tri], [pronoms], [paires], [ecoute] et [heures].`);
         section = 'inconnue';
       }
       continue;
@@ -131,11 +134,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       // En-tête : lignes « clé: valeur » avant la première section.
       const m = ligne.match(/^([a-z_]+)\s*:\s*(.*)$/);
       if (!m) {
-        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: » ou « reprend: ».');
-      } else if (m[1] === 'quizlet') {
-        // Plusieurs lignes possibles, chacune « quizlet: lien » ou « quizlet: nom | lien » (demande du 2026-10-26).
-        const [nom, lien] = m[2].includes('|') ? colonnes(m[2]) : ['', m[2].trim()];
-        resultat.quizlet.push({ nom, lien });
+        err(num, 'cette ligne n\'est pas comprise. Avant [mots], on écrit seulement « titre: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: » ou « reprend: ».');
       } else if (m[1] === 'reprend') {
         // Chapitre de révision (demande du 2026-10-28) : les chapitres dont il reprend tout le contenu.
         resultat.reprend = m[2].split(',').map((x) => x.trim()).filter(Boolean);
@@ -155,7 +154,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       } else if (['titre', 'note_parents', 'couleurs', 'boss', 'cartes_francais'].includes(m[1])) {
         resultat[m[1]] = m[2].trim();
       } else if (m[1] !== 'video') { // « video: » est prévu pour P5-P6, ignoré en version 1
-        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « quizlet: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: », « en_couleur: » et « reprend: ».`);
+        err(num, `« ${m[1]}: » n'est pas reconnu. Les mots possibles sont « titre: », « note_parents: », « couleurs: », « boss: », « arene: », « cartes_francais: », « en_couleur: » et « reprend: ».`);
       }
       continue;
     }
@@ -163,7 +162,7 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
     if (section === 'explication') {
       const [type, ...reste] = colonnes(ligne);
       const [min, max] = EXPLICATION[type.toLowerCase()] || [];
-      if (!min) err(num, `« ${type} » n'est pas un type de ligne de [explication]. Commence la ligne par titre, texte, tableau, exemple ou astuce, puis « | ».`);
+      if (!min) err(num, `« ${type} » n'est pas un type de ligne de [explication]. Commence la ligne par titre, texte, tableau, exemple, astuce ou image, puis « | ».`);
       else if (reste.length + 1 < min || reste.length + 1 > max || reste[0] === '') err(num, `cette ligne « ${type} » n'a pas le bon nombre de colonnes. Exemple : exemple | I am from Belgium. | Je viens de Belgique. | tobe-p1`);
       else resultat.explication.push({ type: type.toLowerCase(), colonnes: reste, ligne: num });
       continue;
@@ -263,6 +262,8 @@ export function lireChapitre(texte, fichier = 'chapitre.txt') {
       else resultat.pronoms.push({ id, phrase: c[1], sujet: c[2], bon: c[3], autres: c[4].split(',').map((x) => x.trim()).filter(Boolean), ligne: num });
     } else if (section === 'paires') {
       resultat.paires.push({ id, a: c[1], b: c[2], ligne: num });
+    } else if (section === 'heures') {
+      resultat.heures.push({ id, texte: c[1], ligne: num });
     } else {
       const [, titre, texteD, francais = ''] = c;
       // « dates: » en 3e colonne : dictée de dates tirées au hasard, sans son à elle (demande du 2026-10-26).

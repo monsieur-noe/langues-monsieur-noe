@@ -1,8 +1,8 @@
 // Rubrique « Je comprends » (v1.65, chapitres de grammaire) : l'explication de la section [explication],
 // avant « Je découvre ». Titres, petits textes, tableaux, exemples à écouter et astuces.
-import { el, icone } from './outils.js?v=4a69adff';
-import { fichiersPresents, cheminSon } from './donnees.js?v=4a69adff';
-import { creerLecteur } from './audio.js?v=4a69adff';
+import { el, icone } from './outils.js?v=59fdf551';
+import { fichiersPresents, cheminSon } from './donnees.js?v=59fdf551';
+import { creerLecteur } from './audio.js?v=59fdf551';
 
 // Mots mis en couleur (ligne « en_couleur: am, is, are ») : une couleur par mot de la liste ;
 // « -ing » colore tout mot qui finit ainsi ; « open/close/run » : plusieurs mots d'une même couleur.
@@ -26,6 +26,8 @@ export async function afficherComprends(zone, donnees, dossier, langue) {
     const { type, colonnes: [a, b, son] } = lignes[i];
     if (type === 'titre') parties.push(el('h2', { class: 'titre-comprends' }, icone('ampoule'), a));
     else if (type === 'texte') parties.push(el('p', { class: 'texte-comprends' }, ...c(a)));
+    // « image | horloge-parts.svg | description » (v1.77) : un dessin du chapitre, décrit pour les lecteurs d'écran.
+    else if (type === 'image') parties.push(el('img', { class: 'dessin-comprends', src: `${dossier}images/${a}`, alt: b }));
     else if (type === 'astuce') parties.push(el('aside', { class: 'astuce' }, el('p', {}, el('strong', {}, icone('etoile'), 'Astuce'), ' ', ...c(a))));
     else if (type === 'exemple') {
       const chemin = son && cheminSon({ id: son }, dossier);

@@ -4,10 +4,6 @@
 
 titre: At school
 
-# Les 2 listes Quizlet du chapitre.
-quizlet: Le matériel scolaire | https://quizlet.com/be/1228790607/materiel-scolaire-anglais-flash-cards/
-quizlet: Le mobilier scolaire | https://quizlet.com/be/1228791652/mobilier-scolaire-anglais-flash-cards/
-
 # Exercice « Couleurs » (« The schoolbag is red. »), comme dans Schoolmateriaal.
 # Les couleurs viennent du chapitre anglais des couleurs (dossier colours-en).
 couleurs: colours-en

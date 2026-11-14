@@ -1,8 +1,8 @@
 // Le lecteur audio unique du site (cahier 9) : tous les sons passent par creerLecteur().
 // Bouton lecture/pause, barre de progression que l'on touche ou fait glisser, temps écoulé / durée.
 // Un seul son à la fois ; rien ne démarre seul (sur iPhone, un son ne part qu'après un toucher).
-import { el, icone } from './outils.js?v=4a69adff';
-import { baisser } from './musique.js?v=4a69adff';
+import { el, icone } from './outils.js?v=59fdf551';
+import { baisser } from './musique.js?v=59fdf551';
 
 let actif = null; // le son en cours, pour l'arrêter quand un autre démarre
 
@@ -35,6 +35,16 @@ export function creerLecteur(chemin, { nom, large = false, avecBarre = true, len
   const sons = [].concat(chemin);
   let rang = 0;
   audio.src = sons[0];
+  // Liste de mots (marché, cadenas) : les sons suivants sont téléchargés d'avance (cache du navigateur, rien n'est joué),
+  // sinon chaque mot attend son téléchargement et part en retard sur téléphone (2026-11-13). Listes longues : au 1er son.
+  let precharge = sons.length < 2;
+  const precharger = () => {
+    if (precharge) return;
+    precharge = true;
+    for (const s of sons.slice(1)) fetch(s).catch(() => {});
+  };
+  if (!large) precharger();
+  audio.addEventListener('play', precharger);
   const auDebut = (vitesse) => {
     if (rang) audio.src = sons[rang = 0];
     audio.currentTime = 0;

@@ -6,9 +6,6 @@
 
 titre: Sports and hobbies
 
-# Les 2 listes Quizlet du chapitre.
-quizlet: Sports | https://quizlet.com/be/1229436902/sports-anglais-flash-cards/
-quizlet: Hobbies | https://quizlet.com/be/1229436626/hobbies-anglais-flash-cards/
 boss: Musclor-Pinceau
 arene: gymnase
 

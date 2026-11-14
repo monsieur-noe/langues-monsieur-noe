@@ -1,12 +1,12 @@
 // Jeu « Devinette à indices » (jeu 8 du document de l'enseignant, 2026-11-08) : une carte mystère cache un mot.
 // L'enfant demande des indices quand il veut, toujours dans le même ordre, et choisit le mot parmi 4 boutons.
 // Aucun compte des indices utilisés : ce n'est pas un score. Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=4a69adff';
-import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=4a69adff';
-import { creerLecteur, arreter } from './audio.js?v=4a69adff';
-import { visuel } from './cartes.js?v=4a69adff';
-import { melanger, tirer, bilanEntraine, compteur, bravo, fete, article, sansArticle } from './exercices.js?v=4a69adff';
-import { avatar } from './avatar.js?v=4a69adff';
+import { el, icone, muet } from './outils.js?v=59fdf551';
+import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=59fdf551';
+import { creerLecteur, arreter } from './audio.js?v=59fdf551';
+import { visuel } from './cartes.js?v=59fdf551';
+import { melanger, tirer, bilanEntraine, compteur, bravo, fete, article, sansArticle } from './exercices.js?v=59fdf551';
+import { avatar } from './avatar.js?v=59fdf551';
 
 const NOMBRE = 6;
 const CHOIX = 4;
@@ -72,7 +72,7 @@ let styleCharge = false;
 function preparerPage() {
   if (styleCharge) return;
   styleCharge = true;
-  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-devinette.css?v=4a69adff' }));
+  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-devinette.css?v=59fdf551' }));
 }
 
 // Pictogramme du menu et de la carte mystère : une carte avec un point d'interrogation (dessiné par Claude).

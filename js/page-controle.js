@@ -1,12 +1,53 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=4a69adff';
-import { chercherFichiers, cheminImage } from './cartes.js?v=4a69adff';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=4a69adff';
-import { el } from './outils.js?v=4a69adff';
-import { variantesNom, conseilNom, variantesManquantes, texteQuizlet, taille, LIMITE_DICTEE } from './controle.js?v=4a69adff';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=59fdf551';
+import { chercherFichiers, cheminImage } from './cartes.js?v=59fdf551';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=59fdf551';
+import { el } from './outils.js?v=59fdf551';
+import { variantesNom, conseilNom, variantesManquantes, taille, LIMITE_DICTEE } from './controle.js?v=59fdf551';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
+
+// Demandes au serveur (2026-11-14) : la page vérifie quelque 3 000 fichiers ; envoyées toutes ensemble, GitHub
+// en refusait une partie (« trop de demandes », code 429), comptées à tort comme fichiers introuvables.
+// Ici seulement : 6 demandes à la fois ; un refus (429, panne du serveur, coupure) est retenté 5 fois, de plus en
+// plus tard (0,5 à 8 s) ; s'il dure, le fichier est « pas vérifié », jamais « introuvable ». Seul 404 dit « absent ».
+const EN_MEME_TEMPS = 6;
+const ESSAIS = 5;
+const nonVerifies = new Set();
+const fetchDuSite = window.fetch.bind(window);
+const attente = [];
+let enCours = 0;
+const pause = (ms) => new Promise((r) => { setTimeout(r, ms); });
+async function prendrePlace() {
+  while (enCours >= EN_MEME_TEMPS) await new Promise((r) => { attente.push(r); });
+  enCours += 1;
+}
+function rendrePlace() {
+  enCours -= 1;
+  attente.shift()?.();
+}
+window.fetch = async (chemin, options) => {
+  for (let essai = 1; ; essai += 1) {
+    await prendrePlace();
+    let reponse;
+    let panne = null;
+    try {
+      reponse = await fetchDuSite(chemin, options);
+    } catch (e) {
+      panne = e;
+    } finally {
+      rendrePlace();
+    }
+    if (!panne && reponse.status !== 429 && reponse.status < 500) return reponse;
+    if (essai === ESSAIS) {
+      nonVerifies.add(String(chemin));
+      if (panne) throw panne;
+      return reponse;
+    }
+    await pause(500 * 2 ** (essai - 1));
+  }
+};
 const RANG = { ok: 0, attention: 1, erreur: 2 };
 const PASTILLES = { ok: ['✔', 'Tout va bien'], attention: ['⚠', 'À vérifier'], erreur: ['✖', 'À corriger'] };
 
@@ -33,7 +74,7 @@ function constat(etat, titre, details = []) {
 function attendus(donnees, vignette, dossier) {
   const { mots, phrases, pistes, dictees, descriptions } = donnees;
   return [
-    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates), ...descriptions].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true, dossier: x.dossier || dossier })),
+    ...[...mots, ...phrases, ...pistes, ...dictees.filter((d) => !d.dates), ...descriptions, ...donnees.heures].map((x) => ({ chemin: `audio/${x.id}.m4a`, id: x.id, obligatoire: true, dossier: x.dossier || dossier })),
     ...mots.filter((m) => !/^(texte|couleur):/.test(m.image)).map((m) => ({ chemin: cheminImage(m, ''), id: m.id, obligatoire: !!m.image, dossier: m.dossier || dossier })),
     // « Qui est-ce ? » : le dessin de chaque personne décrite.
     ...descriptions.map((d) => ({ chemin: `images/${d.id}.png`, id: d.id, obligatoire: true, dossier: d.dossier || dossier })),
@@ -48,7 +89,12 @@ async function fichiersManquants(absents, quoi) {
   if (!absents.length) return [];
   const conseils = [];
   const introuvables = [];
+  const pasVerifies = [];
   await Promise.all(absents.map(async (a) => {
+    if (nonVerifies.has(a.dossier + a.chemin)) { // le serveur n'a pas répondu : on ne sait pas
+      pasVerifies.push(a.id);
+      return;
+    }
     const voisins = variantesNom(a.chemin);
     const trouves = await fichiersPresents(voisins.map((v) => a.dossier + v));
     const trouve = voisins.find((v) => trouves.has(a.dossier + v));
@@ -58,30 +104,10 @@ async function fichiersManquants(absents, quoi) {
   if (introuvables.length) {
     conseils.push(`Introuvables : ${introuvables.join(', ')}. Vérifie les majuscules, les accents, les espaces et l'extension.`);
   }
+  if (pasVerifies.length) {
+    conseils.push(`Pas pu vérifier, le serveur était trop occupé : ${pasVerifies.join(', ')}. Recharge la page dans quelques minutes.`);
+  }
   return conseils.length ? [constat('attention', quoi, conseils)] : [];
-}
-
-function boutonQuizlet(mots) {
-  const { texte, sansFrancais } = texteQuizlet(mots);
-  const info = el('p', { class: 'info-quizlet', 'aria-live': 'polite' });
-  const bouton = el('button', { type: 'button', class: 'action', disabled: !texte }, 'Copier pour Quizlet');
-  const bloc = el('div', { class: 'quizlet-copie' }, bouton, info);
-  bouton.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(texte);
-      info.textContent = `Copié (${nombre(texte.split('\n').length, 'mot')}). Dans Quizlet : « Importer », colle, puis garde « Tabulation » et « Nouvelle ligne ».`;
-    } catch {
-      // Copie refusée par le navigateur : le texte à copier à la main.
-      const zone = el('textarea', { readonly: '', rows: 6, 'aria-label': 'Texte pour Quizlet' });
-      zone.value = texte;
-      info.replaceChildren('La copie automatique n\'a pas marché : sélectionne le texte ci-dessous et copie-le.', zone);
-      zone.select();
-    }
-  });
-  const constats = sansFrancais.length
-    ? [constat('attention', 'Sans français, donc pas copiés pour Quizlet :', [sansFrancais.join(', ')])]
-    : [];
-  return { bloc, constats };
 }
 
 // Mots secrets des 7 derniers jours : pour vérifier le mot qu'un élève montre en classe.
@@ -148,8 +174,6 @@ async function controlerChapitre(c) {
     constats.push(constat('attention', 'Dictée de dates pas proposée : il faut des jours, des mois et des nombres de 1 à 31 (texte:), avec leur son.'));
   }
 
-  const quizlet = boutonQuizlet(donnees.mots);
-  constats.push(...quizlet.constats);
   if (donnees.mots.length < 4) constats.push(constat('attention', `Seulement ${donnees.mots.length} mots : il en faut au moins 4.`));
 
   const audios = attendus(donnees, '', dossier).filter((a) => a.chemin.startsWith('audio/'));
@@ -163,13 +187,13 @@ async function controlerChapitre(c) {
   // Ouvre le chapitre tel que les élèves le voient, dans un nouvel onglet (la page de contrôle reste ouverte).
   const voir = el('p', {}, el('a', { class: 'action secondaire', target: '_blank',
     href: `${RACINE}chapitre.html?langue=${c.langue}&annee=${c.annee}&chapitre=${c.chapitre}` }, 'Voir comme un élève'));
-  return carte(pire, titre, constats, compteurs, quizlet.bloc, motsSecrets(donnees.mots, c.langue), voir);
+  return carte(pire, titre, constats, compteurs, motsSecrets(donnees.mots, c.langue), voir);
 }
 
-function carte(etat, titre, constats, compteurs = '', quizlet = '', secrets = '', voir = '') {
+function carte(etat, titre, constats, compteurs = '', secrets = '', voir = '') {
   titre.prepend(pastille(etat), ' ');
   return el('section', { class: 'fiche controle-chapitre' }, titre, compteurs, voir,
-    el('ul', { class: 'constats' }, ...constats.map((k) => k.li)), quizlet, secrets);
+    el('ul', { class: 'constats' }, ...constats.map((k) => k.li)), secrets);
 }
 
 async function demarrer() {

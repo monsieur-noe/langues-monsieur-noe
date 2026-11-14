@@ -356,13 +356,6 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .conseil[open] summary::after { content: "−"; }
 .conseil p { padding: 0 1rem 1rem; }
 
-.quizlet { margin-top: 1.25rem; display: flex; align-items: center; gap: .6rem; }
-.quizlet .avatar { height: 4.5rem; } /* petit, à côté du lien */
-.quizlet .ici { padding: 0 .3rem; border-radius: .4rem; background: var(--acc); color: var(--surface); }
-.quizlet a { display: block; padding: .5rem 0; line-height: 1.4; } /* zone de toucher assez haute (au moins 56 px avec deux lignes) */
-.quizlet .liens { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.4; } /* plusieurs listes nommées */
-.quizlet .liens a { min-height: 3.5rem; display: flex; align-items: center; }
-
 /* ---------- Je m'entraîne, Je vérifie (js/exercices.js) ---------- */
 
 .zone-exercice { min-height: 20rem; }
@@ -506,12 +499,9 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .etat.ok { background: var(--c4); }
 .etat.attention { background: var(--c3); }
 .etat.erreur { background: #b91c1c; }
-.quizlet-copie { margin-top: 1rem; }
 .secrets { margin-top: 1rem; padding-top: .6rem; border-top: 1.5px solid var(--trait); }
 .secrets ul { margin-top: .3rem; padding-left: 1.25rem; }
 .action:disabled { opacity: .5; cursor: default; }
-.info-quizlet { margin-top: .5rem; }
-.info-quizlet textarea { display: block; width: 100%; margin-top: .5rem; font: inherit; font-size: 1rem; }
 
 /* ---------- Pages de texte (parents, confidentialité) ---------- */
 
@@ -907,6 +897,26 @@ button.choix[aria-expanded="true"] .fleche { transform: rotate(90deg); }
 .versions { flex-wrap: wrap; }
 .versions .choix { flex: 1 1 7rem; }
 .versions .titre { overflow-wrap: normal; hyphens: none; }
+/* Menu des jeux sur téléphone (v1.83, demande de l'enseignant du 2026-11-14 : on ne voyait aucun jeu sans défiler) :
+   rubriques sur une ligne de pictogrammes (nom écrit sous « Je joue » seulement, lu par les lecteurs d'écran pour les autres),
+   « Choisis un jeu. » lu seulement par les lecteurs d'écran, familles en deux colonnes. */
+@media (max-width: 39.99rem) {
+  .segments.compact { display: flex; }
+  .segments.compact .seg { flex: 0 0 3.5rem; min-height: 3.5rem; }
+  .segments.compact .seg[aria-current] { flex: 1 1 auto; flex-direction: row; gap: .4rem; white-space: nowrap; }
+  .segments.compact.cinq .seg[aria-current] { flex-direction: column; gap: .1rem; } /* grammaire : « Je joue » sur une ligne */
+  .segments.compact .seg:not([aria-current]) .nom-seg, .consigne-menu {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  .segments.familles { display: grid; grid-template-columns: repeat(2, 1fr); margin-top: 0; }
+  .segments.familles .seg:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+/* Sous 352 px, cinq pictogrammes de 56 px ne tiennent pas : la barre habituelle revient (grammaire). */
+@media (max-width: 22rem) {
+  .segments.compact.cinq { display: grid; }
+  .segments.compact.cinq .seg { min-height: 4.25rem; }
+  .segments.compact.cinq .seg .nom-seg { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; }
+}
 
 /* ---------- Grammaire (v1.65) : « Je comprends », Je trie, J'écoute et je clique ---------- */
 
@@ -937,3 +947,21 @@ button.choix[aria-expanded="true"] .fleche { transform: rotate(90deg); }
 .carte-tri { min-width: 10rem; padding: 1rem 1.25rem; border: 2px solid var(--trait); border-radius: 1rem; background: var(--surface); box-shadow: var(--ombre); text-align: center; }
 .dessin-option { width: 100%; max-width: 5.5rem; height: auto; aspect-ratio: 1; }
 .dessin-tableau { width: 3rem; height: 3rem; display: block; }
+
+/* « Hoe laat is het? » (v1.77) : horloge dessinée par le site ; petite aiguille courte et épaisse, grande longue et fine. */
+.horloge { width: min(15rem, 70vw); height: auto; display: block; }
+.horloge .cadran { fill: #fff; stroke: #1f2a44; stroke-width: 6; }
+.horloge .trait { stroke: #1f2a44; stroke-width: 1.5; }
+.horloge .trait.gros { stroke-width: 4; }
+.horloge .chiffre { font-weight: 700; font-size: 24px; fill: #1f2a44; text-anchor: middle; dominant-baseline: central; }
+.horloge .petite { stroke: #1f2a44; stroke-width: 12; stroke-linecap: round; }
+.horloge .grande { stroke: #c2410c; stroke-width: 5; stroke-linecap: round; }
+.horloge .axe { fill: #1f2a44; }
+.reponses.horloges .horloge { width: 100%; }
+.reponses.horloges .chiffre { font-size: 26px; }
+.ex-horloge .reponses:not(.visuels) .mot { font-size: 1.25rem; }
+.reglages { display: flex; flex-direction: column; gap: .5rem; width: 100%; max-width: 22rem; }
+.reglage { display: grid; grid-template-columns: 3.5rem 1fr 3.5rem; align-items: center; gap: .5rem; text-align: center; font-weight: 700; }
+.bouton-aiguille { min-height: 3.5rem; padding: .3rem; }
+.bouton-aiguille .ic { width: 1.75rem; height: 1.75rem; }
+.dessin-comprends { display: block; width: min(18rem, 80vw); height: auto; margin: .5rem auto; }

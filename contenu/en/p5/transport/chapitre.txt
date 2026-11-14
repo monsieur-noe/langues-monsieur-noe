@@ -4,8 +4,6 @@
 
 titre: Means of transport
 
-# Lien Quizlet reçu le 2026-11-02.
-quizlet: https://quizlet.com/be/1230366117/moyens-de-transport-p5-anglais-flash-cards/?i=7d7v8x&x=1qqt
 boss: Bouchonator
 arene: carrefour
 

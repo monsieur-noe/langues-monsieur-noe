@@ -3,9 +3,6 @@
 
 titre: Het uiterlijk
 
-# Les 2 listes Quizlet du chapitre.
-quizlet: Les vêtements | https://quizlet.com/be/1225511599/vetements-neerlandais-flash-cards/
-quizlet: L'apparence | https://quizlet.com/be/1225513175/apparence-neerlandais-flash-cards/
 boss: Chaussette-Chipie
 arene: apparence
 

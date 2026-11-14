@@ -1,6 +1,5 @@
 # Chapitre 7 (anglais, P6) : The weather (le temps qu'il fait)
 # Source : la fiche « Weather P5-6 » de Monsieur Noé (vocabulaire ex. 3 et 7, grammaire ex. 6), anglais britannique.
-# Pas de lien Quizlet (décision de l'enseignant, 2026-11-11).
 
 titre: The weather
 

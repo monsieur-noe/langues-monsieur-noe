@@ -1,6 +1,6 @@
 // Logique de la page de contrôle (testée dans tests/controle.test.js) : noms de fichiers à essayer,
-// conseils de renommage, variantes d'exercice indisponibles, texte pour Quizlet. Cahier 7.6.
-import { article } from './exercices.js?v=4a69adff';
+// conseils de renommage, variantes d'exercice indisponibles. Cahier 7.6.
+import { article } from './exercices.js?v=59fdf551';
 
 export const LIMITE_DICTEE = 3 * 1024 * 1024; // 3 Mo par dictée (cahier 9)
 const AUTRES_AUDIO = ['mp3', 'wav'];
@@ -66,17 +66,6 @@ export function variantesManquantes(dispo, mots, phrases, n) {
       : { nom: '« De ou het ? »', message: 'aucun nom avec « de » ou « het » : c\'est normal pour les couleurs ou les nombres.', normal: true });
   }
   return manque;
-}
-
-// Texte à coller dans l'import de Quizlet : « mot<tabulation>français », une ligne par mot.
-// Les mots sans français sont mis de côté pour l'avertissement.
-export function texteQuizlet(mots) {
-  const propre = (t) => t.replace(/\s+/g, ' ').trim(); // une tabulation ou un retour à la ligne casserait l'import
-  const avec = mots.filter((m) => m.francais);
-  return {
-    texte: avec.map((m) => `${propre(m.mot)}\t${propre(m.francais)}`).join('\n'),
-    sansFrancais: mots.filter((m) => !m.francais).map((m) => m.mot),
-  };
 }
 
 // Taille d'un fichier en octets, sans le télécharger (null si inconnue).

@@ -1,12 +1,13 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=4a69adff';
-import { creerLecteur, arreter } from './audio.js?v=4a69adff';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=4a69adff';
-import { positionReponse, cheminSon } from './donnees.js?v=4a69adff';
-import { avatar, chargerAvatar } from './avatar.js?v=4a69adff';
-import { serieOrdre } from './ordre.js?v=4a69adff';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=4a69adff';
+import { el, icone, muet, parametre } from './outils.js?v=59fdf551';
+import { creerLecteur, arreter } from './audio.js?v=59fdf551';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=59fdf551';
+import { positionReponse, cheminSon } from './donnees.js?v=59fdf551';
+import { avatar, chargerAvatar } from './avatar.js?v=59fdf551';
+import { serieOrdre } from './ordre.js?v=59fdf551';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=59fdf551';
+import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=59fdf551';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -563,7 +564,7 @@ function dicteeDates(d, ctx) {
 // Entrées de « Je m'entraîne », gardées dans l'adresse (?exercice=de-het, ordre, couleurs ou dictees).
 // shortcut: le nom « Het is… » est fixe, à rendre variable si un chapitre commence ses phrases autrement.
 const ENTREES = { '': ['Exercices', 'crayon'], 'de-het': ['De ou het ?', 'bulle'], 'fin-phrase': ['Het is…', 'image'], ordre: ['Mots en ordre', 'ordre'], couleurs: ['Couleurs', 'image'], dictees: ['Dictées', 'haut-parleur'],
-  tri: ['Je trie', 'grille'], pronoms: ['Le bon petit mot', 'bulle'], 'ecoute-clic': [muet ? 'Je lis et je clique' : 'J\'écoute et je clique', muet ? 'oeil' : 'haut-parleur'] };
+  heures: ['Hoe laat is het?', 'horloge'], tri: ['Je trie', 'grille'], pronoms: ['Le bon petit mot', 'bulle'], 'ecoute-clic': [muet ? 'Je lis et je clique' : 'J\'écoute et je clique', muet ? 'oeil' : 'haut-parleur'] };
 const LISTES = ['tri', 'pronoms', 'ecoute-clic']; // exercices de grammaire : chaque ligne une fois (planListe)
 function choixExercice(choix, actif) {
   const lien = (valeur) => {
@@ -611,7 +612,8 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
 
   // Dessins des boîtes et des réponses de « Je trie » et « J'écoute et je clique » (smileys) : images/<valeur>.svg.
   const dessinsOptions = [...donnees.tri.map((t) => t.boite), ...donnees.ecoute.map((e) => e.reponse)].map((o) => cheminOption(o, dossier));
-  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre, ...dessinsOptions]), chargerAvatar()]);
+  const sonsHeures = donnees.heures.map((x) => cheminSon(x, dossier)); // « Hoe laat is het? » (v1.77)
+  const [{ presents, indices }] = await Promise.all([chercherFichiers(donnees, dossier, [...consignes, ...sonsOrdre, ...dessinsOptions, ...sonsHeures]), chargerAvatar()]);
   const aSon = (x) => presents.has(cheminSon(x, dossier));
   const n = annee === 'p3' ? 3 : 4; // 3 choix en P3, 4 en P4
   const mots = donnees.mots.map((m, k) => ({ ...m, ind: indices[k], son: aSon(m) }));
@@ -638,7 +640,8 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
     pronoms: donnees.pronoms,
     'ecoute-clic': itemsEcouteClic(phrases, donnees.ecoute, ordreLecon),
   };
-  const choix = [avecMelange && '', avecDeHet && 'de-het', fins.length > 0 && 'fin-phrase', avecOrdre && 'ordre',
+  const heures = verifie ? null : { ...preparerHeures(donnees.heures, presents, dossier), dossier }; // seulement dans « Je m'entraîne »
+  const choix = [avecMelange && '', avecDeHet && 'de-het', fins.length > 0 && 'fin-phrase', avecOrdre && 'ordre', heures?.modes.length > 0 && 'heures',
     ...LISTES.map((v) => listes[v]?.length > 0 && v), couleurs && 'couleurs', dictees.length > 0 && 'dictees'].filter((x) => typeof x === 'string');
   const actif = choix.includes(exercice) ? exercice : choix[0];
   const deHet = actif === 'de-het';
@@ -649,6 +652,13 @@ export async function afficherExercices(conteneur, donnees, dossier, langue, ann
   const lancer = () => {
     if (!verifie && actif === 'ordre') return lancerOrdre(zone, donnees, ctx);
     if (!verifie && actif === 'couleurs') return lancerCouleurs(zone, { ...couleurs, langue, dossier });
+    if (!verifie && actif === 'heures') {
+      // Trois jeux de l'horloge, choisis par des boutons (heure=lire, ecoute ou aiguilles dans l'adresse).
+      const mode = heures.modes.includes(parametre('heure')) ? parametre('heure') : heures.modes[0];
+      const jeu = el('div', {});
+      zone.replaceChildren(choixMode(heures.modes, mode), jeu);
+      return lancerHeures(jeu, heures, mode);
+    }
     if (!verifie && actif === 'dictees') return zone.replaceChildren(...dictees.map((d) => (d.dates ? dicteeDates(d, ctx) : dictee(d, ctx))));
     const p = plan();
     serieARepasser(zone, p, (q, rang, total, fin) => question(q, ctx, verifie, rang, total, fin), (ratees) => (verifie

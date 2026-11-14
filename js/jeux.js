@@ -1,32 +1,32 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=4a69adff';
-import { cheminSon } from './donnees.js?v=4a69adff';
-import { chercherFichiers, cheminDessin } from './cartes.js?v=4a69adff';
-import { chargerAvatar } from './avatar.js?v=4a69adff';
-import { amorcer } from './musique.js?v=4a69adff';
-import juist from './jeu-juist.js?v=4a69adff';
-import loto from './jeu-loto.js?v=4a69adff';
-import memory from './jeu-memory.js?v=4a69adff';
-import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=4a69adff';
-import phrases from './jeu-phrases.js?v=4a69adff';
-import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=4a69adff';
-import qui from './jeu-qui.js?v=4a69adff';
-import phraseImages from './jeu-phrase-images.js?v=4a69adff';
-import motEnPieces from './jeu-mot-en-pieces.js?v=4a69adff';
-import ballons, { ballonsDifficile } from './jeu-ballons.js?v=4a69adff';
-import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=4a69adff';
-import motsCaches from './jeu-mots-caches.js?v=4a69adff';
-import sentier from './jeu-sentier.js?v=4a69adff';
-import panier from './jeu-panier.js?v=4a69adff';
-import boites from './jeu-boites.js?v=4a69adff';
-import devinette from './jeu-devinette.js?v=4a69adff';
-import cadenas from './jeu-cadenas.js?v=4a69adff';
-import robot, { robotDifficile } from './jeu-robot.js?v=4a69adff';
-import dessinDisparu from './jeu-dessin-disparu.js?v=4a69adff';
-import terriers from './jeu-terriers.js?v=4a69adff';
-import paires from './jeu-paires.js?v=4a69adff';
+import { el, icone } from './outils.js?v=59fdf551';
+import { cheminSon } from './donnees.js?v=59fdf551';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=59fdf551';
+import { chargerAvatar } from './avatar.js?v=59fdf551';
+import { amorcer } from './musique.js?v=59fdf551';
+import juist from './jeu-juist.js?v=59fdf551';
+import loto from './jeu-loto.js?v=59fdf551';
+import memory from './jeu-memory.js?v=59fdf551';
+import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=59fdf551';
+import phrases from './jeu-phrases.js?v=59fdf551';
+import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=59fdf551';
+import qui from './jeu-qui.js?v=59fdf551';
+import phraseImages from './jeu-phrase-images.js?v=59fdf551';
+import motEnPieces from './jeu-mot-en-pieces.js?v=59fdf551';
+import ballons, { ballonsDifficile } from './jeu-ballons.js?v=59fdf551';
+import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=59fdf551';
+import motsCaches from './jeu-mots-caches.js?v=59fdf551';
+import sentier from './jeu-sentier.js?v=59fdf551';
+import panier from './jeu-panier.js?v=59fdf551';
+import boites from './jeu-boites.js?v=59fdf551';
+import devinette from './jeu-devinette.js?v=59fdf551';
+import cadenas from './jeu-cadenas.js?v=59fdf551';
+import robot, { robotDifficile } from './jeu-robot.js?v=59fdf551';
+import dessinDisparu from './jeu-dessin-disparu.js?v=59fdf551';
+import terriers from './jeu-terriers.js?v=59fdf551';
+import paires from './jeu-paires.js?v=59fdf551';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour l'ouvrir sans changer de page (combat : garde le toucher qui permet la musique sur iPhone).
@@ -109,8 +109,10 @@ export async function afficherJeux(conteneur, contenu, jeu) {
   };
   // Une vignette par jeu ; un jeu qui a d'autres niveaux propose « Normal », « Difficile » (et « Expert ») quand on le touche.
   const normaux = famille.jeux.filter((j) => !AUTRE_NIVEAU.test(j.id) || !famille.jeux.some((n) => n.id === j.id.replace(AUTRE_NIVEAU, '')));
+  // Menu des jeux sur téléphone (v1.83) : barre des rubriques en pictogrammes, pour voir des jeux sans défiler (CSS).
+  document.getElementById('onglets').classList.add('compact');
   conteneur.replaceChildren(
-    el('h2', { class: 'consigne' }, icone('puzzle'), 'Choisis un jeu.'),
+    el('h2', { class: 'consigne consigne-menu' }, icone('puzzle'), 'Choisis un jeu.'),
     familles.length > 1 ? el('nav', { class: 'segments familles', 'aria-label': 'Familles de jeux' }, ...familles.map((f) =>
       el('a', { class: 'seg', href: lienFamille(f.id), 'aria-current': f === famille && 'page' }, icone(f.icone), f.nom))) : '',
     el('ul', { class: 'liste' }, ...normaux.map((j) => {

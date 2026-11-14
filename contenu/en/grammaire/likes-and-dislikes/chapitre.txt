@@ -8,9 +8,6 @@ titre: Likes and dislikes
 
 # POUR CLAUDE CODE : un boss propre à ce chapitre, différent de celui de to-be (Noé veut un boss par point de grammaire).
 
-# Lien Quizlet (Noé l'enverra). Enlève le # quand le lien est là.
-# quizlet: Likes and dislikes | (lien à venir)
-
 # Les mots mis en couleur dans « Je comprends » : tous les mots en -ing.
 en_couleur: -ing
 

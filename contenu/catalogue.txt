@@ -17,6 +17,7 @@ nl | p3 | schoolmateriaal | 5 | Schoolmateriaal
 nl | p3 | uiterlijk | 6 | Het uiterlijk
 nl | p3 | herhaling | 7 | Herhaling | révision
 nl | p4 | weer | 7 | Het weer
+nl | p4 | dagelijks-leven | 8 | Het dagelijks leven
 nl | p5 | zich-voorstellen-p5 | 1 | Zich voorstellen
 
 en | p3 | introduce-yourself | 1 | Introduce yourself

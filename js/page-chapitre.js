@@ -1,12 +1,12 @@
-// Page d'un chapitre : en-tête, trois rubriques, conseil aux parents, lien Quizlet.
+// Page d'un chapitre : en-tête, trois rubriques, conseil aux parents.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=4a69adff';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=4a69adff';
-import { afficherDecouvre } from './cartes.js?v=4a69adff';
-import { afficherExercices } from './exercices.js?v=4a69adff';
-import { avatar, chargerAvatar } from './avatar.js?v=4a69adff';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=4a69adff';
-import { afficherComprends } from './comprends.js?v=4a69adff';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=59fdf551';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=59fdf551';
+import { afficherDecouvre } from './cartes.js?v=59fdf551';
+import { afficherExercices } from './exercices.js?v=59fdf551';
+import { avatar, chargerAvatar } from './avatar.js?v=59fdf551';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=59fdf551';
+import { afficherComprends } from './comprends.js?v=59fdf551';
 
 const RUBRIQUES = [
   { id: 'comprends', nom: 'Je comprends', icone: 'ampoule' }, // grammaire (v1.65) : seulement avec une section [explication]
@@ -34,7 +34,7 @@ function afficherOnglets(rubriques) {
       class: 'seg',
       href: `chapitre.html?langue=${langue}&annee=${annee}&chapitre=${chapitre}&rubrique=${r.id}${sens ? `&sens=${sens}` : ''}`,
       'aria-current': r === rubrique && 'page',
-    }, icone(r.icone), r.nom));
+    }, icone(r.icone), el('span', { class: 'nom-seg' }, r.nom)));
   }
 }
 
@@ -48,28 +48,13 @@ function afficherRubrique(donnees, jeux) {
 }
 
 function afficherExtras(donnees) {
-  // « Je joue » : ni conseil, ni Quizlet, ni pied de page (demande de l'enseignant du 2026-11-09).
+  // « Je joue » : ni conseil, ni pied de page (demande de l'enseignant du 2026-11-09).
   if (rubrique.id === 'joue') { document.querySelector('.pied').hidden = true; return; }
   if (donnees.note_parents) {
     document.getElementById('note-parents').textContent = donnees.note_parents;
     document.getElementById('conseil').hidden = false;
     // L'avatar « explique » n'apparaît que quand le conseil est ouvert (cahier 7.8).
     chargerAvatar().then(() => document.getElementById('note-parents').before(avatar('explique')));
-  }
-  // Seul un lien https vers Quizlet est accepté (pas d'adresse piégée dans le fichier texte).
-  const liens = donnees.quizlet.filter((q) => /^https:\/\/([a-z0-9-]+\.)?quizlet\.com\//i.test(q.lien));
-  if (liens.length) {
-    const p = document.getElementById('quizlet');
-    const lien = (q, ...contenu) => el('a', { href: q.lien, target: '_blank', rel: 'noopener noreferrer' }, ...contenu);
-    const prudence = " (site externe, demande d'abord l'accord de tes parents)";
-    // Un seul lien sans nom : la phrase d'origine. Sinon, une phrase puis un lien par nom.
-    p.append(liens.length === 1 && !liens[0].nom
-      ? lien(liens[0], 'Pour aller plus loin : révise sur Quizlet ', el('strong', { class: 'ici' }, 'ici'), prudence)
-      : el('span', { class: 'liens' }, `Pour aller plus loin : révise sur Quizlet${prudence}.`,
-        ...liens.map((q) => lien(q, el('strong', { class: 'ici' }, q.nom || 'Quizlet')))));
-    p.hidden = false;
-    // Petit avatar « reflechit » à côté du lien (demande de l'enseignant du 2026-10-20).
-    chargerAvatar().then(() => p.prepend(avatar('reflechit')));
   }
 }
 

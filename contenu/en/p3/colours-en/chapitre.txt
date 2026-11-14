@@ -4,7 +4,7 @@
 
 titre: Colours
 
-# Même monstre et même décor que Kleuren. Pas de lien Quizlet (décision de l'enseignant).
+# Même monstre et même décor que Kleuren.
 boss: Gribouille
 arene: couleurs
 

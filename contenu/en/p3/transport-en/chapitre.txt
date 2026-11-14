@@ -3,7 +3,6 @@
 # Mêmes mots, mêmes phrases, mêmes exercices, traduits en anglais britannique.
 
 titre: Means of transport
-quizlet: https://quizlet.com/be/1228789630/means-of-transport-flash-cards/?i=7d7v8x&x=1jqt
 # Même monstre et même décor que Vervoermiddelen.
 boss: Tut-Tut
 arene: transports
