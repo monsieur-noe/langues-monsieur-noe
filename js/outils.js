@@ -29,7 +29,7 @@ if (muet) {
   const avecSon = new URL(location.href);
   avecSon.searchParams.delete('muet');
   // Une seule fois, même si une ancienne page gardée en mémoire charge ce fichier deux fois (deux numéros de version).
-  if (!document.querySelector('.bandeau-muet')) document.querySelector('main')?.prepend(el('p', { class: 'bandeau-muet' }, 'Version sans son',
+  if (!document.querySelector('.bandeau-muet')) document.querySelector('main')?.prepend(el('p', { class: 'bandeau-muet' }, el('span', {}, icone('son-coupe'), ' Version sans son'),
     el('a', { href: avecSon.href, 'data-avec-son': '' }, 'Remettre le son')));
 }
 

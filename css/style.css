@@ -451,6 +451,9 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
   transition: transform var(--duree) var(--ease);
 }
 .action:active { transform: scale(.96); }
+/* Chemin guidé (v1.84) : lien vers la rubrique suivante, sous la dernière carte et dans les bilans. */
+a.action { text-decoration: none; }
+.cartes > .suite { display: flex; width: fit-content; margin: 1rem auto 0; animation: arrive .25s var(--ease); }
 
 .bilan { position: relative; } /* pour la pluie d'étoiles des 3 étoiles */
 .bilan h2 { display: flex; align-items: center; gap: .5rem; font-size: 1.75rem; }
@@ -501,6 +504,14 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 .etat.erreur { background: #b91c1c; }
 .secrets { margin-top: 1rem; padding-top: .6rem; border-top: 1.5px solid var(--trait); }
 .secrets ul { margin-top: .3rem; padding-left: 1.25rem; }
+/* Page de contrôle : écouter les sons d'un chapitre (v1.84). */
+.ecoute-sons { margin-top: 1rem; padding-top: .6rem; border-top: 1.5px solid var(--trait); }
+.ecoute-sons summary { min-height: 3.5rem; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+.ecoute-sons ol { margin-top: .75rem; padding: 0; list-style: none; display: grid; gap: .5rem; }
+.ecoute-sons li { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .75rem; padding: .25rem .5rem; border-radius: .75rem; }
+.ecoute-sons li.en-cours { background: var(--doux); }
+.ecoute-sons li .lecteur-audio { flex: 0 0 auto; }
+.ecoute-sons small { color: var(--gris); font-size: inherit; } /* 20 px au moins, comme tout le site */
 .action:disabled { opacity: .5; cursor: default; }
 
 /* ---------- Pages de texte (parents, confidentialité) ---------- */
@@ -880,6 +891,7 @@ img.image { animation: fondu .3s ease-out; } /* les images arrivent en fondu */
 
 /* Version muette (cahier 7.10) : bandeau discret en haut de page ; le mot écrit remplace le son à écouter. */
 .bandeau-muet { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0 1rem; margin: 0 0 1rem; padding: 0 1rem; border-radius: 1rem; background: var(--doux); color: var(--gris); font-size: 1.25rem; }
+.bandeau-muet > span { display: inline-flex; align-items: center; gap: .4rem; }
 .bandeau-muet a { display: inline-flex; align-items: center; min-height: 3.5rem; color: var(--encre); font-weight: 700; }
 .mot-muet { margin: 0; color: var(--acc); text-align: center; }
 .face-memory .mot { font-size: 1.5rem; }
@@ -898,13 +910,15 @@ button.choix[aria-expanded="true"] .fleche { transform: rotate(90deg); }
 .versions .choix { flex: 1 1 7rem; }
 .versions .titre { overflow-wrap: normal; hyphens: none; }
 /* Menu des jeux sur téléphone (v1.83, demande de l'enseignant du 2026-11-14 : on ne voyait aucun jeu sans défiler) :
-   rubriques sur une ligne de pictogrammes (nom écrit sous « Je joue » seulement, lu par les lecteurs d'écran pour les autres),
+   rubriques sur une ligne de pictogrammes (nom écrit sous la rubrique ouverte seulement, lu par les lecteurs d'écran pour les autres ;
+   toutes les rubriques depuis la v1.84, pour voir les flèches des cartes et les réponses sans défiler),
    « Choisis un jeu. » lu seulement par les lecteurs d'écran, familles en deux colonnes. */
 @media (max-width: 39.99rem) {
   .segments.compact { display: flex; }
   .segments.compact .seg { flex: 0 0 3.5rem; min-height: 3.5rem; }
-  .segments.compact .seg[aria-current] { flex: 1 1 auto; flex-direction: row; gap: .4rem; white-space: nowrap; }
-  .segments.compact.cinq .seg[aria-current] { flex-direction: column; gap: .1rem; } /* grammaire : « Je joue » sur une ligne */
+  /* Le nom à côté du pictogramme s'il tient (« Je joue »), sinon dessous, sur deux lignes au besoin (« Je m'entraîne » sur 360 px). */
+  .segments.compact .seg[aria-current] { flex: 1 1 0; min-width: 0; flex-direction: row; flex-wrap: wrap; justify-content: center; align-content: center; gap: .1rem .4rem; line-height: 1.15; }
+  .segments.compact.cinq .seg[aria-current] { flex: 1 1 auto; min-width: auto; flex-direction: column; gap: .1rem; white-space: nowrap; } /* grammaire : « Je joue » sur une ligne */
   .segments.compact .seg:not([aria-current]) .nom-seg, .consigne-menu {
     position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
   }

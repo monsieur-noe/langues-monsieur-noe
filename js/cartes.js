@@ -1,10 +1,10 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone, LANGUES } from './outils.js?v=59fdf551';
-import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=59fdf551';
-import { creerLecteur, arreter } from './audio.js?v=59fdf551';
-import { melanger } from './exercices.js?v=59fdf551';
+import { el, icone, LANGUES } from './outils.js?v=11ac862d';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=11ac862d';
+import { creerLecteur, arreter } from './audio.js?v=11ac862d';
+import { melanger, lienSuite } from './exercices.js?v=11ac862d';
 
 export function cheminImage(mot, dossier) {
   return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;
@@ -39,10 +39,13 @@ function faceMot(mot, langue, son) {
 
 // Ce qui représente le mot (image, carré de couleur, texte en grand ou français) ; servi aussi aux exercices.
 // `langue` : le texte de remplacement est le mot étranger, lu avec le bon accent.
-export function visuel(mot, ind, langue) {
+// `question` : image d'un énoncé dont le mot est la réponse ; les lecteurs d'écran ne doivent pas la souffler (v1.84).
+export function visuel(mot, ind, langue, question = false) {
+  const nom = question ? 'image de la question' : mot.mot;
+  const lang = question ? 'fr' : langue;
   // `lazy` : une image loin de l'écran ne se télécharge qu'à l'approche (moins de données).
-  if (ind.type === 'image') return el('img', { class: 'image', src: ind.src, alt: mot.mot, lang: langue, loading: 'lazy' });
-  if (ind.type === 'couleur') return carre(ind.fond, mot.mot, langue);
+  if (ind.type === 'image') return el('img', { class: 'image', src: ind.src, alt: nom, lang, loading: 'lazy' });
+  if (ind.type === 'couleur') return carre(ind.fond, nom, lang);
   if (ind.type === 'texte') return el('span', { class: ind.texte.length <= 3 ? 'tuile court' : 'tuile' }, ind.texte);
   return el('span', { class: 'francais' }, ind.texte);
 }
@@ -60,6 +63,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord, avecFrancais
   const compteur = el('p', { class: 'compteur', 'aria-live': 'polite' });
   const prec = el('button', { type: 'button', class: 'defile', 'aria-label': 'Carte précédente' }, icone('gauche'));
   const suiv = el('button', { type: 'button', class: 'defile', 'aria-label': 'Carte suivante' }, icone('droite'));
+  const suite = lienSuite('entraine'); // chemin guidé (v1.84) : sous la dernière carte seulement
 
   function montrer(i) {
     const focusCarte = zone.contains(document.activeElement);
@@ -92,6 +96,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord, avecFrancais
     compteur.textContent = `${index + 1} / ${mots.length}`;
     prec.disabled = index === 0;
     suiv.disabled = index === mots.length - 1;
+    if (suite) suite.hidden = !suiv.disabled;
     // Au clavier, le focus ne doit pas se perdre (carte remplacée, ou flèche désactivée au bout de la liste).
     if (focusCarte) tourner.focus();
     if (prec.disabled && document.activeElement === prec) suiv.focus();
@@ -106,7 +111,7 @@ function cartes(mots, indices, dossier, langue, sons, indiceDabord, avecFrancais
     if (e.key === 'ArrowRight') montrer(index + 1);
   });
   montrer(0);
-  return el('div', { class: 'cartes' }, zone, el('div', { class: 'navigation' }, prec, compteur, suiv));
+  return el('div', { class: 'cartes' }, zone, el('div', { class: 'navigation' }, prec, compteur, suiv), suite);
 }
 
 // Les deux sens de révision, gardés dans l'adresse (?sens=indice), comme les rubriques.

@@ -1,12 +1,12 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=59fdf551';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=59fdf551';
-import { afficherDecouvre } from './cartes.js?v=59fdf551';
-import { afficherExercices } from './exercices.js?v=59fdf551';
-import { avatar, chargerAvatar } from './avatar.js?v=59fdf551';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=59fdf551';
-import { afficherComprends } from './comprends.js?v=59fdf551';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=11ac862d';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=11ac862d';
+import { afficherDecouvre } from './cartes.js?v=11ac862d';
+import { afficherExercices } from './exercices.js?v=11ac862d';
+import { avatar, chargerAvatar } from './avatar.js?v=11ac862d';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=11ac862d';
+import { afficherComprends } from './comprends.js?v=11ac862d';
 
 const RUBRIQUES = [
   { id: 'comprends', nom: 'Je comprends', icone: 'ampoule' }, // grammaire (v1.65) : seulement avec une section [explication]
@@ -29,6 +29,9 @@ function afficherOnglets(rubriques) {
   // Quatre onglets : deux lignes de deux sur téléphone (classe lue par le CSS).
   nav.classList.toggle('quatre', rubriques.length === 4);
   nav.classList.toggle('cinq', rubriques.length === 5);
+  // Téléphone : barre en pictogrammes, seul le nom de la rubrique ouverte écrit (CSS ; menu des jeux v1.83, toutes les rubriques v1.84).
+  // Grammaire (5 rubriques) : seulement dans « Je joue », « Je comprends » et « Je m'entraîne » ne tenant pas à côté de 4 pictogrammes.
+  if (rubriques.length < 5 || rubrique.id === 'joue') nav.classList.add('compact');
   for (const r of rubriques) {
     nav.append(el('a', {
       class: 'seg',

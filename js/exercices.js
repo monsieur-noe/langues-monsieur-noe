@@ -1,13 +1,13 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet, parametre } from './outils.js?v=59fdf551';
-import { creerLecteur, arreter } from './audio.js?v=59fdf551';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=59fdf551';
-import { positionReponse, cheminSon } from './donnees.js?v=59fdf551';
-import { avatar, chargerAvatar } from './avatar.js?v=59fdf551';
-import { serieOrdre } from './ordre.js?v=59fdf551';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=59fdf551';
-import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=59fdf551';
+import { el, icone, muet, parametre } from './outils.js?v=11ac862d';
+import { creerLecteur, arreter } from './audio.js?v=11ac862d';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=11ac862d';
+import { positionReponse, cheminSon } from './donnees.js?v=11ac862d';
+import { avatar, chargerAvatar } from './avatar.js?v=11ac862d';
+import { serieOrdre } from './ordre.js?v=11ac862d';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=11ac862d';
+import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=11ac862d';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -234,7 +234,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
   let autreConsigne = ''; // consigne adaptée au contenu (exercices de grammaire)
 
   if (q.variante === 'image-mot') {
-    enonce = visuel(c, c.ind, langue);
+    enonce = visuel(c, c.ind, langue, true);
     choix = propositions(c, dispo['image-mot'], n).map((x) => ({ noeud: mot(x), juste: x === c }));
     lecteur = son(c);
   } else if (q.variante === 'mot-image') {
@@ -268,7 +268,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
     trou.setAttribute('aria-label', 'fin de la phrase');
     apres = () => { trou.textContent = c.fin; trou.removeAttribute('aria-label'); trou.classList.add('rempli'); };
     enonce = el('div', { class: 'pile' },
-      visuel(c.ref, c.ref.ind, langue),
+      visuel(c.ref, c.ref.ind, langue, true),
       el('p', { class: 'phrase', lang: langue }, `${c.debut} `, trou));
     choix = propositions(c.fin, c.faux, c.faux.length + 1).map((x) => ({ noeud: el('span', { class: 'mot', lang: langue }, x), juste: x === c.fin }));
     lecteur = son(c.ref);
@@ -306,7 +306,7 @@ export function question(q, ctx, verifie, rang, total, fin) {
     const art = el('span', { class: 'trou' }, '…');
     apres = () => { art.textContent = article(c.mot); art.classList.add('rempli'); };
     enonce = el('div', { class: 'pile' },
-      aUnVisuel(c) ? visuel(c, c.ind, langue) : '',
+      aUnVisuel(c) ? visuel(c, c.ind, langue, true) : '',
       el('span', { class: 'mot', lang: langue }, art, ' ', sansArticle(c.mot)));
     choix = ['de', 'het'].map((a) => ({ noeud: el('span', { class: 'mot', lang: langue }, a), juste: a === article(c.mot) }));
     lecteur = son(c);
@@ -432,6 +432,9 @@ export function serieARepasser(zone, plan, poser, bilan) {
     if (ratees.length && i === tour.length) q.suite.firstChild.textContent = 'Suivant';
     zone.replaceChildren(q);
     if (i > 1 || tour !== plan) q.titre.focus(); // au clavier et au lecteur d'écran, on repart de la consigne
+    // Première question (v1.84) : si les réponses sortent du bas de l'écran (téléphone), la page se place sur la question,
+    // comme elle le fait ensuite à chaque « Suivant ».
+    else requestAnimationFrame(() => { if (zone.getBoundingClientRect().bottom > innerHeight) zone.scrollIntoView({ block: 'start' }); });
   }
   suivante(true);
 }
@@ -446,15 +449,27 @@ function annonceTour(zone, nombre, partir) {
   titre.focus();
 }
 
-function boutonRecommencer(relancer) {
-  const b = el('button', { type: 'button', class: 'action' }, icone('tourner'), 'Recommencer');
+function boutonRecommencer(relancer, secondaire = false) {
+  const b = el('button', { type: 'button', class: secondaire ? 'action secondaire' : 'action' }, icone('tourner'), 'Recommencer');
   b.addEventListener('click', relancer);
   return b;
 }
 
+// Chemin guidé (v1.84) : à la fin d'une rubrique, un lien vers la suivante (Je découvre → Je m'entraîne → Je vérifie → Je joue).
+// Il reprend l'onglet de la rubrique (adresse, sens des cartes) ; rien si l'onglet n'existe pas (pas de jeu possible).
+const SUITES = { entraine: ['crayon', 'Entraîne-toi !'], verifie: ['etoile', 'Vérifie-toi !'], joue: ['puzzle', 'Va jouer !'] };
+export function lienSuite(rubrique) {
+  const onglet = document.querySelector(`#onglets a[href*="rubrique=${rubrique}"]`);
+  if (!onglet) return '';
+  const [ic, texte] = SUITES[rubrique];
+  return el('a', { class: 'action suite', href: onglet.href }, icone(ic), texte);
+}
+const rubriqueOuverte = () => new URLSearchParams(location.search).get('rubrique');
+
 // Je vérifie : étoiles, nombre de bonnes réponses, mots ratés avec image et son.
 function bilanVerifie(zone, total, rates, ctx, relancer) {
   const nb = etoiles(total - rates.length, total);
+  const suite = lienSuite('joue');
   const titre = el('h2', { tabindex: '-1' }, ['', 'Continue, tu progresses !', 'Bien joué !', 'Bravo !'][nb]);
   // Une seule pose sur le bilan, selon les étoiles (décision du 2026-10-19).
   const av = avatar(['', 'encourage', 'content', 'bravo'][nb]);
@@ -473,7 +488,8 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
       el('p', {}, 'Écris-le dans ton journal de classe et viens me le montrer au prochain cours : il montre que tu as révisé !')),
     rates.length ? el('h3', {}, 'À revoir') : '',
     rates.length ? el('ul', { class: 'a-revoir' }, ...ratees) : '',
-    boutonRecommencer(relancer)));
+    suite || '',
+    boutonRecommencer(relancer, !!suite)));
   if (nb === 3) fete(zone.firstChild);
   titre.focus();
 }
@@ -496,7 +512,9 @@ export function fete(zone) {
 // Fin de « Je m'entraîne », et aussi des jeux (`pose` de l'avatar, `autres` : des lignes de plus sous le titre).
 export function bilanEntraine(zone, relancer, pose = 'bravo', ...autres) {
   const titre = el('h2', { tabindex: '-1' }, icone('sourire'), 'C\'est fini, bravo !');
-  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar(pose), titre), ...autres, boutonRecommencer(relancer)));
+  const suite = rubriqueOuverte() === 'entraine' ? lienSuite('verifie') : ''; // pas à la fin d'un jeu
+  zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar(pose), titre), ...autres,
+    suite, boutonRecommencer(relancer, !!suite)));
   titre.focus();
 }
 

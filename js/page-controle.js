@@ -1,10 +1,11 @@
 // Page de contrôle de l'enseignant : relit le catalogue et chaque chapitre avec le même code que le site,
 // puis dit, chapitre par chapitre, ce qui va (✔), ce qui est à vérifier (⚠) et ce qui est à corriger (✖). Cahier 7.6.
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=59fdf551';
-import { chercherFichiers, cheminImage } from './cartes.js?v=59fdf551';
-import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=59fdf551';
-import { el } from './outils.js?v=59fdf551';
-import { variantesNom, conseilNom, variantesManquantes, taille, LIMITE_DICTEE } from './controle.js?v=59fdf551';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents, cheminSon, puiser } from './donnees.js?v=11ac862d';
+import { chercherFichiers, cheminImage } from './cartes.js?v=11ac862d';
+import { disponibles, motSecret, piecesDates, datesPossibles } from './exercices.js?v=11ac862d';
+import { creerLecteur } from './audio.js?v=11ac862d';
+import { el } from './outils.js?v=11ac862d';
+import { variantesNom, conseilNom, variantesManquantes, taille, LIMITE_DICTEE } from './controle.js?v=11ac862d';
 
 const RACINE = '../'; // la page est dans controle/, le contenu à côté
 
@@ -122,6 +123,35 @@ function motsSecrets(mots, langue) {
   return el('div', { class: 'secrets' }, el('p', {}, 'Mots secrets (fin de « Je vérifie ») :'), el('ul', {}, ...jours));
 }
 
+// Écouter les sons du chapitre (v1.84, pour vérifier ses enregistrements) : mots, phrases, descriptions et heures,
+// avec leur texte et le nom du fichier ; « Tout écouter à la suite » les enchaîne (une pause arrête la suite).
+// Dictées et pistes, longues, n'y sont pas. Les lecteurs ne sont créés qu'à l'ouverture (pas de téléchargement avant).
+function ecouteSons(donnees, dossier, presents) {
+  const sons = [...donnees.mots, ...donnees.phrases, ...donnees.descriptions, ...donnees.heures]
+    .filter((x) => presents.has(cheminSon(x, dossier)));
+  if (!sons.length) return '';
+  const bloc = el('details', { class: 'ecoute-sons' }, el('summary', {}, `Écouter les sons (${sons.length})`));
+  bloc.addEventListener('toggle', () => {
+    if (!bloc.open || bloc.querySelector('ol')) return;
+    const lignes = sons.map((x) => {
+      const lecteur = creerLecteur(cheminSon(x, dossier), { nom: x.id, lent: false });
+      return el('li', {}, lecteur, el('span', { lang: donnees.langue }, x.mot || x.phrase || x.titre || x.texte || x.id), ' ', el('small', {}, `${x.id}.m4a`));
+    });
+    const tout = el('button', { type: 'button', class: 'action secondaire' }, 'Tout écouter à la suite');
+    let suite = false;
+    const jouer = (k) => {
+      lignes.forEach((l, j) => l.classList.toggle('en-cours', j === k));
+      if (k >= lignes.length) { suite = false; return; }
+      lignes[k].scrollIntoView({ block: 'nearest' });
+      lignes[k].firstChild.jouer();
+    };
+    lignes.forEach((l, k) => l.firstChild.addEventListener('fin', () => { if (suite) jouer(k + 1); }));
+    tout.addEventListener('click', () => { suite = true; jouer(0); });
+    bloc.append(tout, el('ol', {}, ...lignes));
+  });
+  return bloc;
+}
+
 async function controlerChapitre(c) {
   const relatif = cheminChapitre(c.langue, c.annee, c.chapitre);
   const dossier = RACINE + relatif;
@@ -187,13 +217,13 @@ async function controlerChapitre(c) {
   // Ouvre le chapitre tel que les élèves le voient, dans un nouvel onglet (la page de contrôle reste ouverte).
   const voir = el('p', {}, el('a', { class: 'action secondaire', target: '_blank',
     href: `${RACINE}chapitre.html?langue=${c.langue}&annee=${c.annee}&chapitre=${c.chapitre}` }, 'Voir comme un élève'));
-  return carte(pire, titre, constats, compteurs, motsSecrets(donnees.mots, c.langue), voir);
+  return carte(pire, titre, constats, compteurs, motsSecrets(donnees.mots, c.langue), voir, ecouteSons({ ...donnees, langue: c.langue }, dossier, presents));
 }
 
-function carte(etat, titre, constats, compteurs = '', secrets = '', voir = '') {
+function carte(etat, titre, constats, compteurs = '', secrets = '', voir = '', ecoute = '') {
   titre.prepend(pastille(etat), ' ');
   return el('section', { class: 'fiche controle-chapitre' }, titre, compteurs, voir,
-    el('ul', { class: 'constats' }, ...constats.map((k) => k.li)), secrets);
+    el('ul', { class: 'constats' }, ...constats.map((k) => k.li)), secrets, ecoute);
 }
 
 async function demarrer() {

@@ -1,12 +1,12 @@
 // Jeu « Les jumeaux » (cahier 7.9, demandé le 2026-11-08) : la carte A montre 4 dessins, la carte B 4 mots
 // (haut-parleurs, ou mots écrits dans la version sans son). Un seul mot de B va avec un dessin de A : l'enfant touche ce dessin.
 // 8 manches, un jumeau différent à chaque fois. Version difficile : 6 + 6. Rien n'est enregistré.
-import { el, icone, muet } from './outils.js?v=59fdf551';
-import { cheminSon } from './donnees.js?v=59fdf551';
-import { creerLecteur, arreter } from './audio.js?v=59fdf551';
-import { visuel } from './cartes.js?v=59fdf551';
-import { melanger, sansArticle, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=59fdf551';
-import { avatar } from './avatar.js?v=59fdf551';
+import { el, icone, muet } from './outils.js?v=11ac862d';
+import { cheminSon } from './donnees.js?v=11ac862d';
+import { creerLecteur, arreter } from './audio.js?v=11ac862d';
+import { visuel } from './cartes.js?v=11ac862d';
+import { melanger, sansArticle, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=11ac862d';
+import { avatar } from './avatar.js?v=11ac862d';
 
 const MANCHES = 8;
 const utilisables = (contenu) => contenu.mots.filter((m) => m.son || muet); // version muette : le mot est écrit
@@ -105,7 +105,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-jumeaux.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-jumeaux.css?v=59fdf551' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-jumeaux.css?v=11ac862d' }));
   }
 }
 
