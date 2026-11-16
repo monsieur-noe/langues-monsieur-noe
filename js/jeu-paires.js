@@ -1,9 +1,9 @@
 // Jeu « Le memory des paires » (v1.65, grammaire) : les lignes de [paires] (« he | is »), deux cartes écrites par paire.
 // Deux cartes vont ensemble si elles forment une paire du fichier, par leur texte : « is » va avec he, she et it.
 // Même allure que « Le memory qui parle » ; sans son, il est pareil dans la version muette.
-import { el, icone } from './outils.js?v=11ac862d';
-import { melanger, bilanEntraine } from './exercices.js?v=11ac862d';
-import { avatar } from './avatar.js?v=11ac862d';
+import { el, icone } from './outils.js?v=cec4fc40';
+import { melanger, bilanEntraine } from './exercices.js?v=cec4fc40';
+import { avatar } from './avatar.js?v=cec4fc40';
 
 const PAIRES = 6;
 const PAUSE = 1000; // le temps de voir les deux cartes avant qu'elles se retournent (pas un chronomètre)

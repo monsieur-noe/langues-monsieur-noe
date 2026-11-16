@@ -1,13 +1,13 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet, parametre } from './outils.js?v=11ac862d';
-import { creerLecteur, arreter } from './audio.js?v=11ac862d';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=11ac862d';
-import { positionReponse, cheminSon } from './donnees.js?v=11ac862d';
-import { avatar, chargerAvatar } from './avatar.js?v=11ac862d';
-import { serieOrdre } from './ordre.js?v=11ac862d';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=11ac862d';
-import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=11ac862d';
+import { el, icone, muet, parametre } from './outils.js?v=cec4fc40';
+import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=cec4fc40';
+import { positionReponse, cheminSon } from './donnees.js?v=cec4fc40';
+import { avatar, chargerAvatar } from './avatar.js?v=cec4fc40';
+import { serieOrdre } from './ordre.js?v=cec4fc40';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=cec4fc40';
+import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=cec4fc40';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -180,12 +180,12 @@ export function planEntraine(dispo, deHet) {
   return deHet ? planDeHet(dispo, Math.min(10, dispo['de-het'].length)) : planMelange(dispo, Math.min(10, unites(dispo).size));
 }
 
-// Je vérifie : 8 questions (ou autant que de mots, 4 au minimum), dont 2 « de ou het » si possible.
+// Je vérifie : 10 questions (ou autant que de mots, 4 au minimum), dont 2 « de ou het » si possible.
 export function planVerifie(dispo) {
   const u = unites(dispo);
   const tous = new Set([...u.keys(), ...dispo['de-het']]).size;
   if (!tous) return [];
-  const total = Math.max(4, Math.min(8, tous));
+  const total = Math.max(4, Math.min(10, tous));
   // Au moins 2 « de ou het » ; plus si les autres questions manquent (sinon la même reviendrait de suite).
   const nbDeHet = dispo['de-het'].length ? Math.min(total, Math.max(2, total - u.size)) : 0;
   const plan = planMelange(dispo, total - nbDeHet);

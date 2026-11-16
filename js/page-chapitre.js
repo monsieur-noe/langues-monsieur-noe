@@ -1,12 +1,12 @@
 // Page d'un chapitre : en-tête, trois rubriques, conseil aux parents.
 // Adresse : chapitre.html?langue=nl&annee=p3&chapitre=kleuren&rubrique=decouvre
-import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=11ac862d';
-import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=11ac862d';
-import { afficherDecouvre } from './cartes.js?v=11ac862d';
-import { afficherExercices } from './exercices.js?v=11ac862d';
-import { avatar, chargerAvatar } from './avatar.js?v=11ac862d';
-import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=11ac862d';
-import { afficherComprends } from './comprends.js?v=11ac862d';
+import { lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, puiser } from './donnees.js?v=cec4fc40';
+import { parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=cec4fc40';
+import { afficherDecouvre } from './cartes.js?v=cec4fc40';
+import { afficherExercices } from './exercices.js?v=cec4fc40';
+import { avatar, chargerAvatar } from './avatar.js?v=cec4fc40';
+import { afficherJeux, contenuJeux, jeuxPossibles } from './jeux.js?v=cec4fc40';
+import { afficherComprends } from './comprends.js?v=cec4fc40';
 
 const RUBRIQUES = [
   { id: 'comprends', nom: 'Je comprends', icone: 'ampoule' }, // grammaire (v1.65) : seulement avec une section [explication]
