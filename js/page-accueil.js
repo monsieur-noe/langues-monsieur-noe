@@ -1,9 +1,10 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=cec4fc40';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=cec4fc40';
-import { avatar, chargerAvatar } from './avatar.js?v=cec4fc40';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=3ee29c47';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=3ee29c47';
+import { avatar, chargerAvatar } from './avatar.js?v=3ee29c47';
+import { encadreFlammes } from './flammes.js?v=3ee29c47';
 
 const langue = parametre('langue');
 const annee = parametre('annee');
@@ -118,6 +119,8 @@ async function demarrer() {
     afficherBienvenue();
     afficherLangues(catalogue.chapitres);
     document.getElementById('raccourci').hidden = false;
+    const flammes = encadreFlammes(); // v1.88 ; rien si le navigateur refuse de les garder
+    if (flammes) document.getElementById('langues').after(flammes);
     // L'avatar dit bonjour sous le choix des langues et le lien « téléphone », seulement si contenu/avatar/bonjour.svg (ou .png) existe.
     chargerAvatar().then(() => document.getElementById('raccourci').after(avatar('bonjour', true)));
   }

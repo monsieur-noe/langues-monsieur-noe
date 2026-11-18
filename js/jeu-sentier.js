@@ -7,11 +7,12 @@
 // Phrases : celles du chapitre (traduites, sans « ... », avec leur son) ; s'il en a moins de 4, on complète avec
 // celles des chapitres déjà vus (même langue, même année, plus haut dans la liste : décision de l'enseignant).
 // Images : contenu/sentier/<vue>.jpg (Gemini, enseignant) si elles existent, sinon formes simples dessinées ici.
-import { el, icone, muet, parametre } from './outils.js?v=cec4fc40';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=cec4fc40';
-import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
-import { melanger, compteur, bravo } from './exercices.js?v=cec4fc40';
-import { avatar } from './avatar.js?v=cec4fc40';
+import { el, icone, muet, parametre } from './outils.js?v=3ee29c47';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre, fichiersPresents } from './donnees.js?v=3ee29c47';
+import { creerLecteur, arreter } from './audio.js?v=3ee29c47';
+import { melanger, compteur, bravo } from './exercices.js?v=3ee29c47';
+import { avatar } from './avatar.js?v=3ee29c47';
+import { allumerFlamme } from './flammes.js?v=3ee29c47';
 
 const MAX_FOURCHES = 4;
 const MIN_FOURCHES = 3;
@@ -301,7 +302,7 @@ function fourche(f, ctx, rang, total, vue, fin) {
 let styleCharge = false;
 async function lancer(zone, contenu) {
   if (!styleCharge) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=cec4fc40' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-sentier.css?v=3ee29c47' }));
     styleCharge = true;
   }
   const plan = planSentier(contenu.phrases, emprunts, enMots(contenu.mots));
@@ -323,7 +324,7 @@ async function lancer(zone, contenu) {
     const encore = el('button', { type: 'button', class: 'action' }, icone('tourner'), 'Recommencer');
     encore.addEventListener('click', () => lancer(zone, contenu));
     zone.replaceChildren(el('div', { class: 'bilan sentier' },
-      el('div', { class: 'tete-bilan' }, avatar('bravo'), titre), vue.boite, el('p', {}, 'Le coffre est ouvert !'), encore));
+      el('div', { class: 'tete-bilan' }, avatar('bravo'), titre), vue.boite, el('p', {}, 'Le coffre est ouvert !'), allumerFlamme(), encore));
     vue.ouvrir();
     titre.focus({ preventScroll: true });
   }

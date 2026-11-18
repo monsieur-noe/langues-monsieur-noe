@@ -124,8 +124,11 @@ h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.01em; text-wrap: bala
   transition: transform var(--duree) var(--ease), box-shadow var(--duree) var(--ease), border-color var(--duree) var(--ease);
 }
 /* Accueil : lien vers « Sur mon téléphone ou ma tablette », aux couleurs du logo ; inutile sur un ordinateur (souris). */
-#raccourci { margin-top: 1rem; min-height: 3.5rem; background: #fff4e5; border-color: #f08a24; }
-#raccourci > .ic { width: 2rem; height: 2rem; flex: none; }
+/* v1.91 (demande de l'enseignant) : réduit à une simple ligne, pour ne pas se confondre avec l'encadré des flammes. */
+#raccourci { margin-top: .75rem; min-height: 3.5rem; padding: .25rem .5rem; background: none; border-color: transparent; box-shadow: none; color: var(--gris); }
+#raccourci .titre { font-size: 1.25rem; font-weight: 400; text-decoration: underline; text-underline-offset: .2em; }
+#raccourci > .ic { width: 1.6rem; height: 1.6rem; flex: none; }
+#raccourci .fleche { display: none; }
 @media (hover: hover) and (pointer: fine) { #raccourci { display: none; } }
 /* Les cartes de choix (langue, année, chapitre) arrivent l'une après l'autre en glissant. */
 .liste > li { animation: arrive .3s var(--ease) backwards; }
@@ -479,6 +482,102 @@ a.action { text-decoration: none; }
   border: 2px dashed var(--acc); border-radius: 1.15rem;
 }
 .mot-secret .consigne-dictee { margin-top: 0; color: var(--encre); font-weight: 700; }
+
+/* ---------- Flammes des séries (v1.88) : encadré de l'accueil et flamme du bilan ---------- */
+/* Couleurs de la flamme : variables données par le palier (classe p<n> d'un parent, v1.89). */
+.fl-corps { fill: var(--fl-a, #f59e0b); stroke: var(--fl-b, #b45309); stroke-width: 1.4; stroke-linejoin: round; }
+.fl-coeur { fill: var(--fl-c, #fde68a); stroke: none; }
+.fl-etoiles { fill: var(--fl-e, none); stroke: none; }
+.fl-couronne { fill: var(--fl-k, none); stroke: var(--fl-kb, none); stroke-width: .8; stroke-linejoin: round; }
+.p3 { --fl-a: #f97316; --fl-b: #c2410c; }
+.p5 { --fl-a: #ef4444; --fl-b: #991b1b; --fl-c: #fcd34d; }
+.p10 { --fl-a: #3b82f6; --fl-b: #1e3a8a; --fl-c: #bfdbfe; }
+.p20 { --fl-a: #8b5cf6; --fl-b: #4c1d95; --fl-c: #ddd6fe; }
+.p30 { --fl-a: #facc15; --fl-b: #a16207; --fl-c: #fef9c3; }
+.p50 { --fl-a: #10b981; --fl-b: #065f46; --fl-c: #a7f3d0; }
+.p100 { --fl-a: #ec4899; --fl-b: #831843; --fl-c: #fbcfe8; }
+.p200 { --fl-a: url(#arc-en-ciel); --fl-b: #4c1d95; --fl-c: #fff; }
+.p300 { --fl-a: #1e3a8a; --fl-b: #0f172a; --fl-c: #a5b4fc; --fl-e: #fde047; }
+.p365 { --fl-a: #fbbf24; --fl-b: #b45309; --fl-c: #fff7cc; --fl-k: #facc15; --fl-kb: #a16207; }
+.flamme { fill: none; stroke: none; }
+.flamme.eteinte, .semaine-flammes li:not(.allume) .flamme { filter: grayscale(1); opacity: .35; }
+.flammes, .flamme-bilan {
+  width: 100%; padding: .75rem 1rem; border: 2px solid #f59e0b; border-radius: 1.15rem; background: #fff7e6;
+}
+.flammes { margin-top: 1.25rem; animation: arrive .3s var(--ease) .2s backwards; }
+.titre-flammes { display: flex; align-items: center; gap: .5rem; margin: 0; font-weight: 700; font-size: 1.5rem; color: #92400e; }
+.titre-flammes .flamme { width: 2.25rem; height: 2.25rem; }
+/* Accueil : encadré replié (v1.91) ; la ligne des jours se touche (rond fléché, comme les autres boutons du site). */
+.flammes summary { min-height: 3.5rem; cursor: pointer; list-style: none; }
+.flammes summary::-webkit-details-marker { display: none; }
+.ouvrir-flammes {
+  margin-left: auto; flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
+  border-radius: 50%; background: #fff; border: 2px solid #f59e0b; color: #92400e;
+}
+.ouvrir-flammes .ic { transform: rotate(90deg); transition: transform var(--duree) var(--ease); }
+.flammes[open] .ouvrir-flammes .ic { transform: rotate(-90deg); }
+@media (hover: hover) { .flammes summary:hover .ouvrir-flammes { background: #fff7e6; } }
+.semaine-flammes { list-style: none; padding: 0; margin: .6rem 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .25rem; }
+.semaine-flammes li { display: flex; flex-direction: column; align-items: center; gap: .1rem; color: var(--gris); }
+.semaine-flammes .flamme { width: 2rem; height: 2rem; }
+.semaine-flammes .aujourdhui span { color: var(--encre); font-weight: 700; text-decoration: underline; text-underline-offset: .2em; }
+.semaine-flammes .a-sauver .flamme { opacity: .6; outline: 2px dashed #b45309; outline-offset: 2px; border-radius: 50%; }
+/* Les flammes de la semaine s'allument l'une après l'autre, comme les étoiles. */
+.semaine-flammes .allume .flamme { animation: pousse .35s var(--ease) backwards; }
+.semaine-flammes li:nth-child(2) .flamme { animation-delay: .1s; }
+.semaine-flammes li:nth-child(3) .flamme { animation-delay: .2s; }
+.semaine-flammes li:nth-child(4) .flamme { animation-delay: .3s; }
+.semaine-flammes li:nth-child(5) .flamme { animation-delay: .4s; }
+.semaine-flammes li:nth-child(6) .flamme { animation-delay: .5s; }
+.semaine-flammes li:nth-child(7) .flamme { animation-delay: .6s; }
+.consigne-flammes { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem .75rem; margin: 0; color: #92400e; }
+.progres { font-weight: 700; color: #92400e; }
+.objectif-flammes { margin: .35rem 0 0; color: #92400e; font-weight: 700; }
+/* Rattrapage expliqué (v1.90). */
+.sauvetage p { margin: 0 0 .25rem; color: #92400e; }
+.comment-faire summary {
+  min-height: 3.5rem; display: flex; align-items: center; gap: .5rem; cursor: pointer; list-style: none;
+  font-weight: 700; color: var(--encre); text-decoration: underline; text-underline-offset: .2em;
+}
+.comment-faire summary::-webkit-details-marker { display: none; }
+.comment-faire summary::after { content: "+"; font-size: 1.5rem; line-height: 1; text-decoration: none; }
+.comment-faire[open] summary::after { content: "−"; }
+.comment-faire ol { margin: 0; padding-left: 1.5rem; color: var(--encre); }
+.flamme-bilan { flex-wrap: wrap; }
+.flamme-bilan > div { flex: 1 1 10rem; } /* le texte reste à côté de la flamme ; seul le bouton passe dessous */
+.flamme-bilan .action { flex-basis: 100%; justify-content: center; }
+.record-flammes { display: flex; align-items: center; gap: .4rem; margin: .35rem 0 0; color: var(--gris); }
+.record-flammes .ic { color: #b45309; fill: #fbbf24; width: 1.4rem; height: 1.4rem; }
+.flamme-bilan { max-width: 22rem; display: flex; align-items: center; gap: .9rem; text-align: left; }
+.flamme-bilan p { margin: 0; }
+.flamme-bilan .titre-flammes { font-size: 1.25rem; }
+.foyer { position: relative; flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; }
+.foyer .flamme { width: 4rem; height: 4rem; transform-origin: 50% 90%; }
+.etincelle { display: none; }
+/* Flamme qui vient de s'allumer : elle naît du bas, grandit, se balance une fois ; un halo s'élargit, des étincelles montent. */
+.fete-flamme .foyer .flamme { animation: allume .9s var(--ease) .3s backwards; }
+.fete-flamme .foyer::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; background: #fde68a;
+  opacity: 0; animation: halo .9s ease-out .5s;
+}
+.fete-flamme .etincelle {
+  display: block; position: absolute; bottom: 30%; width: .4rem; height: .4rem; border-radius: 50%; background: #f59e0b;
+  opacity: 0; animation: etincelle .8s ease-out .7s;
+}
+.fete-flamme .etincelle:nth-of-type(1) { left: 20%; }
+.fete-flamme .etincelle:nth-of-type(2) { left: 40%; animation-delay: .8s; }
+.fete-flamme .etincelle:nth-of-type(3) { left: 55%; animation-delay: .75s; }
+.fete-flamme .etincelle:nth-of-type(4) { left: 70%; animation-delay: .85s; }
+.fete-flamme .etincelle:nth-of-type(5) { left: 30%; animation-delay: .9s; }
+@keyframes allume {
+  0% { transform: scale(.15); opacity: 0; }
+  45% { transform: scale(1.25); opacity: 1; }
+  65% { transform: scale(.95) rotate(-5deg); }
+  82% { transform: scale(1.03) rotate(3deg); }
+  100% { transform: scale(1); }
+}
+@keyframes halo { 0% { opacity: .8; transform: scale(.4); } 100% { opacity: 0; transform: scale(1.7); } }
+@keyframes etincelle { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-2.6rem); } }
 .mot-secret .mot { font-size: 2rem; color: var(--acc); }
 .consigne-dictee {display: flex; align-items: center; gap: .5rem; margin-top: .4rem; color: var(--gris); }
 .consigne-dictee .ic { color: var(--acc); }

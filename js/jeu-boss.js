@@ -3,13 +3,14 @@
 // L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone, muet } from './outils.js?v=cec4fc40';
-import { arreter } from './audio.js?v=cec4fc40';
-import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=cec4fc40';
-import { avatar } from './avatar.js?v=cec4fc40';
-import { disponibles, question, fete } from './exercices.js?v=cec4fc40'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=cec4fc40';
-import oie, { planOie } from './jeu-oie.js?v=cec4fc40';
+import { el, icone, muet } from './outils.js?v=3ee29c47';
+import { arreter } from './audio.js?v=3ee29c47';
+import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=3ee29c47';
+import { avatar } from './avatar.js?v=3ee29c47';
+import { disponibles, question, fete } from './exercices.js?v=3ee29c47'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=3ee29c47';
+import { allumerFlamme } from './flammes.js?v=3ee29c47';
+import oie, { planOie } from './jeu-oie.js?v=3ee29c47';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6', 'grammaire']; // la grammaire suit les règles de P5-P6 (v1.65)
@@ -422,7 +423,7 @@ function lancer(zone, contenu, difficile, expert = false) {
     const titre = el('h2', { tabindex: '-1' }, icone(ic), titreTexte);
     const b = el('button', { type: 'button', class: 'action' }, icone('tourner'), bouton);
     b.addEventListener('click', relancer);
-    questionZone.replaceChildren(el('div', { class: 'bilan' }, titre, el('p', {}, phrase), b));
+    questionZone.replaceChildren(el('div', { class: 'bilan' }, titre, el('p', {}, phrase), allumerFlamme(), b)); // gagné ou perdu : le combat est fini
     titre.focus({ preventScroll: true });
   }
 

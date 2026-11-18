@@ -1,11 +1,11 @@
 // Jeu « Le loto des sons » (cahier 7.9) : une grille d'images ; on écoute un mot, on touche son image,
 // elle reçoit un jeton. La première ligne complète donne « Bingo ! » ; on peut continuer jusqu'à la grille pleine.
-import { el, icone, muet } from './outils.js?v=cec4fc40';
-import { cheminSon } from './donnees.js?v=cec4fc40';
-import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
-import { visuel } from './cartes.js?v=cec4fc40';
-import { melanger, bilanEntraine, bravo } from './exercices.js?v=cec4fc40';
-import { avatar } from './avatar.js?v=cec4fc40';
+import { el, icone, muet } from './outils.js?v=3ee29c47';
+import { cheminSon } from './donnees.js?v=3ee29c47';
+import { creerLecteur, arreter } from './audio.js?v=3ee29c47';
+import { visuel } from './cartes.js?v=3ee29c47';
+import { melanger, bilanEntraine, bravo } from './exercices.js?v=3ee29c47';
+import { avatar } from './avatar.js?v=3ee29c47';
 
 // Mots utilisables dans la grille : avec un indice visuel et un son, et jamais deux fois le même indice
 // (deux « texte:10 » ou deux fois la même couleur rendraient deux cases identiques : on n'en garde qu'une).

@@ -2,13 +2,13 @@
 // un étal de 9 dessins ; l'enfant touche les dessins de la liste pour remplir son panier, dans n'importe quel ordre.
 // Avec son : la liste part au toucher du bouton « Écoute » (jamais seule, cahier 9), mots joués à la suite par un seul lecteur.
 // Sans son (cahier 7.10) : la liste est écrite en gras et reste visible ; « Cacher la liste » rend le jeu plus difficile.
-import { el, icone, muet } from './outils.js?v=cec4fc40';
-import { cheminSon } from './donnees.js?v=cec4fc40';
-import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
-import { visuel } from './cartes.js?v=cec4fc40';
-import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=cec4fc40';
-import { avatar } from './avatar.js?v=cec4fc40';
-import { motsDuLoto } from './jeu-loto.js?v=cec4fc40';
+import { el, icone, muet } from './outils.js?v=3ee29c47';
+import { cheminSon } from './donnees.js?v=3ee29c47';
+import { creerLecteur, arreter } from './audio.js?v=3ee29c47';
+import { visuel } from './cartes.js?v=3ee29c47';
+import { melanger, bilanEntraine, compteur, bravo } from './exercices.js?v=3ee29c47';
+import { avatar } from './avatar.js?v=3ee29c47';
+import { motsDuLoto } from './jeu-loto.js?v=3ee29c47';
 
 export const MANCHES = [2, 2, 3, 3, 4, 4];
 const ETAL = 9;
@@ -81,7 +81,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-panier.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-panier.css?v=cec4fc40' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-panier.css?v=3ee29c47' }));
   }
 }
 

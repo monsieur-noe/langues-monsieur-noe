@@ -1,13 +1,14 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet, parametre } from './outils.js?v=cec4fc40';
-import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=cec4fc40';
-import { positionReponse, cheminSon } from './donnees.js?v=cec4fc40';
-import { avatar, chargerAvatar } from './avatar.js?v=cec4fc40';
-import { serieOrdre } from './ordre.js?v=cec4fc40';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=cec4fc40';
-import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=cec4fc40';
+import { el, icone, muet, parametre } from './outils.js?v=3ee29c47';
+import { creerLecteur, arreter } from './audio.js?v=3ee29c47';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=3ee29c47';
+import { positionReponse, cheminSon } from './donnees.js?v=3ee29c47';
+import { avatar, chargerAvatar } from './avatar.js?v=3ee29c47';
+import { serieOrdre } from './ordre.js?v=3ee29c47';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=3ee29c47';
+import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=3ee29c47';
+import { allumerFlamme } from './flammes.js?v=3ee29c47';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a
@@ -482,6 +483,7 @@ function bilanVerifie(zone, total, rates, ctx, relancer) {
     el('p', { class: 'etoiles', role: 'img', 'aria-label': `${nb} étoile${nb > 1 ? 's' : ''} sur 3` },
       ...[1, 2, 3].map((k) => el('span', { class: k <= nb ? 'pleine' : '' }, icone('etoile')))),
     el('p', {}, `${total - rates.length} bonne${total - rates.length > 1 ? 's' : ''} réponse${total - rates.length > 1 ? 's' : ''} sur ${total}`),
+    allumerFlamme(),
     el('div', { class: 'mot-secret' },
       el('p', { class: 'consigne-dictee' }, icone('cle'), 'Ton mot secret du jour :'),
       el('p', { class: 'mot', lang: ctx.langue }, motSecret(ctx.mots)),
@@ -513,8 +515,9 @@ export function fete(zone) {
 export function bilanEntraine(zone, relancer, pose = 'bravo', ...autres) {
   const titre = el('h2', { tabindex: '-1' }, icone('sourire'), 'C\'est fini, bravo !');
   const suite = rubriqueOuverte() === 'entraine' ? lienSuite('verifie') : ''; // pas à la fin d'un jeu
+  const flamme = rubriqueOuverte() === 'joue' ? allumerFlamme() : ''; // les jeux allument la flamme, pas « Je m'entraîne »
   zone.replaceChildren(el('div', { class: 'bilan' }, el('div', { class: 'tete-bilan' }, avatar(pose), titre), ...autres,
-    suite, boutonRecommencer(relancer, !!suite)));
+    flamme, suite, boutonRecommencer(relancer, !!suite)));
   titre.focus();
 }
 

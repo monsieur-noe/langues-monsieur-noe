@@ -2,13 +2,13 @@
 // les lettres du mot, mélangées, sont de gros boutons à toucher dans le bon ordre. Au-delà de 8 lettres,
 // des morceaux de mot remplacent les lettres. Version difficile : 2 lettres (ou morceaux) en trop.
 // Version sans son (?muet=1) : l'indice seul, jamais le mot écrit (c'est la réponse), pas de haut-parleur.
-import { el, icone, muet } from './outils.js?v=cec4fc40';
-import { cheminSon } from './donnees.js?v=cec4fc40';
-import { creerLecteur, arreter } from './audio.js?v=cec4fc40';
-import { visuel } from './cartes.js?v=cec4fc40';
-import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=cec4fc40';
-import { desordre } from './ordre.js?v=cec4fc40';
-import { avatar } from './avatar.js?v=cec4fc40';
+import { el, icone, muet } from './outils.js?v=3ee29c47';
+import { cheminSon } from './donnees.js?v=3ee29c47';
+import { creerLecteur, arreter } from './audio.js?v=3ee29c47';
+import { visuel } from './cartes.js?v=3ee29c47';
+import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=3ee29c47';
+import { desordre } from './ordre.js?v=3ee29c47';
+import { avatar } from './avatar.js?v=3ee29c47';
 
 const MANCHES = 6;
 const LONG = 8; // au-delà, des morceaux au lieu des lettres
@@ -122,7 +122,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-mot-en-pieces.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-mot-en-pieces.css?v=cec4fc40' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-mot-en-pieces.css?v=3ee29c47' }));
   }
 }
 
