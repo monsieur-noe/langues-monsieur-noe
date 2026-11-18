@@ -1,32 +1,32 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=3ee29c47';
-import { cheminSon } from './donnees.js?v=3ee29c47';
-import { chercherFichiers, cheminDessin } from './cartes.js?v=3ee29c47';
-import { chargerAvatar } from './avatar.js?v=3ee29c47';
-import { amorcer } from './musique.js?v=3ee29c47';
-import juist from './jeu-juist.js?v=3ee29c47';
-import loto from './jeu-loto.js?v=3ee29c47';
-import memory from './jeu-memory.js?v=3ee29c47';
-import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=3ee29c47';
-import phrases from './jeu-phrases.js?v=3ee29c47';
-import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=3ee29c47';
-import qui from './jeu-qui.js?v=3ee29c47';
-import phraseImages from './jeu-phrase-images.js?v=3ee29c47';
-import motEnPieces from './jeu-mot-en-pieces.js?v=3ee29c47';
-import ballons, { ballonsDifficile } from './jeu-ballons.js?v=3ee29c47';
-import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=3ee29c47';
-import motsCaches from './jeu-mots-caches.js?v=3ee29c47';
-import sentier from './jeu-sentier.js?v=3ee29c47';
-import panier from './jeu-panier.js?v=3ee29c47';
-import boites from './jeu-boites.js?v=3ee29c47';
-import devinette from './jeu-devinette.js?v=3ee29c47';
-import cadenas from './jeu-cadenas.js?v=3ee29c47';
-import robot, { robotDifficile } from './jeu-robot.js?v=3ee29c47';
-import dessinDisparu from './jeu-dessin-disparu.js?v=3ee29c47';
-import terriers from './jeu-terriers.js?v=3ee29c47';
-import paires from './jeu-paires.js?v=3ee29c47';
+import { el, icone } from './outils.js?v=52c38935';
+import { cheminSon } from './donnees.js?v=52c38935';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=52c38935';
+import { chargerAvatar } from './avatar.js?v=52c38935';
+import { amorcer } from './musique.js?v=52c38935';
+import juist from './jeu-juist.js?v=52c38935';
+import loto from './jeu-loto.js?v=52c38935';
+import memory from './jeu-memory.js?v=52c38935';
+import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=52c38935';
+import phrases from './jeu-phrases.js?v=52c38935';
+import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=52c38935';
+import qui from './jeu-qui.js?v=52c38935';
+import phraseImages from './jeu-phrase-images.js?v=52c38935';
+import motEnPieces from './jeu-mot-en-pieces.js?v=52c38935';
+import ballons, { ballonsDifficile } from './jeu-ballons.js?v=52c38935';
+import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=52c38935';
+import motsCaches from './jeu-mots-caches.js?v=52c38935';
+import sentier from './jeu-sentier.js?v=52c38935';
+import panier from './jeu-panier.js?v=52c38935';
+import boites from './jeu-boites.js?v=52c38935';
+import devinette from './jeu-devinette.js?v=52c38935';
+import cadenas from './jeu-cadenas.js?v=52c38935';
+import robot, { robotDifficile } from './jeu-robot.js?v=52c38935';
+import dessinDisparu from './jeu-dessin-disparu.js?v=52c38935';
+import terriers from './jeu-terriers.js?v=52c38935';
+import paires from './jeu-paires.js?v=52c38935';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour l'ouvrir sans changer de page (combat : garde le toucher qui permet la musique sur iPhone).

@@ -2,8 +2,8 @@
 // la flamme du jour. Samedi et dimanche peuvent en allumer une, mais ne cassent jamais la série. Un jour de semaine
 // manqué se rattrape jusqu'au jour de semaine suivant compris, en finissant deux chapitres différents le même jour.
 // Seule mémoire du site (cahier §2 et §10) : gardée sur l'appareil, jamais envoyée. Navigateur qui refuse : rien ne s'affiche.
-import { el, icone, parametre } from './outils.js?v=3ee29c47';
-import { fete } from './exercices.js?v=3ee29c47'; // pluie d'étoiles des paliers
+import { el, icone, parametre } from './outils.js?v=52c38935';
+import { fete } from './exercices.js?v=52c38935'; // pluie d'étoiles des paliers
 
 const CLE = 'flammes';
 const JOURS = ['lu', 'ma', 'me', 'je', 've', 'sa', 'di'];

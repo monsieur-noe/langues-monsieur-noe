@@ -1,16 +1,16 @@
 // Jeu « Le combat de boss » (cahier 7.9, demandé le 2026-10-25) : un monstre rigolo de fin de chapitre.
 // Questions du jeu de l'oie (même moteur que « Je m'entraîne »), un seul essai chacune comme « Je vérifie ».
-// L'avatar de l'enseignant combat le monstre ; l'élève l'aide en répondant (textes à la première personne).
-// Bonne réponse : le monstre perd un cœur. Erreur : l'enseignant perd un cœur (la bonne réponse est montrée et dite).
+// Le héros de l'élève (cahier §7.12, v1.92) combat le monstre : l'élève combat lui-même (textes à sa première personne).
+// Bonne réponse : le monstre perd un cœur. Erreur : je perds un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone, muet } from './outils.js?v=3ee29c47';
-import { arreter } from './audio.js?v=3ee29c47';
-import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=3ee29c47';
-import { avatar } from './avatar.js?v=3ee29c47';
-import { disponibles, question, fete } from './exercices.js?v=3ee29c47'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=3ee29c47';
-import { allumerFlamme } from './flammes.js?v=3ee29c47';
-import oie, { planOie } from './jeu-oie.js?v=3ee29c47';
+import { el, icone, muet } from './outils.js?v=52c38935';
+import { arreter } from './audio.js?v=52c38935';
+import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=52c38935';
+import { herosCombat } from './heros.js?v=52c38935';
+import { disponibles, question, fete } from './exercices.js?v=52c38935'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=52c38935';
+import { allumerFlamme } from './flammes.js?v=52c38935';
+import oie, { planOie } from './jeu-oie.js?v=52c38935';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6', 'grammaire']; // la grammaire suit les règles de P5-P6 (v1.65)
@@ -23,26 +23,26 @@ export const LIMITE = 12; // P5-P6 : au-delà, le monstre s'enfuit (une erreur n
 export const EXPERT = { boss: 10, limite: 20, minuteur: 10000 };
 // Deuxième phase (Expert, v1.64) : à la moitié de sa vie (5 cœurs sur 10), le monstre se met en colère ; ses annonces deviennent plus menaçantes.
 const INTENTIONS_RAGE = {
-  attaque: ['epee', 'Il déchaîne sa colère !', 'Si tu te trompes, je suis battu.'],
-  soin: ['coeur-plus', 'Il puise dans sa magie !', 'Si tu te trompes, je suis battu.'],
+  attaque: ['epee', 'Il déchaîne sa colère !', 'Si je me trompe, j\'ai perdu.'],
+  soin: ['coeur-plus', 'Il puise dans sa magie !', 'Si je me trompe, j\'ai perdu.'],
   protege: ['bouclier', 'Il dresse un mur magique !', 'Deux bonnes réponses de suite pour le toucher.'],
-  renforce: ['coeur-plus', 'Il absorbe la foudre !', 'Si tu te trompes, il reprend un cœur.'],
+  renforce: ['coeur-plus', 'Il absorbe la foudre !', 'Si je me trompe, il reprend un cœur.'],
 };
 
 // [pictogramme, annonce, explication] de chaque intention.
 const INTENTIONS = {
-  attaque: ['epee', 'Il attaque !', 'Si tu te trompes, je perds un cœur.'],
-  soin: ['coeur-plus', 'Il veut se soigner !', 'Si tu te trompes, il reprend un cœur.'],
+  attaque: ['epee', 'Il attaque !', 'Si je me trompe, je perds un cœur.'],
+  soin: ['coeur-plus', 'Il veut se soigner !', 'Si je me trompe, il reprend un cœur.'],
   protege: ['bouclier', 'Il se protège !', 'Deux bonnes réponses de suite pour le toucher.'],
-  renforce: ['coeur-plus', 'Il se renforce !', 'Si tu te trompes, il reprend un cœur.'],
+  renforce: ['coeur-plus', 'Il se renforce !', 'Si je me trompe, il reprend un cœur.'],
 };
 // Version difficile (demande du 2026-10-25) : un seul cœur pour moi, des annonces plus menaçantes.
 export const VIE_DIFFICILE = 1;
 const INTENTIONS_DIFFICILE = {
-  attaque: ['epee', 'Il prépare un coup terrible !', 'Si tu te trompes, je suis battu.'],
-  soin: ['coeur-plus', 'Il reprend des forces !', 'Si tu te trompes, je suis battu.'],
+  attaque: ['epee', 'Il prépare un coup terrible !', 'Si je me trompe, j\'ai perdu.'],
+  soin: ['coeur-plus', 'Il reprend des forces !', 'Si je me trompe, j\'ai perdu.'],
   protege: ['bouclier', 'Il se cache sous sa carapace !', 'Deux bonnes réponses de suite pour le toucher.'],
-  renforce: ['coeur-plus', 'Il devient encore plus fort !', 'Si tu te trompes, il reprend un cœur.'],
+  renforce: ['coeur-plus', 'Il devient encore plus fort !', 'Si je me trompe, il reprend un cœur.'],
 };
 
 // Intention tirée au hasard. P3-P4 : « soin » une fois sur trois, seulement s'il a perdu un cœur et ne s'est
@@ -195,12 +195,12 @@ function lancer(zone, contenu, difficile, expert = false) {
         class: `dessin-boss${difficile && !propre ? ' de-base' : ''}${expert && !dessin.includes('expert') ? ' halo-expert' : ''}`, src: dessin, alt: '' }));
     }
   });
-  const prof = avatar('neutre'); // sans dessin d'avatar : rien, le cadre « Monsieur Noé » suffit
+  const prof = herosCombat(); // mon héros, fabriqué à l'accueil (au hasard s'il n'y en a pas encore)
   const bouclierProf = el('span', { class: 'parade', 'aria-hidden': 'true' }, icone('bouclier')); // invisible hors parade
   const coeursBoss = coeurs('boss', Nom, max.boss);
-  const coeursNoe = coeurs('noe', 'Monsieur Noé', max.noe);
+  const coeursNoe = coeurs('noe', 'Moi', max.noe);
   const cadreBoss = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, Nom), coeursBoss);
-  const cadreNoe = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, 'Monsieur Noé'), coeursNoe);
+  const cadreNoe = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, 'Moi'), coeursNoe);
   const placeProf = el('div', { class: 'place-prof' }, prof, bouclierProf);
   // Bouton pour couper ou rallumer la musique (56 px), dans l'encadré de l'intention (demande de l'enseignant).
   const boutonMusique = el('button', { type: 'button', class: 'bouton-musique', 'aria-label': 'Musique', hidden: muet });
@@ -458,17 +458,17 @@ function lancer(zone, contenu, difficile, expert = false) {
     }
     if (!vies.boss) {
       const plus = expert ? vaincreExpert(parade) : (vaincre(parade), 0); // expert : la fête attend l'éclat du monstre
-      fin('bravo', 'sourire', expert ? 'Tu es un vrai champion !' : difficile ? 'Incroyable, bravo !' : 'C\'est fini, bravo !',
-        `On a ${difficile ? 'vaincu' : 'battu'} ${nom} ensemble !`, 'Recommencer');
+      fin('bravo', 'sourire', expert ? 'J\'ai vaincu le boss ultime !' : difficile ? 'Incroyable, j\'ai gagné !' : 'J\'ai gagné !',
+        `J'ai ${difficile ? 'vaincu' : 'battu'} ${nom} !`, 'Recommencer');
       bouger(prof, DANSE, { duration: 900, delay: parade + plus + 450 });
       if (expert) {
         // Victoire expert : une couronne descend sur moi (dessin de l'enseignant, contenu/avatar/couronne.png).
         const couronne = el('img', { class: 'couronne', src: 'contenu/avatar/couronne.png', alt: '' });
         placeProf.append(couronne);
-        // À la taille de ma tête, quelle que soit celle de l'avatar (téléphone, ordinateur) : dans les dessins de l'avatar,
-        // la tête fait environ 45 % de la largeur, centrée à 48 %, et le haut des cheveux est vers 10 % de la hauteur.
+        // À la taille de ma tête, quelle que soit celle du héros (téléphone, ordinateur) : dans le dessin du héros (heros.js),
+        // la tête fait 44 % de la largeur, centrée au milieu, et le haut du crâne est vers 9 % de la hauteur.
         const { offsetLeft: x, offsetTop: y, offsetWidth: l, offsetHeight: h } = prof;
-        if (l) Object.assign(couronne.style, { width: `${l * 0.45}px`, left: `${x + l * 0.48}px`, top: `${y + h * 0.1 - l * 0.45 * 0.7}px` });
+        if (l) Object.assign(couronne.style, { width: `${l * 0.44}px`, left: `${x + l * 0.5}px`, top: `${y + h * 0.09 - l * 0.44 * 0.7}px` });
         bouger(couronne, [{ transform: 'translate(-50%, -3rem)', opacity: 0 }, { transform: 'translate(-50%, .2rem)', opacity: 1, offset: 0.8 },
           { transform: 'translate(-50%, 0)', opacity: 1 }], { duration: 700, delay: parade + plus + 1500, fill: 'backwards' });
       }
@@ -477,7 +477,7 @@ function lancer(zone, contenu, difficile, expert = false) {
       return setTimeout(() => { if (questionZone.isConnected) fete(zone); }, parade + plus); // pas dans un combat relancé entre-temps
     }
     if (!vies.noe || questions === limite) {
-      fin('encourage', 'bulle', vies.noe ? `${Nom} s'est enfui !` : `${Nom} ${difficile ? 'était trop fort' : 'a gagné'} cette fois.`, 'On réessaie ?', 'Réessayer');
+      fin('encourage', 'bulle', vies.noe ? `${Nom} s'est enfui !` : `${Nom} ${difficile ? 'était trop fort' : 'a gagné'} cette fois.`, 'Je réessaie ?', 'Réessayer');
       // Fuite (P5-P6) : le monstre part par la droite, après les animations de la réponse ; moins d'animations : il disparaît.
       if (vies.noe && !bouger(monstre, FUITE, { duration: 700, delay: 1100, easing: 'ease-in', fill: 'forwards' })) monstre.style.visibility = 'hidden';
       // Défaite : le monstre sautille deux fois, content, sans se moquer (version douce demandée le 2026-11-02).
@@ -514,8 +514,8 @@ function lancer(zone, contenu, difficile, expert = false) {
 
   zone.replaceChildren(
     el('p', { class: 'consigne-oie' }, icone('epee'),
-      expert ? `Le boss ultime arrive ! Aide-moi à vaincre ${nom} !`
-        : difficile ? `${Nom} est furieux ! Aide-moi à le vaincre !` : `Aide-moi à battre ${nom} !`),
+      expert ? `Le boss ultime arrive ! Je dois vaincre ${nom} !`
+        : difficile ? `${Nom} est furieux ! Je dois le vaincre !` : `Je dois battre ${nom} !`),
     arene,
     annonce,
     minuteur,
