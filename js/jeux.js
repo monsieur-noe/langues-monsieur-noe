@@ -1,37 +1,38 @@
 // Rubrique « Je joue » (cahier 7.9) : des jeux qui se fabriquent seuls à partir du contenu du chapitre.
 // Un jeu sans assez de contenu n'apparaît pas, sans message à l'enfant. Rien n'est enregistré.
 // Adresse : chapitre.html?…&rubrique=joue (menu), puis &jeu=<id> (un jeu).
-import { el, icone } from './outils.js?v=52c38935';
-import { cheminSon } from './donnees.js?v=52c38935';
-import { chercherFichiers, cheminDessin } from './cartes.js?v=52c38935';
-import { chargerAvatar } from './avatar.js?v=52c38935';
-import { amorcer } from './musique.js?v=52c38935';
-import juist from './jeu-juist.js?v=52c38935';
-import loto from './jeu-loto.js?v=52c38935';
-import memory from './jeu-memory.js?v=52c38935';
-import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=52c38935';
-import phrases from './jeu-phrases.js?v=52c38935';
-import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=52c38935';
-import qui from './jeu-qui.js?v=52c38935';
-import phraseImages from './jeu-phrase-images.js?v=52c38935';
-import motEnPieces from './jeu-mot-en-pieces.js?v=52c38935';
-import ballons, { ballonsDifficile } from './jeu-ballons.js?v=52c38935';
-import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=52c38935';
-import motsCaches from './jeu-mots-caches.js?v=52c38935';
-import sentier from './jeu-sentier.js?v=52c38935';
-import panier from './jeu-panier.js?v=52c38935';
-import boites from './jeu-boites.js?v=52c38935';
-import devinette from './jeu-devinette.js?v=52c38935';
-import cadenas from './jeu-cadenas.js?v=52c38935';
-import robot, { robotDifficile } from './jeu-robot.js?v=52c38935';
-import dessinDisparu from './jeu-dessin-disparu.js?v=52c38935';
-import terriers from './jeu-terriers.js?v=52c38935';
-import paires from './jeu-paires.js?v=52c38935';
+import { el, icone } from './outils.js?v=0b1d5cd9';
+import { cheminSon } from './donnees.js?v=0b1d5cd9';
+import { chercherFichiers, cheminDessin } from './cartes.js?v=0b1d5cd9';
+import { chargerAvatar } from './avatar.js?v=0b1d5cd9';
+import { amorcer } from './musique.js?v=0b1d5cd9';
+import juist from './jeu-juist.js?v=0b1d5cd9';
+import loto from './jeu-loto.js?v=0b1d5cd9';
+import memory from './jeu-memory.js?v=0b1d5cd9';
+import oie, { oieDifficile, oieExpert } from './jeu-oie.js?v=0b1d5cd9';
+import phrases from './jeu-phrases.js?v=0b1d5cd9';
+import boss, { bossDifficile, bossExpert } from './jeu-boss.js?v=0b1d5cd9';
+import qui from './jeu-qui.js?v=0b1d5cd9';
+import phraseImages from './jeu-phrase-images.js?v=0b1d5cd9';
+import motEnPieces from './jeu-mot-en-pieces.js?v=0b1d5cd9';
+import ballons, { ballonsDifficile } from './jeu-ballons.js?v=0b1d5cd9';
+import jumeaux, { jumeauxDifficile } from './jeu-jumeaux.js?v=0b1d5cd9';
+import motsCaches from './jeu-mots-caches.js?v=0b1d5cd9';
+import sentier from './jeu-sentier.js?v=0b1d5cd9';
+import panier from './jeu-panier.js?v=0b1d5cd9';
+import boites from './jeu-boites.js?v=0b1d5cd9';
+import devinette from './jeu-devinette.js?v=0b1d5cd9';
+import cadenas from './jeu-cadenas.js?v=0b1d5cd9';
+import robot, { robotDifficile } from './jeu-robot.js?v=0b1d5cd9';
+import dessinDisparu from './jeu-dessin-disparu.js?v=0b1d5cd9';
+import terriers from './jeu-terriers.js?v=0b1d5cd9';
+import paires from './jeu-paires.js?v=0b1d5cd9';
+import bossDuo from './jeu-duo.js?v=0b1d5cd9';
 
 // Chaque jeu : { id (dans l'adresse), nom, lang (si le nom est en néerlandais), anglais (son nom dans les chapitres d'anglais, si besoin), icone, possible(contenu), lancer(zone, contenu) },
 // et `pleinEcran` pour l'ouvrir sans changer de page (combat : garde le toucher qui permet la musique sur iPhone).
 // Les jeux s'ajoutent ici un par un, quand ils sont prêts.
-export const JEUX = [juist, loto, memory, oie, oieDifficile, oieExpert, phrases, phraseImages, qui, motEnPieces, ballons, ballonsDifficile, jumeaux, jumeauxDifficile, motsCaches, panier, boites, sentier, cadenas, devinette, robot, robotDifficile, dessinDisparu, terriers, paires, boss, bossDifficile, bossExpert];
+export const JEUX = [juist, loto, memory, oie, oieDifficile, oieExpert, phrases, phraseImages, qui, motEnPieces, ballons, ballonsDifficile, jumeaux, jumeauxDifficile, motsCaches, panier, boites, sentier, cadenas, devinette, robot, robotDifficile, dessinDisparu, terriers, paires, boss, bossDifficile, bossExpert, bossDuo];
 
 // Ce que les jeux utilisent : les mots avec leur indice (`ind`) et leur son (`son`), les phrases avec leur son.
 export async function contenuJeux(donnees, dossier, langue, annee) {
@@ -127,9 +128,10 @@ export async function afficherJeux(conteneur, contenu, jeu) {
     })));
 }
 
-// Autres niveaux d'un jeu : même identifiant suivi de « -difficile » ou « -expert » (expert : oie et combat, 2026-11-09).
-const NIVEAUX = [['Difficile', 'difficile'], ['Expert', 'expert']];
-const AUTRE_NIVEAU = /-(difficile|expert)$/;
+// Autres niveaux d'un jeu : même identifiant suivi de « -difficile » ou « -expert » (expert : oie et combat, 2026-11-09),
+// ou « -duo » (combat à deux sur une tablette, 2026-11-19).
+const NIVEAUX = [['Difficile', 'difficile'], ['Expert', 'expert'], ['À deux', 'duo']];
+const AUTRE_NIVEAU = /-(difficile|expert|duo)$/;
 
 // Familles du menu (choix de l'enseignant du 2026-11-09), avec l'identifiant de la version normale de chaque jeu.
 const FAMILLES = [

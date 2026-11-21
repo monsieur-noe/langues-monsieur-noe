@@ -1,10 +1,10 @@
 // Rubrique « Je découvre » : les cartes des mots (une à la fois), puis les phrases et les pistes à écouter.
 // Une carte a deux faces : le « mot » néerlandais (avec son haut-parleur) et son « indice »
 // (image, carré de couleur, texte en grand, ou à défaut le français). Cahier 7.3.
-import { el, icone, LANGUES } from './outils.js?v=52c38935';
-import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=52c38935';
-import { creerLecteur, arreter } from './audio.js?v=52c38935';
-import { melanger, lienSuite } from './exercices.js?v=52c38935';
+import { el, icone, LANGUES } from './outils.js?v=0b1d5cd9';
+import { couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=0b1d5cd9';
+import { creerLecteur, arreter } from './audio.js?v=0b1d5cd9';
+import { melanger, lienSuite } from './exercices.js?v=0b1d5cd9';
 
 export function cheminImage(mot, dossier) {
   return `${mot.dossier || dossier}images/${mot.image || `${mot.id}.png`}`;

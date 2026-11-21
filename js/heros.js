@@ -8,7 +8,14 @@ const c = (nom, v) => ({ nom, v });
 export const PIECES = [
   { cle: 'peau', nom: 'Peau', choix: [c('très claire', '#F9DEC9'), c('claire', '#F2C7A5'), c('dorée', '#DDA67E'),
     c('mate', '#BC7C52'), c('brune', '#8E5636'), c('très foncée', '#5E3A24')] },
+  // Stature (demande de l'enseignant le 2026-11-21) : `defaut` = la moyenne, celle des héros faits avant.
+  // Taille : bas des jambes (la tête ne change pas) ; silhouette : largeur du corps.
+  { cle: 'taille', nom: 'Taille', defaut: 1, choix: [c('petite', 344), c('moyenne', 374), c('grande', 398)] },
+  { cle: 'silhouette', nom: 'Silhouette', defaut: 1, choix: [c('mince', 0.9), c('moyenne', 1), c('costaude', 1.16)] },
+  { cle: 'contour', nom: 'Forme du visage', choix: [c('ronde', 'rond'), c('ovale', 'ovale'), c('carrée', 'carre')] },
   { cle: 'yeux', nom: 'Yeux', choix: [c('ronds', 'ronds'), c('rieurs', 'rieurs'), c('grands', 'grands'), c('avec des cils', 'cils')] },
+  { cle: 'couleurYeux', nom: 'Couleur des yeux', choix: [c('marron', '#6b4423'), c('noirs', '#2a2624'), c('bleus', '#3b82c4'),
+    c('verts', '#3f9a57'), c('gris', '#8a9099')] },
   { cle: 'visage', nom: 'Visage', choix: [c('simple', ''), c('taches de rousseur', 't'), c('joues roses', 'j'), c('taches et joues roses', 'tj')] },
   { cle: 'coiffure', nom: 'Coiffure', choix: ['courts', 'hérissés', 'carré', 'longs', 'queue de cheval', 'couettes',
     'tresses', 'chignon', 'bouclés', 'afro', 'rasés'].map((n) => c(n, n)) },
@@ -46,11 +53,24 @@ export const auHasard = (alea = Math.random) =>
 
 // Mémoire du héros (cahier §2 et §7.12) : un numéro par pièce, gardé sur l'appareil, jamais envoyé.
 const CLE = 'heros';
-// Seuls les numéros valides sont gardés (la mémoire du navigateur peut être abîmée) ; sinon le premier choix.
+// Seuls les numéros valides sont gardés (la mémoire du navigateur peut être abîmée) ; sinon le choix par défaut.
 export const normaliser = (h) => Object.fromEntries(PIECES.map((p) => {
   const n = h && h[p.cle];
-  return [p.cle, Number.isInteger(n) && n >= 0 && n < p.choix.length ? n : 0];
+  return [p.cle, Number.isInteger(n) && n >= 0 && n < p.choix.length ? n : p.defaut ?? 0];
 }));
+
+// Prénom facultatif (exception décidée par l'enseignant le 2026-11-21, cahier §2 et §3) : affiché à la place de
+// « Moi » dans le combat ; 12 lettres au plus, gardé à part du héros (clé `prenom`), jamais envoyé, même en mode classe.
+const CLE_PRENOM = 'prenom';
+// Lettres (accents compris), espace, trait d'union, apostrophe ; rien d'autre (la mémoire peut être abîmée).
+export const nettoyerPrenom = (t) => String(t ?? '').replace(/[^\p{L}' -]/gu, '').replace(/\s+/g, ' ').trimStart().slice(0, 12);
+export function lirePrenom() {
+  try { return nettoyerPrenom(localStorage.getItem(CLE_PRENOM)).trim(); } catch { return ''; }
+}
+export function garderPrenom(t) {
+  const p = nettoyerPrenom(t).trim();
+  try { if (p) localStorage.setItem(CLE_PRENOM, p); else localStorage.removeItem(CLE_PRENOM); } catch { /* refusé : rien de gardé */ }
+}
 export function garderHeros(h) {
   try { localStorage.setItem(CLE, JSON.stringify(h)); } catch { /* refusé : le héros ne vit que pendant la visite */ }
 }
@@ -81,6 +101,8 @@ export function herosCombat() {
     boite.innerHTML = dessinerHeros(h, e); // dessin du site, aucune donnée venue de l'extérieur
   };
   boite.pose('neutre');
+  boite.nom = lirePrenom() || 'Moi'; // nom du cadre des cœurs
+  boite.hautTete = hautTete(h); // pour poser la couronne de la victoire expert
   return boite;
 }
 
@@ -143,14 +165,14 @@ const AVANT = {
 };
 
 // Yeux et sourcils (sourcils de la couleur des cheveux) selon l'expression : content, attaque, aie.
-function yeux(forme, expression, sourcil) {
+function yeux(forme, expression, sourcil, iris) {
   const s = (d) => `<path d="${d}" fill="${sourcil}" stroke-width="3"/>`;
   if (expression === 'aie') return miroir(s('M108 106 Q124 96 140 90 Q128 100 110 110Z') + fin('M110 112 L134 121 L112 130', K, 5));
   const sourcils = miroir(s(expression === 'attaque' ? 'M106 90 Q126 94 142 108 Q124 102 108 98Z' : 'M108 98 Q124 86 142 96 Q126 92 110 102Z'));
   if (forme === 'rieurs') return sourcils + miroir(fin('M112 124 Q126 108 140 124', K, 5));
   const g = forme === 'grands' ? 1.18 : 1;
   const oeil = (x, dx) => `<ellipse cx="${x}" cy="120" rx="${15 * g}" ry="${17 * g}" fill="#fff" stroke-width="4"/>`
-    + `<circle cx="${x + dx}" cy="123" r="${10 * g}" fill="${K}" stroke="none"/>`
+    + `<circle cx="${x + dx}" cy="123" r="${10 * g}" fill="${iris}" stroke="none"/><circle cx="${x + dx}" cy="123" r="${5.5 * g}" fill="${K}" stroke="none"/>`
     + `<circle cx="${x + dx - 4}" cy="118" r="${3.8 * g}" fill="#fff" stroke="none"/><circle cx="${x + dx + 4}" cy="128" r="1.8" fill="#fff" stroke="none"/>`;
   const cils = forme === 'cils' || forme === 'grands'
     ? miroir(fin(`M${112 - 3 * g} ${108 - 4 * g} L104 100 M${110 - 2 * g} ${114 - 2 * g} L102 110`, K, 3.5)) : '';
@@ -327,36 +349,54 @@ const CHAUSSURES = {
 const chaussures = (forme_, c, p, yb) => miroir(`<g transform="translate(2 ${yb - 374}) translate(122 386) scale(.84) translate(-122 -386)">`
   + CHAUSSURES[forme_](c, p) + '</g>');
 
-// Le héros en entier, dans un cadre de 300 × 420 ; `expression` : content, attaque ou aie (cahier §7.12).
+// Formes du visage (v1.96) : ronde (celle d'avant), ovale (plus étroite, menton plus long), carrée (mâchoire large).
+const VISAGES = {
+  rond: 'M84 104 C84 54 116 36 150 36 C184 36 216 54 216 104 C216 140 206 162 186 174 C172 182 162 184 150 184 C138 184 128 182 114 174 C94 162 84 140 84 104Z',
+  ovale: 'M90 104 C90 52 118 36 150 36 C182 36 210 52 210 104 C210 144 198 170 180 182 C168 189 160 190 150 190 C140 190 132 189 120 182 C102 170 90 144 90 104Z',
+  carre: 'M84 100 C84 52 116 36 150 36 C184 36 216 52 216 100 C218 140 214 166 196 176 C182 184 166 184 150 184 C134 184 118 184 104 176 C86 166 82 140 84 100Z',
+};
+// Le cadre (viewBox) commence 24 plus haut que la tête d'avant, pour la grande taille ; 444 de haut en tout.
+const HAUT_CADRE = -24;
+const HAUTEUR_CADRE = 444;
+const valeurs = (h) => Object.fromEntries(PIECES.map((p) => [p.cle, (p.choix[h[p.cle]] || p.choix[p.defaut ?? 0]).v]));
+// Décalage vertical de tout le héros (petite taille : plus bas ; grande : plus haut), pieds toujours au sol.
+const decalage = (v) => (v.marche === 'fauteuil' ? 0 : 374 - v.taille);
+// Haut du crâne, en part de la hauteur du dessin (couronne de la victoire expert, jeu-boss.js).
+export const hautTete = (h) => (36 + decalage(valeurs(h)) - HAUT_CADRE) / HAUTEUR_CADRE;
+
+// Le héros en entier, dans un cadre de 300 × 444 ; `expression` : content, attaque ou aie (cahier §7.12).
 export function dessinerHeros(h, expression = 'content') {
-  const v = Object.fromEntries(PIECES.map((p) => [p.cle, (p.choix[h[p.cle]] || p.choix[0]).v]));
+  const v = valeurs(h);
   const { peau: p, coiffure, cheveux: ch, haut, couleur: t } = v;
   const combi = haut === 'combinaison';
   const bas = combi ? 'jean' : v.bas;
   const cb = combi ? t : v.couleurBas;
   const fauteuil = v.marche === 'fauteuil';
-  const yb = fauteuil ? 356 : 374;
-  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420" aria-hidden="true" focusable="false">${DEFS}`
+  const yb = fauteuil ? 356 : v.taille; // bas des jambes : la taille ne change que la longueur des jambes
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 ${HAUT_CADRE} 300 ${HAUTEUR_CADRE}" aria-hidden="true" focusable="false">${DEFS}`
     + `<ellipse cx="150" cy="406" rx="88" ry="10" fill="#000" opacity=".12"/>`
-    + `<g stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">`;
+    + `<g stroke="${K}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 ${decalage(v)})">`;
   if (fauteuil) s += miroir(`<rect x="56" y="262" width="28" height="134" rx="14" fill="#5F5E5A"/><circle cx="70" cy="330" r="8" fill="#B4B2A9"/>`);
   s += (ARRIERE[coiffure] || (() => ''))(ch);
-  s += jambesDe(bas, cb, p, yb) + chaussures(v.chaussures, v.couleurChaussures, p, yb) + dessusBas(bas, cb);
-  if (fauteuil) s += `<rect x="92" y="282" width="116" height="22" rx="8" fill="#888780"/><rect x="100" y="386" width="100" height="10" rx="5" fill="#888780"/>`;
-  s += bras(p, haut === 'veste' ? DENIM : t, LONGUES.includes(haut)) + dessinerHaut(haut, t, p);
+  // Corps : élargi ou affiné autour du milieu selon la silhouette ; la tête garde sa taille.
+  let corps = jambesDe(bas, cb, p, yb) + chaussures(v.chaussures, v.couleurChaussures, p, yb) + dessusBas(bas, cb);
+  if (fauteuil) corps += `<rect x="92" y="282" width="116" height="22" rx="8" fill="#888780"/><rect x="100" y="386" width="100" height="10" rx="5" fill="#888780"/>`;
+  corps += bras(p, haut === 'veste' ? DENIM : t, LONGUES.includes(haut)) + dessinerHaut(haut, t, p);
   const salopette = !combi && (bas === 'salopette' || bas === 'salopetteShort') && haut !== 'robe';
-  if (salopette) s += bavette(cb);
-  s += forme('M139 178 L139 198 Q150 204 161 198 L161 178Z', p, `<path d="M139 182 Q150 194 161 182 L161 190 Q150 198 139 190Z" fill="${ombre(p)}" stroke="none"/>`);
-  s += detailsCol(haut, t);
+  if (salopette) corps += bavette(cb);
+  corps += forme('M139 178 L139 198 Q150 204 161 198 L161 178Z', p, `<path d="M139 182 Q150 194 161 182 L161 190 Q150 198 139 190Z" fill="${ombre(p)}" stroke="none"/>`);
+  corps += detailsCol(haut, t);
   if (v.motif) {
     const [y, k] = salopette ? [264, 0.8] : haut === 'veste' ? [246, 0.7] : haut === 'gilet' ? [252, 0.6] : [240, 1];
-    s += `<g transform="translate(150 ${y}) scale(${k})" stroke-width="4">${MOTIF[v.motif]}</g>`;
+    corps += `<g transform="translate(150 ${y}) scale(${k})" stroke-width="4">${MOTIF[v.motif]}</g>`;
   }
+  s += v.silhouette === 1 ? corps : `<g transform="translate(150 0) scale(${v.silhouette} 1) translate(-150 0)">${corps}</g>`;
   // Tête : oreilles, visage et son ombre, joues, yeux, nez, bouche, cheveux, lunettes, chapeau.
   s += miroir(forme('M90 98 C70 92 64 120 72 132 C78 142 90 140 92 132Z', p) + fin('M80 108 C74 118 78 128 86 130', K, 3));
-  s += forme('M84 104 C84 54 116 36 150 36 C184 36 216 54 216 104 C216 140 206 162 186 174 C172 182 162 184 150 184 C138 184 128 182 114 174 C94 162 84 140 84 104Z', p,
-    `<path d="M188 56 C206 80 210 130 190 160 C178 174 164 180 150 182 C176 182 214 160 216 104 C216 80 204 64 188 56Z" fill="${ombre(p)}" stroke="none"/>`);
-  s += joues(v.visage) + yeux(v.yeux, expression, coiffure === 'rasés' ? teinte(p, 0.45) : ch)
+  // Ombre du visage découpée à sa forme (même id pour la même forme : géométrie identique d'un héros à l'autre).
+  s += `<defs><clipPath id="hb-v-${v.contour}"><path d="${VISAGES[v.contour]}"/></clipPath></defs>`
+    + forme(VISAGES[v.contour], p, `<path clip-path="url(#hb-v-${v.contour})" d="M188 56 C206 80 210 130 190 160 C178 174 164 180 150 182 C176 182 214 160 216 104 C216 80 204 64 188 56Z" fill="${ombre(p)}" stroke="none"/>`);
+  s += joues(v.visage) + yeux(v.yeux, expression, coiffure === 'rasés' ? teinte(p, 0.45) : ch, v.couleurYeux)
     + fin('M146 130 C138 138 142 148 152 147 C158 146 160 141 156 138', K, 3) + BOUCHE[expression];
   s += (AVANT[coiffure] || (() => ''))(ch);
   if (v.lunettes) s += LUNETTES[v.lunettes];

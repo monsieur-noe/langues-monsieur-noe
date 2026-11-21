@@ -2,12 +2,12 @@
 // groupe de lettres difficile (ij, ui, sh, th…) ; l'enfant choisit la pièce qui manque parmi 3 boutons
 // (4 en version difficile, avec deux trous). Chaque mot réussi répare un morceau de l'objet (robot et objet : choix du 2026-11-09). 6 mots par partie.
 // Sans son (?muet=1) : l'indice et le mot à trous suffisent ; le mot entier n'est jamais montré avant la réponse.
-import { el, icone, muet } from './outils.js?v=52c38935';
-import { cheminSon, fichiersPresents, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=52c38935';
-import { creerLecteur, arreter } from './audio.js?v=52c38935';
-import { visuel, chercherFichiers } from './cartes.js?v=52c38935';
-import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=52c38935';
-import { avatar } from './avatar.js?v=52c38935';
+import { el, icone, muet } from './outils.js?v=0b1d5cd9';
+import { cheminSon, fichiersPresents, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=0b1d5cd9';
+import { creerLecteur, arreter } from './audio.js?v=0b1d5cd9';
+import { visuel, chercherFichiers } from './cartes.js?v=0b1d5cd9';
+import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=0b1d5cd9';
+import { avatar } from './avatar.js?v=0b1d5cd9';
 
 export const MANCHES = 6;
 
@@ -205,7 +205,7 @@ function objet({ src, haut }, n, nouveau = false) {
 }
 
 if (typeof document !== 'undefined' && !document.querySelector('link[href*="jeu-robot.css"]')) {
-  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-robot.css?v=52c38935' }));
+  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-robot.css?v=0b1d5cd9' }));
 }
 
 // L'indice : le texte de remplacement donne le français, jamais le mot à trouver.

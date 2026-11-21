@@ -2,11 +2,11 @@
 // d'un autre chapitre (ligne « couleurs: kleuren » de chapitre.txt), et la phrase « De ____ is ____. »
 // (« The ____ is ____. » en anglais) à compléter : l'objet parmi 5 mots, la couleur parmi 5 mots. Seconde chance pour chaque trou.
 // Seuls les dessins SVG dont une partie est marquée class="teinte" peuvent être repeints.
-import { el, icone } from './outils.js?v=52c38935';
-import { creerLecteur } from './audio.js?v=52c38935';
-import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=52c38935';
-import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=52c38935';
-import { avatar } from './avatar.js?v=52c38935';
+import { el, icone } from './outils.js?v=0b1d5cd9';
+import { creerLecteur } from './audio.js?v=0b1d5cd9';
+import { lireChapitre, chargerTexte, cheminChapitre, couleurIndice, fichiersPresents, cheminSon } from './donnees.js?v=0b1d5cd9';
+import { melanger, tirer, propositions, article, sansArticle, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=0b1d5cd9';
+import { avatar } from './avatar.js?v=0b1d5cd9';
 
 const NOMBRE = 10;
 const CHOIX = 5;

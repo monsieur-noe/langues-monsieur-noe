@@ -4,12 +4,12 @@
 // Néerlandais seulement (décision de l'enseignant du 2026-11-08) ; seulement dans les chapitres qui ont
 // au moins un nom en « de » et un en « het » ; les autres noms de l'année complètent la grille.
 // Version sans son (cahier 7.10) : les mots sont déjà écrits, seul le son au toucher disparaît.
-import { el, icone, muet } from './outils.js?v=52c38935';
-import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=52c38935';
-import { creerLecteur, arreter } from './audio.js?v=52c38935';
-import { chercherFichiers } from './cartes.js?v=52c38935';
-import { melanger, article, sansArticle, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=52c38935';
-import { avatar } from './avatar.js?v=52c38935';
+import { el, icone, muet } from './outils.js?v=0b1d5cd9';
+import { cheminSon, chargerTexte, lireCatalogue, lireChapitre, cheminChapitre } from './donnees.js?v=0b1d5cd9';
+import { creerLecteur, arreter } from './audio.js?v=0b1d5cd9';
+import { chercherFichiers } from './cartes.js?v=0b1d5cd9';
+import { melanger, article, sansArticle, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=0b1d5cd9';
+import { avatar } from './avatar.js?v=0b1d5cd9';
 
 export const MANCHES = 5;
 export const TERRIERS = 9;
@@ -132,7 +132,7 @@ function ajouterPictogramme() {
 if (typeof document !== 'undefined') {
   ajouterPictogramme();
   if (!document.querySelector('link[href*="jeu-terriers.css"]')) {
-    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-terriers.css?v=52c38935' }));
+    document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-terriers.css?v=0b1d5cd9' }));
   }
 }
 

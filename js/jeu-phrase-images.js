@@ -3,12 +3,12 @@
 // Mots reconnus : ceux du chapitre qui ont un indice visuel (dessin, couleur, chiffre), plus les couleurs et les chiffres
 // des autres chapitres de la même langue et de la même année (jamais leurs dessins : « groot » d'Het uiterlijk
 // n'est pas le « groot » d'une trousse). Formes accordées ou pluriels : contenu/<langue>/alias.txt.
-import { el, icone, muet, parametre } from './outils.js?v=52c38935';
-import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=52c38935';
-import { creerLecteur, arreter } from './audio.js?v=52c38935';
-import { visuel, indice } from './cartes.js?v=52c38935';
-import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=52c38935';
-import { avatar } from './avatar.js?v=52c38935';
+import { el, icone, muet, parametre } from './outils.js?v=0b1d5cd9';
+import { cheminSon, lireCatalogue, lireChapitre, chargerTexte, cheminChapitre } from './donnees.js?v=0b1d5cd9';
+import { creerLecteur, arreter } from './audio.js?v=0b1d5cd9';
+import { visuel, indice } from './cartes.js?v=0b1d5cd9';
+import { melanger, bilanEntraine, compteur, bravo, fete } from './exercices.js?v=0b1d5cd9';
+import { avatar } from './avatar.js?v=0b1d5cd9';
 
 const PAR_PARTIE = 5;
 const MIN_PHRASES = 3;
@@ -116,7 +116,7 @@ let styleCharge = false;
 function chargerStyle() {
   if (styleCharge) return;
   styleCharge = true;
-  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-phrase-images.css?v=52c38935' }));
+  document.head.append(el('link', { rel: 'stylesheet', href: 'css/jeu-phrase-images.css?v=0b1d5cd9' }));
 }
 
 // L'image touchée glisse de la grille jusqu'à sa case (0,4 s), puis la case rebondit. Le jeu reste jouable pendant le vol.

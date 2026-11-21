@@ -1,11 +1,11 @@
 // Accueil en trois écrans successifs : langue, puis année, puis chapitres.
 // L'écran affiché dépend de l'adresse (index.html, ?langue=nl, ?langue=nl&annee=p3) :
 // le bouton « retour » du navigateur fonctionne et un lien se partage.
-import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=52c38935';
-import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=52c38935';
-import { avatar, chargerAvatar } from './avatar.js?v=52c38935';
-import { encadreFlammes } from './flammes.js?v=52c38935';
-import { encadreHeros } from './heros-createur.js?v=52c38935';
+import { lireCatalogue, lireAccueil, chargerTexte, cheminChapitre } from './donnees.js?v=0b1d5cd9';
+import { LANGUES, parametre, couleur, el, icone, encadreErreurs } from './outils.js?v=0b1d5cd9';
+import { avatar, chargerAvatar } from './avatar.js?v=0b1d5cd9';
+import { encadreFlammes } from './flammes.js?v=0b1d5cd9';
+import { encadreHeros } from './heros-createur.js?v=0b1d5cd9';
 
 const langue = parametre('langue');
 const annee = parametre('annee');

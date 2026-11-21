@@ -3,14 +3,14 @@
 // Le héros de l'élève (cahier §7.12, v1.92) combat le monstre : l'élève combat lui-même (textes à sa première personne).
 // Bonne réponse : le monstre perd un cœur. Erreur : je perds un cœur (la bonne réponse est montrée et dite).
 // Avant chaque question, le monstre annonce son intention : deux en P3-P4, trois en P5-P6 (cahier 7.9).
-import { el, icone, muet } from './outils.js?v=52c38935';
-import { arreter } from './audio.js?v=52c38935';
-import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=52c38935';
-import { herosCombat } from './heros.js?v=52c38935';
-import { disponibles, question, fete } from './exercices.js?v=52c38935'; // fete : pluie d'étoiles de la victoire
-import { fichiersPresents } from './donnees.js?v=52c38935';
-import { allumerFlamme } from './flammes.js?v=52c38935';
-import oie, { planOie } from './jeu-oie.js?v=52c38935';
+import { el, icone, muet } from './outils.js?v=0b1d5cd9';
+import { arreter } from './audio.js?v=0b1d5cd9';
+import { jouer, arreterMusique, couper, coupee, existe } from './musique.js?v=0b1d5cd9';
+import { herosCombat } from './heros.js?v=0b1d5cd9';
+import { disponibles, question, fete } from './exercices.js?v=0b1d5cd9'; // fete : pluie d'étoiles de la victoire
+import { fichiersPresents } from './donnees.js?v=0b1d5cd9';
+import { allumerFlamme } from './flammes.js?v=0b1d5cd9';
+import oie, { planOie } from './jeu-oie.js?v=0b1d5cd9';
 
 export const VIES = { boss: 5, noe: 3 };
 const GRANDS = ['p5', 'p6', 'grammaire']; // la grammaire suit les règles de P5-P6 (v1.65)
@@ -65,7 +65,7 @@ export function coup({ boss, noe }, juste, but = 'attaque', bouclier = 0, max = 
 }
 
 // Rangée de cœurs, pleins ou vides : la forme change, pas seulement la couleur.
-function coeurs(qui, nom, total) {
+export function coeurs(qui, nom, total) {
   const p = el('p', { class: `coeurs ${qui}${total > 5 ? ' dix' : ''}`, role: 'img' }); // 10 cœurs : 2 lignes de 5 (CSS)
   p.mettre = (reste) => {
     p.setAttribute('aria-label', `${nom} : ${reste} cœur${reste > 1 ? 's' : ''} sur ${total}`);
@@ -74,36 +74,36 @@ function coeurs(qui, nom, total) {
   return p;
 }
 
-const calme = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const calme = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Petites animations du combat (0,25 à 0,6 s, sans clignotement), coupées si l'appareil demande moins d'animations.
-function bouger(noeud, images, options) {
+export function bouger(noeud, images, options) {
   return noeud && !calme() ? noeud.animate(images, { easing: 'ease-out', ...options }) : null;
 }
-const POP = [{ transform: 'scale(1.6)' }, { transform: 'scale(1)' }]; // un cœur qui se vide
+export const POP = [{ transform: 'scale(1.6)' }, { transform: 'scale(1)' }]; // un cœur qui se vide
 const NAIT = [{ transform: 'scale(0)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }]; // un cœur qui apparaît
 // Le monstre est en haut à droite, l'avatar en bas à gauche : chacun bondit en diagonale vers l'autre.
 const ATTAQUE = [{ transform: 'none' }, { transform: 'translate(-1.5rem, 1rem) scale(1.1)' }, { transform: 'none' }];
 const ELAN = [{ transform: 'none' }, { transform: 'translate(1.5rem, -1rem)' }, { transform: 'none' }];
-const TOUCHE = [{ transform: 'none' }, { transform: 'translateX(.75rem) rotate(10deg)' }, { transform: 'none' }];
+export const TOUCHE = [{ transform: 'none' }, { transform: 'translateX(.75rem) rotate(10deg)' }, { transform: 'none' }];
 // Bouclier qui surgit devant l'avatar, tient un instant, puis s'efface.
 const PARADE = [
   { opacity: 0, transform: 'scale(.4)' }, { opacity: 1, transform: 'scale(1.15)', offset: 0.3 },
   { opacity: 1, transform: 'scale(1)', offset: 0.75 }, { opacity: 0, transform: 'scale(1)' }];
-const ESQUIVE = [{ transform: 'none' }, { transform: 'translate(.75rem, -1.25rem)' }, { transform: 'none' }]; // le monstre évite mon attaque
+export const ESQUIVE = [{ transform: 'none' }, { transform: 'translate(.75rem, -1.25rem)' }, { transform: 'none' }]; // le monstre évite mon attaque
 const MONTE = [ // cœur « + » qui s'élève au-dessus du monstre quand il se soigne
   { opacity: 0, transform: 'translateY(.5rem) scale(.6)' }, { opacity: 1, transform: 'translateY(-.5rem) scale(1)', offset: 0.3 },
   { opacity: 0, transform: 'translateY(-2.25rem) scale(1)' }];
 const PAF = [{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1.25)', offset: 0.4 }, { opacity: 0, transform: 'scale(1)' }]; // étoile du coup qui touche
 // Victoire : le monstre tourne en rétrécissant et disparaît dans des volutes de fumée ; fuite (P5-P6) : il part par la droite.
-const DISPARAIT = [{ transform: 'none' }, { transform: 'rotate(360deg) scale(.2)', opacity: 0 }];
+export const DISPARAIT = [{ transform: 'none' }, { transform: 'rotate(360deg) scale(.2)', opacity: 0 }];
 const FUITE = [{ transform: 'none' }, { transform: 'translateX(-.5rem)', offset: 0.25 }, { transform: 'translateX(60vw)', opacity: 0 }];
 const TREMBLE = [{ transform: 'none' }, { transform: 'translateX(-.15rem)' }, { transform: 'translateX(.15rem)' }, { transform: 'none' }]; // super-attaque : l'arène tremble à peine
 const RECUL = [{ transform: 'none' }, { transform: 'translateX(-.75rem) rotate(-6deg)' }, { transform: 'none' }];
-const DE_DROITE = [{ transform: 'translateX(60vw)', opacity: 0 }, { transform: 'translateX(-.4rem)', opacity: 1, offset: 0.8 }, { transform: 'none' }];
+export const DE_DROITE = [{ transform: 'translateX(60vw)', opacity: 0 }, { transform: 'translateX(-.4rem)', opacity: 1, offset: 0.8 }, { transform: 'none' }];
 const DE_GAUCHE = [{ transform: 'translateX(-60vw)', opacity: 0 }, { transform: 'translateX(.4rem)', opacity: 1, offset: 0.8 }, { transform: 'none' }];
 const SOIN = [{ transform: 'none' }, { transform: 'translateY(-.9rem)' }, { transform: 'none' }];
-const SECOUE = [{ transform: 'none' }, { transform: 'translateX(-.3rem)' }, { transform: 'translateX(.3rem)' }, { transform: 'none' }];
+export const SECOUE = [{ transform: 'none' }, { transform: 'translateX(-.3rem)' }, { transform: 'translateX(.3rem)' }, { transform: 'none' }];
 const DANSE = [{ transform: 'none' }, { transform: 'translateY(-1rem)' }, { transform: 'none' }, { transform: 'translateY(-1rem)' }, { transform: 'none' }]; // victoire : deux sauts de joie
 const RELEVE = [{ transform: 'translateY(.5rem) rotate(-8deg)' }, { transform: 'translateY(-.75rem)' }, { transform: 'none' }]; // défaite : je me relève
 // Le monstre se prépare avant chaque question, selon son intention : il se penche vers moi, se gonfle ou se ramasse.
@@ -135,6 +135,47 @@ export const SUPER = 3; // bonnes réponses d'affilée pour une super-attaque (t
 // Plus de questions « Écoute » (Expert) : une question à image sur deux devient l'écoute du même mot, s'il a un son.
 export function planExpert(plan, dispo) {
   return plan.map((q) => (q.variante.includes('image') && dispo.ecoute.includes(q.cible) && Math.random() < 0.5 ? { ...q, variante: 'ecoute' } : q));
+}
+
+// Le monstre : son dessin `boss.svg` (ou `.png`) dans le dossier du chapitre ; en attendant, la forme provisoire.
+// Version difficile : `boss-difficile.svg` (ou `.png`) ; sans lui, le dessin de base assombri (CSS `.de-base`).
+// Partagé avec le combat à deux (jeu-duo.js).
+export function creerMonstre(contenu, difficile, expert, ...enPlus) {
+  const monstre = el('div', { class: 'monstre' }, icone(difficile ? 'monstre-fort' : 'monstre'), ...enPlus);
+  const fichiers = (n) => [`${contenu.dossier}${n}.svg`, `${contenu.dossier}${n}.png`];
+  // Expert : `boss-expert`, sinon le dessin difficile entouré d'un halo violet (CSS `.halo-expert`).
+  const versions = expert ? ['boss-expert', 'boss-difficile'] : difficile ? ['boss-difficile'] : [];
+  fichiersPresents([...versions.flatMap(fichiers), ...fichiers('boss')]).then((p) => {
+    const dessin = [...p][0];
+    if (dessin) {
+      const propre = /boss-(difficile|expert)\./.test(dessin);
+      monstre.firstChild.replaceWith(el('img', {
+        class: `dessin-boss${difficile && !propre ? ' de-base' : ''}${expert && !dessin.includes('expert') ? ' halo-expert' : ''}`, src: dessin, alt: '' }));
+    }
+  });
+  return monstre;
+}
+
+// Bouton pour couper ou rallumer la musique (56 px), dans l'encadré de l'intention (demande de l'enseignant).
+export function boutonMusiqueCombat() {
+  const bouton = el('button', { type: 'button', class: 'bouton-musique', 'aria-label': 'Musique', hidden: muet });
+  const maj = () => {
+    bouton.setAttribute('aria-pressed', String(!coupee));
+    bouton.replaceChildren(icone(coupee ? 'musique-coupee' : 'musique'));
+  };
+  bouton.addEventListener('click', () => { couper(!coupee); maj(); });
+  maj();
+  return bouton;
+}
+
+// Décor du chapitre (ligne « arene: ») : contenu/arene/<nom>.jpg, ou <nom>-difficile.jpg pour le combat difficile.
+export function decorer(arene, contenu, difficile, expert) {
+  if (!contenu.arene) return;
+  arene.classList.add('avec-decor');
+  const decor = (v) => `contenu/arene/${contenu.arene}${v}.jpg`;
+  arene.style.backgroundImage = `url("${decor(difficile ? '-difficile' : '')}")`;
+  // Expert : <nom>-expert.jpg s'il existe, sinon le décor difficile.
+  if (expert) fichiersPresents([decor('-expert')]).then((p) => { if (p.size) arene.style.backgroundImage = `url("${decor('-expert')}")`; });
 }
 
 function lancer(zone, contenu, difficile, expert = false) {
@@ -181,45 +222,18 @@ function lancer(zone, contenu, difficile, expert = false) {
   // Étoile du coup qui touche et cœur perdu qui s'envole : invisibles eux aussi.
   const pafBoss = el('span', { class: 'paf-boss', 'aria-hidden': 'true' }, icone('etoile'));
   const perteBoss = el('span', { class: 'soin-boss perte-boss', 'aria-hidden': 'true' }, icone('coeur'));
-  // Le monstre : son dessin `boss.svg` (ou `.png`) dans le dossier du chapitre ; en attendant, la forme provisoire.
-  // Version difficile : `boss-difficile.svg` (ou `.png`) ; sans lui, le dessin de base assombri (CSS `.de-base`).
-  const monstre = el('div', { class: 'monstre' }, icone(difficile ? 'monstre-fort' : 'monstre'), bouclierBoss, soinBoss, pafBoss, perteBoss);
-  const fichiers = (n) => [`${contenu.dossier}${n}.svg`, `${contenu.dossier}${n}.png`];
-  // Expert : `boss-expert`, sinon le dessin difficile entouré d'un halo violet (CSS `.halo-expert`).
-  const versions = expert ? ['boss-expert', 'boss-difficile'] : difficile ? ['boss-difficile'] : [];
-  fichiersPresents([...versions.flatMap(fichiers), ...fichiers('boss')]).then((p) => {
-    const dessin = [...p][0];
-    if (dessin) {
-      const propre = /boss-(difficile|expert)\./.test(dessin);
-      monstre.firstChild.replaceWith(el('img', {
-        class: `dessin-boss${difficile && !propre ? ' de-base' : ''}${expert && !dessin.includes('expert') ? ' halo-expert' : ''}`, src: dessin, alt: '' }));
-    }
-  });
+  const monstre = creerMonstre(contenu, difficile, expert, bouclierBoss, soinBoss, pafBoss, perteBoss);
   const prof = herosCombat(); // mon héros, fabriqué à l'accueil (au hasard s'il n'y en a pas encore)
   const bouclierProf = el('span', { class: 'parade', 'aria-hidden': 'true' }, icone('bouclier')); // invisible hors parade
   const coeursBoss = coeurs('boss', Nom, max.boss);
-  const coeursNoe = coeurs('noe', 'Moi', max.noe);
+  const coeursNoe = coeurs('noe', prof.nom, max.noe); // le prénom de l'élève, sinon « Moi » (cahier §7.12)
   const cadreBoss = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, Nom), coeursBoss);
-  const cadreNoe = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, 'Moi'), coeursNoe);
+  const cadreNoe = el('div', { class: 'cadre-vies' }, el('span', { class: 'nom-vies' }, prof.nom), coeursNoe);
   const placeProf = el('div', { class: 'place-prof' }, prof, bouclierProf);
-  // Bouton pour couper ou rallumer la musique (56 px), dans l'encadré de l'intention (demande de l'enseignant).
-  const boutonMusique = el('button', { type: 'button', class: 'bouton-musique', 'aria-label': 'Musique', hidden: muet });
-  const majMusique = () => {
-    boutonMusique.setAttribute('aria-pressed', String(!coupee));
-    boutonMusique.replaceChildren(icone(coupee ? 'musique-coupee' : 'musique'));
-  };
-  boutonMusique.addEventListener('click', () => { couper(!coupee); majMusique(); });
-  majMusique();
+  const boutonMusique = boutonMusiqueCombat();
   // Arène face à face : en haut, le cadre du monstre et le monstre ; en bas, l'avatar et le cadre de l'enseignant.
   const arene = el('div', { class: 'arene' }, cadreBoss, monstre, placeProf, cadreNoe);
-  // Décor du chapitre (ligne « arene: ») : contenu/arene/<nom>.jpg, ou <nom>-difficile.jpg pour le combat difficile.
-  if (contenu.arene) {
-    arene.classList.add('avec-decor');
-    const decor = (v) => `contenu/arene/${contenu.arene}${v}.jpg`;
-    arene.style.backgroundImage = `url("${decor(difficile ? '-difficile' : '')}")`;
-    // Expert : <nom>-expert.jpg s'il existe, sinon le décor difficile.
-    if (expert) fichiersPresents([decor('-expert')]).then((p) => { if (p.size) arene.style.backgroundImage = `url("${decor('-expert')}")`; });
-  }
+  decorer(arene, contenu, difficile, expert);
   const annonce = el('div', { class: 'intention', 'aria-live': 'polite' });
   const questionZone = el('div', { class: 'zone-exercice' });
   // Nouveau combat : il repart du haut de l'écran, comme au premier (sur téléphone, les réponses restent visibles).
@@ -466,9 +480,9 @@ function lancer(zone, contenu, difficile, expert = false) {
         const couronne = el('img', { class: 'couronne', src: 'contenu/avatar/couronne.png', alt: '' });
         placeProf.append(couronne);
         // À la taille de ma tête, quelle que soit celle du héros (téléphone, ordinateur) : dans le dessin du héros (heros.js),
-        // la tête fait 44 % de la largeur, centrée au milieu, et le haut du crâne est vers 9 % de la hauteur.
+        // la tête fait 44 % de la largeur, centrée au milieu ; le haut du crâne dépend de la taille du héros (hautTete).
         const { offsetLeft: x, offsetTop: y, offsetWidth: l, offsetHeight: h } = prof;
-        if (l) Object.assign(couronne.style, { width: `${l * 0.44}px`, left: `${x + l * 0.5}px`, top: `${y + h * 0.09 - l * 0.44 * 0.7}px` });
+        if (l) Object.assign(couronne.style, { width: `${l * 0.44}px`, left: `${x + l * 0.5}px`, top: `${y + h * prof.hautTete - l * 0.44 * 0.7}px` });
         bouger(couronne, [{ transform: 'translate(-50%, -3rem)', opacity: 0 }, { transform: 'translate(-50%, .2rem)', opacity: 1, offset: 0.8 },
           { transform: 'translate(-50%, 0)', opacity: 1 }], { duration: 700, delay: parade + plus + 1500, fill: 'backwards' });
       }

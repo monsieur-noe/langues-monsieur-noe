@@ -1,14 +1,14 @@
 // Rubriques « Je m'entraîne » et « Je vérifie » : un seul moteur d'exercices à choix, cinq variantes (cahier 7.4),
 // puis les dictées en bas de « Je m'entraîne » (cahier 7.4 bis). Rien n'est enregistré.
-import { el, icone, muet, parametre } from './outils.js?v=52c38935';
-import { creerLecteur, arreter } from './audio.js?v=52c38935';
-import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=52c38935';
-import { positionReponse, cheminSon } from './donnees.js?v=52c38935';
-import { avatar, chargerAvatar } from './avatar.js?v=52c38935';
-import { serieOrdre } from './ordre.js?v=52c38935';
-import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=52c38935';
-import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=52c38935';
-import { allumerFlamme } from './flammes.js?v=52c38935';
+import { el, icone, muet, parametre } from './outils.js?v=0b1d5cd9';
+import { creerLecteur, arreter } from './audio.js?v=0b1d5cd9';
+import { chercherFichiers, visuel, cheminDessin, dessinPhrase } from './cartes.js?v=0b1d5cd9';
+import { positionReponse, cheminSon } from './donnees.js?v=0b1d5cd9';
+import { avatar, chargerAvatar } from './avatar.js?v=0b1d5cd9';
+import { serieOrdre } from './ordre.js?v=0b1d5cd9';
+import { preparerCouleurs, lancerCouleurs } from './couleurs.js?v=0b1d5cd9';
+import { preparerHeures, lancerHeures, choixMode } from './horloge.js?v=0b1d5cd9';
+import { allumerFlamme } from './flammes.js?v=0b1d5cd9';
 
 // Consigne de chaque variante : pictogramme + phrase de 8 mots au plus.
 // Le nom sert aussi au fichier de consigne sonore facultatif : contenu/<langue>/consignes/<nom>.m4a

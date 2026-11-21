@@ -1,7 +1,7 @@
 // Accueil (cahier §7.12) : « Mon héros », replié comme les flammes. Ouvert : le héros en grand, et une ligne par pièce
-// avec deux flèches (rien à glisser, rien à taper). Chaque changement est gardé aussitôt sur l'appareil.
-import { el, icone } from './outils.js?v=52c38935';
-import { PIECES, auHasard, dessinerHeros, lireHeros, garderHeros } from './heros.js?v=52c38935';
+// avec deux flèches (rien à glisser), et le prénom facultatif. Chaque changement est gardé aussitôt sur l'appareil.
+import { el, icone } from './outils.js?v=0b1d5cd9';
+import { PIECES, auHasard, dessinerHeros, lireHeros, garderHeros, lirePrenom, garderPrenom, nettoyerPrenom } from './heros.js?v=0b1d5cd9';
 
 export function encadreHeros() {
   let h = lireHeros();
@@ -35,13 +35,23 @@ export function encadreHeros() {
       el('span', { class: 'piece-heros' }, el('span', { class: 'nom-piece' }, p.nom), valeurs[p.cle]),
       fleche(1, 'droite', 'choix suivant'));
   });
+  // Prénom facultatif (v1.96) : la seule chose tapée au clavier sur le site ; affiché à la place de « Moi » contre les monstres.
+  const champ = el('input', { type: 'text', id: 'prenom-heros', class: 'prenom-heros', maxlength: '12', autocomplete: 'off',
+    autocapitalize: 'words', spellcheck: 'false', enterkeyhint: 'done', placeholder: 'Moi', value: lirePrenom() });
+  champ.addEventListener('input', () => {
+    const t = nettoyerPrenom(champ.value);
+    if (t !== champ.value) champ.value = t;
+    garderPrenom(t);
+  });
+  champ.addEventListener('keydown', (e) => { if (e.key === 'Enter') champ.blur(); });
+  const prenom = el('p', { class: 'ligne-prenom' }, el('label', { for: 'prenom-heros' }, 'Mon prénom'), champ);
   const hasard = el('button', { type: 'button', class: 'action' }, icone('tourner'), 'Au hasard');
   hasard.addEventListener('click', () => changer(auHasard(), 'Un nouveau héros !'));
   const fini = el('button', { type: 'button', class: 'action' }, icone('etoile'), 'C\'est mon héros !');
   const boite = el('details', { class: 'heros-accueil' },
     el('summary', { class: 'titre-heros' }, petit, el('span', {}, 'Mon héros'),
       el('span', { class: 'ouvrir-flammes', 'aria-hidden': 'true' }, icone('droite'))),
-    grand, el('ul', { class: 'pieces-heros' }, ...lignes), el('p', { class: 'boutons-heros' }, hasard, fini), annonce);
+    grand, prenom, el('ul', { class: 'pieces-heros' }, ...lignes), el('p', { class: 'boutons-heros' }, hasard, fini), annonce);
   fini.addEventListener('click', () => {
     boite.open = false;
     boite.scrollIntoView({ block: 'nearest' });

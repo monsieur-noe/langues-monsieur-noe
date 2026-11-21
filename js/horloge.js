@@ -1,11 +1,11 @@
 // « Hoe laat is het? » (v1.77, demande de l'enseignant du 2026-11-14) : l'horloge à aiguilles dessinée par le site
 // et ses trois exercices de « Je m'entraîne » (section [heures] du chapitre) : lire l'horloge, écouter et choisir
 // l'horloge, placer les aiguilles. Les sons sont collés : het-is + morceau des minutes + heure (+ uur-pile).
-import { el, icone, muet } from './outils.js?v=52c38935';
-import { creerLecteur } from './audio.js?v=52c38935';
-import { cheminSon } from './donnees.js?v=52c38935';
-import { avatar } from './avatar.js?v=52c38935';
-import { melanger, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=52c38935';
+import { el, icone, muet } from './outils.js?v=0b1d5cd9';
+import { creerLecteur } from './audio.js?v=0b1d5cd9';
+import { cheminSon } from './donnees.js?v=0b1d5cd9';
+import { avatar } from './avatar.js?v=0b1d5cd9';
+import { melanger, bilanEntraine, serieARepasser, compteur, bravo } from './exercices.js?v=0b1d5cd9';
 
 // ---------- Logique (testée dans tests/horloge.test.js) ----------
 
